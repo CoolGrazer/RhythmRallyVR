@@ -13,31 +13,20 @@ var speed : float = 3.5
 
 var velY : float = 4.0
 
+var progress : float = 0.0
+
 
 func _physics_process(delta):
 	_physicsTick()
 
 
 func _physicsTick():
-	if is_on_floor():
-		velY = bounceY
-		
-		if speed == 4.5:
-			speed = 3.5
-		elif speed == 3.5:
-			speed = 4.5
-			
 	
 	
 	
-	print(speed)
+	progress = sin(Engine.get_frames_drawn())
 	
-	velY -= 0.1
-	
-	velocity.y = velY
-	velocity.z = (speed  * direction)
-	move_and_slide()
-
+	position.y = get_tree().create_tween().interpolate_value(0,1,progress,1,Tween.TRANS_QUAD,Tween.EASE_IN_OUT)
 
 
 

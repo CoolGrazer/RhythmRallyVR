@@ -3,13 +3,13 @@
 importer="scene"
 importer_version=1
 type="PackedScene"
-uid="uid://bcsb1rm8c8fom"
-path="res://.godot/imported/Table.glb-bac21548d9311940a7363d330474a409.scn"
+uid="uid://bxmlsd0frmbf6"
+path="res://.godot/imported/Rhyhtm.glb-ccabf83cc871bd7ea99712e51332cc98.scn"
 
 [deps]
 
-source_file="res://Models/Table.glb"
-dest_files=["res://.godot/imported/Table.glb-bac21548d9311940a7363d330474a409.scn"]
+source_file="res://Models/Rhyhtm.glb"
+dest_files=["res://.godot/imported/Rhyhtm.glb-ccabf83cc871bd7ea99712e51332cc98.scn"]
 
 [params]
 

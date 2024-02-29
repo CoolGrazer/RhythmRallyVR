@@ -2,8 +2,8 @@
 
 importer="texture"
 type="CompressedTexture2D"
-uid="uid://d1qvj20pcrro8"
-path.s3tc="res://.godot/imported/Table_lambert2.png-82d6128b403ce4d58cecb9fbcd74dd56.s3tc.ctex"
+uid="uid://cpmqmsp30ppe7"
+path.s3tc="res://.godot/imported/Rhyhtm_lambert11.png-73bbfa1043285f742cb731229038f870.s3tc.ctex"
 metadata={
 "imported_formats": ["s3tc_bptc"],
 "vram_texture": true
@@ -12,8 +12,8 @@ generator_parameters={}
 
 [deps]
 
-source_file="res://Models/Table_lambert2.png"
-dest_files=["res://.godot/imported/Table_lambert2.png-82d6128b403ce4d58cecb9fbcd74dd56.s3tc.ctex"]
+source_file="res://Models/Rhyhtm_lambert11.png"
+dest_files=["res://.godot/imported/Rhyhtm_lambert11.png-73bbfa1043285f742cb731229038f870.s3tc.ctex"]
 
 [params]
 

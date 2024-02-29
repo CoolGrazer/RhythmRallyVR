@@ -18,6 +18,7 @@ signal beat(position)
 
 func _ready():
 	sec_per_beat = 60.0 / bpm
+	GlobalValues.bpm = bpm
 
 
 func _physics_process(_delta):

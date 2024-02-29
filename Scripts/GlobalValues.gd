@@ -3,6 +3,7 @@ extends Node
 
 var relativeBeat : float = 0.0
 var songInBeats : float = 0.0
+var bpm : float = 0.0
 
 
 
@@ -15,5 +16,5 @@ func posFromBeat(startBeat,length,beatClamp):
 	
 	
 	var a = clampf(beat,startBeat,startBeat + length)
-	return a
+	return a - startBeat
 

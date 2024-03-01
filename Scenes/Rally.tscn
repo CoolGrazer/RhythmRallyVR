@@ -1,12 +1,13 @@
-[gd_scene load_steps=36 format=3 uid="uid://cbs8svi42de1a"]
+[gd_scene load_steps=40 format=3 uid="uid://cbs8svi42de1a"]
 
 [ext_resource type="AudioStream" uid="uid://bc2048varugj4" path="res://SFX/hit1.ogg" id="1_0d0hc"]
+[ext_resource type="Script" path="res://Scenes/GlobalScene.gd" id="1_w0ekv"]
 [ext_resource type="AudioStream" uid="uid://c31qbh30m035e" path="res://SFX/hit3.ogg" id="2_85e1h"]
 [ext_resource type="AudioStream" uid="uid://do3j8arnhthoa" path="res://SFX/hit2.ogg" id="2_oeo32"]
 [ext_resource type="Texture2D" uid="uid://crco24mtgefjh" path="res://Models/Rhyhtm_lambert3.png" id="3_pfwxh"]
 [ext_resource type="PackedScene" uid="uid://jeqj0p66btb" path="res://Scenes/Paddler.tscn" id="4_nsqsi"]
 [ext_resource type="Texture2D" uid="uid://cpmqmsp30ppe7" path="res://Models/Rhyhtm_lambert11.png" id="4_y8lf0"]
-[ext_resource type="AudioStream" uid="uid://bjqct2msycbbv" path="res://Music/Rhythm Rally - Rhythm Heaven.mp3" id="6_x8wx6"]
+[ext_resource type="AudioStream" uid="uid://cyjjh5uqhtkh5" path="res://Music/Rhythm Rally 2 - Rhythm Heaven.mp3" id="7_vuvhp"]
 [ext_resource type="Script" path="res://Scripts/Conductor.gd" id="8_6smow"]
 
 [sub_resource type="ProceduralSkyMaterial" id="ProceduralSkyMaterial_7uv38"]
@@ -20,8 +21,6 @@ sky_material = SubResource("ProceduralSkyMaterial_7uv38")
 background_mode = 2
 sky = SubResource("Sky_n6g4v")
 tonemap_mode = 2
-sdfgi_enabled = true
-sdfgi_use_occlusion = true
 glow_enabled = true
 
 [sub_resource type="Curve3D" id="Curve3D_2py8k"]
@@ -38,7 +37,7 @@ script/source = "extends Path3D
 
 var heights = [\"regular\",\"slow\",\"fast\",\"superfast\"]
 
-var height : int = 1
+var height : int = 2
 
 
 var data = []
@@ -66,6 +65,12 @@ func loadCurve(height):
 		data = [Vector3(0, 4.32, -2.823), Vector3(0, 4.25, -1.655), Vector3(0, 0, 0), Vector3(0, 0.999, 0.805)]
 	elif height == 2:
 		data = [Vector3(0, 4.32, -2.823), Vector3(0, 4.25, -1.655), Vector3(0, 0, 0), Vector3(0, 0.999, 0.805)]
+	
+	
+	curve.set_point_out(0,data[0])
+	curve.set_point_out(1,data[1])
+	curve.set_point_in(1,data[2])
+	curve.set_point_in(2,data[3])
 
 func flip():
 	rotation_degrees.y += 180
@@ -91,10 +96,11 @@ var back : bool = false
 
 var hitBeat : float = 0.0
 
-var beatDur1 : float = 0.5
-var beatDur2 : float = 0.5
+var beatDur1 : float = 1.0
+var beatDur2 : float = 1.0
 
 var curvePosition : float = 0.0
+
 
 var alreadyHit : bool = false
 
@@ -106,6 +112,7 @@ func _ready():
 	$Hit1.play()
 
 func _process(delta):
+	
 	_physicsTick()
 
 
@@ -114,19 +121,18 @@ func _physicsTick():
 	
 	_goForward()
 	
-	print(curvePosition == beatDur1)
 	
 	get_parent().progress_ratio = curvePosition / beatDur1
 	
-	
-
 
 
 func _goForward():
 	var hitPosition1 = GlobalValues.posFromBeat(hitBeat,beatDur1,true)
 	
+	
 	if hitPosition1 >= beatDur1:
 		if alreadyHit == false:
+			$HitTable.stop()
 			$HitTable.play()
 			alreadyHit = true
 		
@@ -143,8 +149,12 @@ func _goForward():
 	if curvePosition == beatDur1:
 		
 		if back == true:
+			$Hit1.stop()
+			$Hit2.stop()
 			$Hit2.play()
 		else:
+			$Hit1.stop()
+			$Hit2.stop()
 			$Hit1.play()
 		
 		alreadyHit = false
@@ -171,6 +181,24 @@ func _goBack():
 	if curvePosition == 0:
 		back= false
 		hitBeat = round(GlobalValues.songInBeats)
+
+
+func _on_node_3d_ball_height(height):
+	if height == 0:
+		get_parent().get_parent().flip()
+		hitBeat = round(GlobalValues.songInBeats)
+		beatDur1 = 1
+		beatDur2 = 1
+	elif height == 1:
+		get_parent().get_parent().flip()
+		hitBeat = round(GlobalValues.songInBeats)
+		beatDur1 = 2
+		beatDur2 = 2
+	elif height == 2:
+		get_parent().get_parent().flip()
+		hitBeat = round(GlobalValues.songInBeats)
+		beatDur1 = 0.5
+		beatDur2 = 0.5
 "
 
 [sub_resource type="Curve" id="Curve_dqx15"]
@@ -180,8 +208,20 @@ point_count = 3
 [sub_resource type="SphereShape3D" id="SphereShape3D_dlq2d"]
 
 [sub_resource type="StandardMaterial3D" id="StandardMaterial3D_r0lnq"]
-shading_mode = 0
 albedo_color = Color(1, 1, 0, 1)
+
+[sub_resource type="ParticleProcessMaterial" id="ParticleProcessMaterial_juf2n"]
+gravity = Vector3(0, 0, 0)
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_wt7lg"]
+albedo_color = Color(1, 1, 0, 1)
+
+[sub_resource type="SphereMesh" id="SphereMesh_nt8l3"]
+material = SubResource("StandardMaterial3D_wt7lg")
+radius = 0.1
+height = 0.2
+radial_segments = 12
+rings = 6
 
 [sub_resource type="CompressedTexture2D" id="CompressedTexture2D_yvb60"]
 load_path = "res://.godot/imported/Rhyhtm_lambert2.png-d5e07269b4fe2a22fa7f0c53e9c55806.s3tc.ctex"
@@ -437,6 +477,7 @@ blend_shape_mode = 0
 shadow_mesh = SubResource("ArrayMesh_nr0au")
 
 [node name="Node3D" type="Node3D"]
+script = ExtResource("1_w0ekv")
 
 [node name="DirectionalLight3D" type="DirectionalLight3D" parent="."]
 transform = Transform3D(-0.866023, -0.433016, 0.250001, 0, 0.499998, 0.866027, -0.500003, 0.749999, -0.43301, 0, 0, 0)
@@ -451,7 +492,7 @@ curve = SubResource("Curve3D_2py8k")
 script = SubResource("GDScript_e35jl")
 
 [node name="PathFollow3D" type="PathFollow3D" parent="Path3D"]
-transform = Transform3D(1, 0, 0, 0, 0.999959, 0, 0, 0, 0.999959, 0, 0.480047, 0.0879262)
+transform = Transform3D(1, 0, 0, 0, 0.999959, 0, 0, 0, 0.999959, 0, 0.480047, 0.0879225)
 progress = 4.99388
 rotation_mode = 0
 loop = false
@@ -478,6 +519,13 @@ stream = ExtResource("2_oeo32")
 [node name="Hit2" type="AudioStreamPlayer" parent="Path3D/PathFollow3D/CharacterBody3D"]
 stream = ExtResource("2_85e1h")
 
+[node name="GPUParticles3D" type="GPUParticles3D" parent="Path3D/PathFollow3D/CharacterBody3D"]
+amount = 5
+lifetime = 0.08
+trail_enabled = true
+process_material = SubResource("ParticleProcessMaterial_juf2n")
+draw_pass_1 = SubResource("SphereMesh_nt8l3")
+
 [node name="Rhyhtm" type="Node3D" parent="."]
 
 [node name="Level" type="MeshInstance3D" parent="Rhyhtm"]
@@ -496,26 +544,30 @@ mesh = SubResource("ArrayMesh_75btd")
 skeleton = NodePath("")
 
 [node name="AudioStreamPlayer" type="AudioStreamPlayer" parent="."]
-stream = ExtResource("6_x8wx6")
+stream = ExtResource("7_vuvhp")
 autoplay = true
 script = ExtResource("8_6smow")
-bpm = 182
+bpm = 220
 
 [node name="Pivot" type="Node3D" parent="."]
-transform = Transform3D(-0.0505929, 0, 0.998719, 0, 1, 0, -0.998719, 0, -0.0505929, 0, 0, 0)
+transform = Transform3D(-0.0436196, -0.0609904, -0.997184, 0, 0.998135, -0.0610485, 0.999048, -0.00266291, -0.0435382, 0, 0, 0)
 
 [node name="Camera3D" type="Camera3D" parent="Pivot"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 2, 10)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 2.68, 6.44)
 current = true
 size = 6.2
 
 [node name="Paddler" parent="." instance=ExtResource("4_nsqsi")]
 transform = Transform3D(-0.4, 0, -3.49691e-08, 0, 0.4, 0, 3.49691e-08, 0, -0.4, 0, -0.174, 5.401)
+swingInt = 4
 
 [node name="Paddler2" parent="." instance=ExtResource("4_nsqsi")]
 transform = Transform3D(0.4, 0, 0, 0, 0.4, 0, 0, 0, 0.4, 0, -0.173997, -5.40134)
 offset = 2
+swingInt = 4
 
+[connection signal="ballHeight" from="." to="Path3D/PathFollow3D/CharacterBody3D" method="_on_node_3d_ball_height"]
+[connection signal="beat" from="AudioStreamPlayer" to="." method="_on_audio_stream_player_beat"]
 [connection signal="beat" from="AudioStreamPlayer" to="Path3D/PathFollow3D/CharacterBody3D" method="_on_audio_stream_player_beat"]
 [connection signal="beat" from="AudioStreamPlayer" to="Paddler" method="_on_audio_stream_player_beat"]
 [connection signal="beat" from="AudioStreamPlayer" to="Paddler2" method="_on_audio_stream_player_beat"]

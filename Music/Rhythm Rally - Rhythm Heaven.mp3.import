@@ -1,0 +1,19 @@
+[remap]
+
+importer="mp3"
+type="AudioStreamMP3"
+uid="uid://bjqct2msycbbv"
+path="res://.godot/imported/Rhythm Rally - Rhythm Heaven.mp3-658b1dcc18da24740ff5f60b1d1124cc.mp3str"
+
+[deps]
+
+source_file="res://Music/Rhythm Rally - Rhythm Heaven.mp3"
+dest_files=["res://.godot/imported/Rhythm Rally - Rhythm Heaven.mp3-658b1dcc18da24740ff5f60b1d1124cc.mp3str"]
+
+[params]
+
+loop=false
+loop_offset=0
+bpm=0
+beat_count=0
+bar_beats=4

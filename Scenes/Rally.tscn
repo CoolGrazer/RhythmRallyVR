@@ -6,6 +6,7 @@
 [ext_resource type="Texture2D" uid="uid://crco24mtgefjh" path="res://Models/Rhyhtm_lambert3.png" id="3_pfwxh"]
 [ext_resource type="PackedScene" uid="uid://jeqj0p66btb" path="res://Scenes/Paddler.tscn" id="4_nsqsi"]
 [ext_resource type="Texture2D" uid="uid://cpmqmsp30ppe7" path="res://Models/Rhyhtm_lambert11.png" id="4_y8lf0"]
+[ext_resource type="AudioStream" uid="uid://bjqct2msycbbv" path="res://Music/Rhythm Rally - Rhythm Heaven.mp3" id="6_x8wx6"]
 [ext_resource type="Script" path="res://Scripts/Conductor.gd" id="8_6smow"]
 
 [sub_resource type="ProceduralSkyMaterial" id="ProceduralSkyMaterial_7uv38"]
@@ -19,12 +20,14 @@ sky_material = SubResource("ProceduralSkyMaterial_7uv38")
 background_mode = 2
 sky = SubResource("Sky_n6g4v")
 tonemap_mode = 2
+sdfgi_enabled = true
+sdfgi_use_occlusion = true
 glow_enabled = true
 
 [sub_resource type="Curve3D" id="Curve3D_2py8k"]
 bake_interval = 0.02
 _data = {
-"points": PackedVector3Array(0, -1.56, 2.823, 0, 1.56, -2.823, 0, 0, 5, 0, 0, 0, 0, 0, 0, 0, 0, -0.546, 0, 1.56, 1.623, 0, 0, 0, 0, 0, -5),
+"points": PackedVector3Array(0, -1.56, 2.823, 0, 0.99, -2.823, 0, 0, 5, 0, 0.535, 0.555, 0, 0.34, -1.655, 0, 0.094, -0.8, 0, 0.354, 0.805, -5.56633e-05, -0.529403, -1.09527, 0, 0, -5),
 "tilts": PackedFloat32Array(0, 0, 0)
 }
 point_count = 3
@@ -35,27 +38,46 @@ script/source = "extends Path3D
 
 var heights = [\"regular\",\"slow\",\"fast\",\"superfast\"]
 
-var height : int = 0
+var height : int = 1
 
 
+var data = []
+
+func _ready():
+	saveCurve()
+
+func _physics_process(delta):
+	
+	if Input.is_action_just_pressed(\"ui_accept\"):
+		print(data)
+	
+	if heights[height] == \"regular\":
+		loadCurve(0)
+	elif heights[height] == \"slow\":
+		loadCurve(1)
+	elif heights[height] == \"superfast\":
+		loadCurve(2)
 
 
-#func _physics_process(delta):
-#	if heights[height] == \"regular\":
-#		curveHeight(1.56)
-#	elif heights[height] == \"slow\":
-#		curveHeight(3.12)
-#	elif heights[height] == \"superfast\":
-#		curveHeight(1)
-
-
-func curveHeight(height):
-	curve.set_point_out(0,Vector3(0,height,0))
-	curve.set_point_out(2,Vector3(0,height,0))
+func loadCurve(height):
+	if height == 0:
+		data = [Vector3(0, 1.56, -2.823), Vector3(0, 0.605, -0.535), Vector3(0, 0, 0), Vector3(0.000056, 0.529403, 1.09527)]
+	elif height == 1:
+		data = [Vector3(0, 4.32, -2.823), Vector3(0, 4.25, -1.655), Vector3(0, 0, 0), Vector3(0, 0.999, 0.805)]
+	elif height == 2:
+		data = [Vector3(0, 4.32, -2.823), Vector3(0, 4.25, -1.655), Vector3(0, 0, 0), Vector3(0, 0.999, 0.805)]
 
 func flip():
 	rotation_degrees.y += 180
 	$PathFollow3D.progress_ratio = 1
+
+
+func saveCurve():
+	
+	data.append(curve.get_point_out(0))
+	data.append(curve.get_point_out(1))
+	data.append(curve.get_point_in(1))
+	data.append(curve.get_point_in(2))
 "
 
 [sub_resource type="GDScript" id="GDScript_q3xrv"]
@@ -168,7 +190,6 @@ load_path = "res://.godot/imported/Rhyhtm_lambert2.png-d5e07269b4fe2a22fa7f0c53e
 resource_name = "lambert2.001"
 transparency = 4
 cull_mode = 2
-shading_mode = 0
 albedo_texture = SubResource("CompressedTexture2D_yvb60")
 
 [sub_resource type="CompressedTexture2D" id="CompressedTexture2D_hj7pe"]
@@ -176,23 +197,21 @@ load_path = "res://.godot/imported/Rhyhtm_lambert4.png-88c64a8592f80e56167f91c77
 
 [sub_resource type="StandardMaterial3D" id="StandardMaterial3D_ng0le"]
 resource_name = "lambert4.001"
-transparency = 4
+transparency = 1
 cull_mode = 2
-shading_mode = 0
+albedo_color = Color(1, 1, 1, 0.337255)
 albedo_texture = SubResource("CompressedTexture2D_hj7pe")
 
 [sub_resource type="StandardMaterial3D" id="StandardMaterial3D_mphew"]
 resource_name = "lambert3.001"
 transparency = 4
 cull_mode = 2
-shading_mode = 0
 albedo_texture = ExtResource("3_pfwxh")
 
 [sub_resource type="StandardMaterial3D" id="StandardMaterial3D_orkhh"]
 resource_name = "lambert11.001"
 transparency = 4
 cull_mode = 2
-shading_mode = 0
 albedo_texture = ExtResource("4_y8lf0")
 
 [sub_resource type="ArrayMesh" id="ArrayMesh_kuk8i"]
@@ -302,8 +321,8 @@ load_path = "res://.godot/imported/Rhyhtm_lambert12.png-ff5d265af02f534aa59b21ff
 resource_name = "lambert12.001"
 transparency = 4
 cull_mode = 2
-shading_mode = 0
 albedo_texture = SubResource("CompressedTexture2D_driwg")
+roughness = 0.0
 
 [sub_resource type="ArrayMesh" id="ArrayMesh_1xfj5"]
 _surfaces = [{
@@ -344,7 +363,6 @@ load_path = "res://.godot/imported/Rhyhtm_lambert13.png-bce9a02667817a30789a7faf
 resource_name = "lambert13.001"
 transparency = 4
 cull_mode = 2
-shading_mode = 0
 albedo_texture = SubResource("CompressedTexture2D_xlmg7")
 
 [sub_resource type="CompressedTexture2D" id="CompressedTexture2D_adujm"]
@@ -354,8 +372,11 @@ load_path = "res://.godot/imported/Rhyhtm_lambert11.png-73bbfa1043285f742cb73122
 resource_name = "lambert11.001"
 transparency = 4
 cull_mode = 2
-shading_mode = 0
 albedo_texture = SubResource("CompressedTexture2D_adujm")
+roughness = 0.0
+emission_enabled = true
+emission = Color(0.796078, 0, 0, 1)
+emission_energy_multiplier = 128.0
 
 [sub_resource type="ArrayMesh" id="ArrayMesh_nr0au"]
 _surfaces = [{
@@ -415,8 +436,6 @@ _surfaces = [{
 blend_shape_mode = 0
 shadow_mesh = SubResource("ArrayMesh_nr0au")
 
-[sub_resource type="AudioStreamGenerator" id="AudioStreamGenerator_lh5ka"]
-
 [node name="Node3D" type="Node3D"]
 
 [node name="DirectionalLight3D" type="DirectionalLight3D" parent="."]
@@ -432,7 +451,9 @@ curve = SubResource("Curve3D_2py8k")
 script = SubResource("GDScript_e35jl")
 
 [node name="PathFollow3D" type="PathFollow3D" parent="Path3D"]
-transform = Transform3D(1, 0, 0, 0, 0.875217, -0.483648, 0, 0.483648, 0.875217, 0, 0, 5)
+transform = Transform3D(1, 0, 0, 0, 0.999959, 0, 0, 0, 0.999959, 0, 0.480047, 0.0879262)
+progress = 4.99388
+rotation_mode = 0
 loop = false
 tilt_enabled = false
 
@@ -475,10 +496,10 @@ mesh = SubResource("ArrayMesh_75btd")
 skeleton = NodePath("")
 
 [node name="AudioStreamPlayer" type="AudioStreamPlayer" parent="."]
-stream = SubResource("AudioStreamGenerator_lh5ka")
+stream = ExtResource("6_x8wx6")
 autoplay = true
 script = ExtResource("8_6smow")
-bpm = 180
+bpm = 182
 
 [node name="Pivot" type="Node3D" parent="."]
 transform = Transform3D(-0.0505929, 0, 0.998719, 0, 1, 0, -0.998719, 0, -0.0505929, 0, 0, 0)
@@ -493,7 +514,7 @@ transform = Transform3D(-0.4, 0, -3.49691e-08, 0, 0.4, 0, 3.49691e-08, 0, -0.4, 
 
 [node name="Paddler2" parent="." instance=ExtResource("4_nsqsi")]
 transform = Transform3D(0.4, 0, 0, 0, 0.4, 0, 0, 0, 0.4, 0, -0.173997, -5.40134)
-offset = 1
+offset = 2
 
 [connection signal="beat" from="AudioStreamPlayer" to="Path3D/PathFollow3D/CharacterBody3D" method="_on_audio_stream_player_beat"]
 [connection signal="beat" from="AudioStreamPlayer" to="Paddler" method="_on_audio_stream_player_beat"]

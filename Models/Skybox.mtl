@@ -1,0 +1,82 @@
+# Blender 4.0.2 MTL File: 'None'
+# www.blender.org
+
+newmtl lambert11
+Ns 0.000000
+Ka 1.000000 1.000000 1.000000
+Ks 0.000000 0.000000 0.000000
+Ke 0.000000 0.000000 0.000000
+Ni 1.450000
+illum 1
+map_Kd C:/Users/marce/Documents/Remix 2 Rhythm Rally/lambert11.png
+map_d C:/Users/marce/Documents/Remix 2 Rhythm Rally/lambert11.png
+
+newmtl lambert12
+Ns 0.000000
+Ka 1.000000 1.000000 1.000000
+Ks 0.000000 0.000000 0.000000
+Ke 0.000000 0.000000 0.000000
+Ni 1.450000
+illum 1
+map_Kd C:/Users/marce/Documents/Remix 2 Rhythm Rally/lambert12.png
+map_d C:/Users/marce/Documents/Remix 2 Rhythm Rally/lambert12.png
+
+newmtl lambert13
+Ns 0.000000
+Ka 1.000000 1.000000 1.000000
+Ks 0.000000 0.000000 0.000000
+Ke 0.000000 0.000000 0.000000
+Ni 1.450000
+illum 1
+map_Kd C:/Users/marce/Documents/Remix 2 Rhythm Rally/lambert13.png
+map_d C:/Users/marce/Documents/Remix 2 Rhythm Rally/lambert13.png
+
+newmtl lambert14
+Ns 0.000000
+Ka 1.000000 1.000000 1.000000
+Ks 0.000000 0.000000 0.000000
+Ke 0.000000 0.000000 0.000000
+Ni 1.450000
+illum 1
+map_Kd C:/Users/marce/Documents/Remix 2 Rhythm Rally/lambert14.png
+map_d C:/Users/marce/Documents/Remix 2 Rhythm Rally/lambert14.png
+
+newmtl lambert15
+Ns 0.000000
+Ka 1.000000 1.000000 1.000000
+Ks 0.000000 0.000000 0.000000
+Ke 0.000000 0.000000 0.000000
+Ni 1.450000
+illum 1
+map_Kd C:/Users/marce/Documents/Remix 2 Rhythm Rally/lambert15.png
+map_d C:/Users/marce/Documents/Remix 2 Rhythm Rally/lambert15.png
+
+newmtl lambert2
+Ns 0.000000
+Ka 1.000000 1.000000 1.000000
+Ks 0.000000 0.000000 0.000000
+Ke 0.000000 0.000000 0.000000
+Ni 1.450000
+illum 1
+map_Kd C:/Users/marce/Documents/Remix 2 Rhythm Rally/lambert2.png
+map_d C:/Users/marce/Documents/Remix 2 Rhythm Rally/lambert2.png
+
+newmtl lambert3
+Ns 0.000000
+Ka 1.000000 1.000000 1.000000
+Ks 0.000000 0.000000 0.000000
+Ke 0.000000 0.000000 0.000000
+Ni 1.450000
+illum 1
+map_Kd C:/Users/marce/Documents/Remix 2 Rhythm Rally/lambert3.png
+map_d C:/Users/marce/Documents/Remix 2 Rhythm Rally/lambert3.png
+
+newmtl lambert4
+Ns 0.000000
+Ka 1.000000 1.000000 1.000000
+Ks 0.000000 0.000000 0.000000
+Ke 0.000000 0.000000 0.000000
+Ni 1.450000
+illum 1
+map_Kd C:/Users/marce/Documents/Remix 2 Rhythm Rally/lambert4.png
+map_d C:/Users/marce/Documents/Remix 2 Rhythm Rally/lambert4.png

@@ -7,35 +7,37 @@
 [ext_resource type="Texture2D" uid="uid://crco24mtgefjh" path="res://Models/Rhyhtm_lambert3.png" id="3_pfwxh"]
 [ext_resource type="PackedScene" uid="uid://jeqj0p66btb" path="res://Scenes/Paddler.tscn" id="4_nsqsi"]
 [ext_resource type="Texture2D" uid="uid://cpmqmsp30ppe7" path="res://Models/Rhyhtm_lambert11.png" id="4_y8lf0"]
-[ext_resource type="AudioStream" uid="uid://cyjjh5uqhtkh5" path="res://Music/Rhythm Rally 2 - Rhythm Heaven.mp3" id="7_vuvhp"]
+[ext_resource type="AudioStream" path="res://Music/Rhythm Rally 2 - Rhythm Heaven.mp3" id="7_vuvhp"]
 [ext_resource type="Script" path="res://Scripts/Conductor.gd" id="8_6smow"]
 
-[sub_resource type="ProceduralSkyMaterial" id="ProceduralSkyMaterial_7uv38"]
+[sub_resource type="ProceduralSkyMaterial" id="ProceduralSkyMaterial_2b5jo"]
 sky_horizon_color = Color(0.64625, 0.65575, 0.67075, 1)
 ground_horizon_color = Color(0.64625, 0.65575, 0.67075, 1)
 
-[sub_resource type="Sky" id="Sky_n6g4v"]
-sky_material = SubResource("ProceduralSkyMaterial_7uv38")
+[sub_resource type="Sky" id="Sky_d77ki"]
+sky_material = SubResource("ProceduralSkyMaterial_2b5jo")
 
-[sub_resource type="Environment" id="Environment_iwywx"]
+[sub_resource type="Environment" id="Environment_613w8"]
 background_mode = 2
-sky = SubResource("Sky_n6g4v")
+sky = SubResource("Sky_d77ki")
 tonemap_mode = 2
+ssao_enabled = true
+sdfgi_enabled = true
 glow_enabled = true
 
 [sub_resource type="Curve3D" id="Curve3D_2py8k"]
 bake_interval = 0.02
 _data = {
-"points": PackedVector3Array(0, -1.56, 2.823, 0, 0.99, -2.823, 0, 0, 5, 0, 0.535, 0.555, 0, 0.34, -1.655, 0, 0.094, -0.8, 0, 0.354, 0.805, -5.56633e-05, -0.529403, -1.09527, 0, 0, -5),
-"tilts": PackedFloat32Array(0, 0, 0)
+"points": PackedVector3Array(0, -3.60209, 0.493225, 0, 3.60209, -0.493225, 5.56633e-05, -0.572414, 4.74451, 0, 0.388135, 0.12958, 0, -0.388135, -0.12958, 5.56633e-05, 0.0769022, 4.17151),
+"tilts": PackedFloat32Array(0, 0)
 }
-point_count = 3
+point_count = 2
 
 [sub_resource type="GDScript" id="GDScript_e35jl"]
 resource_name = "BallHeight"
 script/source = "extends Path3D
 
-var heights = [\"regular\",\"slow\",\"fast\",\"superfast\"]
+var heights = [\"regular\",\"slow\",\"fast\",\"superfast\",\"fast\",\"serve\"]
 
 var height : int = 2
 
@@ -59,6 +61,21 @@ func _physics_process(delta):
 
 
 func loadCurve(height):
+	
+	if height == 4:
+		data = [Vector3(0.000056, -0.572414, 4.74451), Vector3(0.000056, 0.076902, 4.17151), Vector3(0, 1.75121, -0.120804), Vector3(0, 4.60177, 0.276292)]
+		if curve.point_count == 3:
+			curve.remove_point(2)
+		curve.set_point_position(0,data[0])
+		curve.set_point_position(1,data[1])
+		curve.set_point_out(0,data[2])
+		curve.set_point_in(1,data[3])
+		return
+		
+	if curve.point_count == 2:
+		curve.add_point(Vector3(0,0,-5))
+		
+	
 	if height == 0:
 		data = [Vector3(0, 1.56, -2.823), Vector3(0, 0.605, -0.535), Vector3(0, 0, 0), Vector3(0.000056, 0.529403, 1.09527)]
 	elif height == 1:
@@ -66,7 +83,9 @@ func loadCurve(height):
 	elif height == 2:
 		data = [Vector3(0, 4.32, -2.823), Vector3(0, 4.25, -1.655), Vector3(0, 0, 0), Vector3(0, 0.999, 0.805)]
 	
-	
+	curve.set_point_position(0,Vector3(0,0,-5))
+	curve.set_point_in(1,Vector3(0,0,0))
+	curve.set_point_in(1,Vector3(0,0,5))
 	curve.set_point_out(0,data[0])
 	curve.set_point_out(1,data[1])
 	curve.set_point_in(1,data[2])
@@ -79,10 +98,10 @@ func flip():
 
 func saveCurve():
 	
+	data.append(curve.get_point_position(0))
+	data.append(curve.get_point_position(1))
 	data.append(curve.get_point_out(0))
-	data.append(curve.get_point_out(1))
 	data.append(curve.get_point_in(1))
-	data.append(curve.get_point_in(2))
 "
 
 [sub_resource type="GDScript" id="GDScript_q3xrv"]
@@ -96,30 +115,49 @@ var back : bool = false
 
 var hitBeat : float = 0.0
 
-var beatDur1 : float = 1.0
-var beatDur2 : float = 1.0
+var beatDur1 : float = 0.5
+var beatDur2 : float = 0.5
 
 var curvePosition : float = 0.0
+
+var swappped : bool = false
 
 
 var alreadyHit : bool = false
 
+var changedHeight : bool = false
+
+var served : bool = false
+
+var startServing : bool = false
+
+var serveBeat : float = 0.0
+var serveLength : float = 0.0
+
+signal swingOpp
+signal swingPlay
+signal readyOpp
+signal readyPlay
+
+# Main difficulty rn is having to make the serve look good. Otherwise most stuff has been done so thats nice!
 
 
-# Use a curve in order to determine the height of the ball. Also use a variable to see how far along the curve the ball is. Use a Max fucntion in order to pick the curve as the highest or else 0. Damn this is harder than I thought lol.
-
-func _ready():
-	$Hit1.play()
 
 func _process(delta):
+	if served == true:
+		show()
+		_physicsTick()
 	
-	_physicsTick()
+	if startServing == true:
+		_serve(serveBeat,serveLength)
 
 
 func _physicsTick():
 	
-	
-	_goForward()
+	if changedHeight == false:
+		_goForward()
+	else:
+		changedHeight = false
 	
 	
 	get_parent().progress_ratio = curvePosition / beatDur1
@@ -130,10 +168,23 @@ func _goForward():
 	var hitPosition1 = GlobalValues.posFromBeat(hitBeat,beatDur1,true)
 	
 	
+	
 	if hitPosition1 >= beatDur1:
 		if alreadyHit == false:
-			$HitTable.stop()
+			_stopAllSources()
 			$HitTable.play()
+			
+			if back == true:
+				if swappped == false:
+					emit_signal(\"readyOpp\")
+				else:
+					emit_signal(\"readyPlay\")
+			else:
+				if swappped == false:
+					emit_signal(\"readyPlay\")
+				else:
+					emit_signal(\"readyOpp\")
+			
 			alreadyHit = true
 		
 		var hitPosition2 = GlobalValues.posFromBeat(hitBeat + beatDur1, beatDur2,true)
@@ -142,63 +193,78 @@ func _goForward():
 		
 		
 	else:
+		
 		curvePosition = hitPosition1 * tableHitTime
 		
 		
 	
-	if curvePosition == beatDur1:
-		
+	if abs(curvePosition) - abs(beatDur1) == 0:
 		if back == true:
-			$Hit1.stop()
-			$Hit2.stop()
-			$Hit2.play()
+			_stopAllSources()
+			$HitOpp.play()
+			if swappped == false:
+				print(\"come tf on\")
+				emit_signal(\"swingOpp\")
+			else:
+				emit_signal(\"swingPlay\")
+			
 		else:
-			$Hit1.stop()
-			$Hit2.stop()
-			$Hit1.play()
+			_stopAllSources()
+			$HitPlayer.play()
+			if swappped == false:
+				emit_signal(\"swingPlay\")
+			else:
+				print(\"come tf on\")
+				emit_signal(\"swingOpp\")
 		
 		alreadyHit = false
 		get_parent().get_parent().flip()
 		back = not back
 		hitBeat = round(GlobalValues.songInBeats)
+		
 
 
-func _goBack():
-	var hitPosition1 = GlobalValues.posFromBeat(hitBeat,beatDur1,true)
-	
-	if hitPosition1 >= beatDur1:
-		
-		var hitPosition2 = GlobalValues.posFromBeat(hitBeat + beatDur1, beatDur2,true)
-		
-		curvePosition = ((hitPosition2 * (1 - tableHitTime)) + (tableHitTime * beatDur1))
-		
-		
-	else:
-		
-		curvePosition = (hitPosition1 * tableHitTime)
-	
-	
-	if curvePosition == 0:
-		back= false
-		hitBeat = round(GlobalValues.songInBeats)
 
 
 func _on_node_3d_ball_height(height):
 	if height == 0:
 		get_parent().get_parent().flip()
-		hitBeat = round(GlobalValues.songInBeats)
 		beatDur1 = 1
 		beatDur2 = 1
 	elif height == 1:
 		get_parent().get_parent().flip()
-		hitBeat = round(GlobalValues.songInBeats)
 		beatDur1 = 2
 		beatDur2 = 2
 	elif height == 2:
 		get_parent().get_parent().flip()
-		hitBeat = round(GlobalValues.songInBeats)
 		beatDur1 = 0.5
 		beatDur2 = 0.5
+	changedHeight = true
+	alreadyHit = false
+	emit_signal(\"swingOpp\")
+	$HitOpp.play()
+	swappped = not swappped
+	hitBeat = round(GlobalValues.songInBeats)
+	
+
+
+func _stopAllSources():
+	$HitOpp.stop()
+	$HitTable.stop()
+	$HitPlayer.stop()
+
+
+
+func _serve(starting,beatDur):
+	var hitPosition1 = GlobalValues.posFromBeat(starting,beatDur,true)
+	show()
+	
+	
+	get_parent().progress_ratio = hitPosition1 / beatDur
+	
+	if get_parent().progress_ratio == 1.0:
+		startServing = false
+		served = true
 "
 
 [sub_resource type="Curve" id="Curve_dqx15"]
@@ -209,6 +275,9 @@ point_count = 3
 
 [sub_resource type="StandardMaterial3D" id="StandardMaterial3D_r0lnq"]
 albedo_color = Color(1, 1, 0, 1)
+emission_enabled = true
+emission = Color(1, 1, 0, 1)
+emission_energy_multiplier = 16.0
 
 [sub_resource type="ParticleProcessMaterial" id="ParticleProcessMaterial_juf2n"]
 gravity = Vector3(0, 0, 0)
@@ -231,6 +300,9 @@ resource_name = "lambert2.001"
 transparency = 4
 cull_mode = 2
 albedo_texture = SubResource("CompressedTexture2D_yvb60")
+metallic = 1.0
+metallic_specular = 1.0
+roughness = 0.0
 
 [sub_resource type="CompressedTexture2D" id="CompressedTexture2D_hj7pe"]
 load_path = "res://.godot/imported/Rhyhtm_lambert4.png-88c64a8592f80e56167f91c774aaaa8b.s3tc.ctex"
@@ -404,19 +476,18 @@ resource_name = "lambert13.001"
 transparency = 4
 cull_mode = 2
 albedo_texture = SubResource("CompressedTexture2D_xlmg7")
-
-[sub_resource type="CompressedTexture2D" id="CompressedTexture2D_adujm"]
-load_path = "res://.godot/imported/Rhyhtm_lambert11.png-73bbfa1043285f742cb731229038f870.s3tc.ctex"
+metallic = 1.0
+emission = Color(1, 0.639216, 0, 1)
 
 [sub_resource type="StandardMaterial3D" id="StandardMaterial3D_ksh4g"]
 resource_name = "lambert11.001"
 transparency = 4
 cull_mode = 2
-albedo_texture = SubResource("CompressedTexture2D_adujm")
+albedo_texture = ExtResource("4_y8lf0")
+metallic = 0.6
 roughness = 0.0
 emission_enabled = true
-emission = Color(0.796078, 0, 0, 1)
-emission_energy_multiplier = 128.0
+emission_energy_multiplier = 16.0
 
 [sub_resource type="ArrayMesh" id="ArrayMesh_nr0au"]
 _surfaces = [{
@@ -476,15 +547,25 @@ _surfaces = [{
 blend_shape_mode = 0
 shadow_mesh = SubResource("ArrayMesh_nr0au")
 
+[sub_resource type="GDScript" id="GDScript_y1dis"]
+script/source = "extends Node3D
+
+var tar : float = 740.0
+
+func _physics_process(delta):
+	pass
+	rotation_degrees.y = lerp(rotation_degrees.y,tar,0.01)
+"
+
 [node name="Node3D" type="Node3D"]
 script = ExtResource("1_w0ekv")
+
+[node name="WorldEnvironment" type="WorldEnvironment" parent="."]
+environment = SubResource("Environment_613w8")
 
 [node name="DirectionalLight3D" type="DirectionalLight3D" parent="."]
 transform = Transform3D(-0.866023, -0.433016, 0.250001, 0, 0.499998, 0.866027, -0.500003, 0.749999, -0.43301, 0, 0, 0)
 shadow_enabled = true
-
-[node name="WorldEnvironment" type="WorldEnvironment" parent="."]
-environment = SubResource("Environment_iwywx")
 
 [node name="Path3D" type="Path3D" parent="."]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.018, 1.45, 0)
@@ -492,13 +573,13 @@ curve = SubResource("Curve3D_2py8k")
 script = SubResource("GDScript_e35jl")
 
 [node name="PathFollow3D" type="PathFollow3D" parent="Path3D"]
-transform = Transform3D(1, 0, 0, 0, 0.999959, 0, 0, 0, 0.999959, 0, 0.480047, 0.0879225)
-progress = 4.99388
+transform = Transform3D(1, 0, 0, 0, 0.999959, 0, 0, 0, 0.999959, 5.56633e-05, -0.572414, 4.74451)
 rotation_mode = 0
 loop = false
 tilt_enabled = false
 
 [node name="CharacterBody3D" type="CharacterBody3D" parent="Path3D/PathFollow3D"]
+visible = false
 script = SubResource("GDScript_q3xrv")
 normalSpeed = SubResource("Curve_dqx15")
 
@@ -510,16 +591,17 @@ shape = SubResource("SphereShape3D_dlq2d")
 transform = Transform3D(0.2, 0, 0, 0, 0.2, 0, 0, 0, 0.2, 0, 0, 0)
 material = SubResource("StandardMaterial3D_r0lnq")
 
-[node name="Hit1" type="AudioStreamPlayer" parent="Path3D/PathFollow3D/CharacterBody3D"]
-stream = ExtResource("1_0d0hc")
+[node name="HitPlayer" type="AudioStreamPlayer" parent="Path3D/PathFollow3D/CharacterBody3D"]
+stream = ExtResource("2_85e1h")
 
 [node name="HitTable" type="AudioStreamPlayer" parent="Path3D/PathFollow3D/CharacterBody3D"]
 stream = ExtResource("2_oeo32")
 
-[node name="Hit2" type="AudioStreamPlayer" parent="Path3D/PathFollow3D/CharacterBody3D"]
-stream = ExtResource("2_85e1h")
+[node name="HitOpp" type="AudioStreamPlayer" parent="Path3D/PathFollow3D/CharacterBody3D"]
+stream = ExtResource("1_0d0hc")
 
 [node name="GPUParticles3D" type="GPUParticles3D" parent="Path3D/PathFollow3D/CharacterBody3D"]
+visible = false
 amount = 5
 lifetime = 0.08
 trail_enabled = true
@@ -547,27 +629,34 @@ skeleton = NodePath("")
 stream = ExtResource("7_vuvhp")
 autoplay = true
 script = ExtResource("8_6smow")
-bpm = 220
+bpm = 259
+msOffset = 250
 
 [node name="Pivot" type="Node3D" parent="."]
-transform = Transform3D(-0.0436196, -0.0609904, -0.997184, 0, 0.998135, -0.0610485, 0.999048, -0.00266291, -0.0435382, 0, 0, 0)
+transform = Transform3D(-0.0436196, -0.0609904, -0.997184, 0, 0.998135, -0.0610484, 0.999048, -0.00266291, -0.0435383, 0, 0, 0)
+script = SubResource("GDScript_y1dis")
 
 [node name="Camera3D" type="Camera3D" parent="Pivot"]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 2.68, 6.44)
 current = true
 size = 6.2
+far = 200.0
 
 [node name="Paddler" parent="." instance=ExtResource("4_nsqsi")]
 transform = Transform3D(-0.4, 0, -3.49691e-08, 0, 0.4, 0, 3.49691e-08, 0, -0.4, 0, -0.174, 5.401)
 swingInt = 4
 
-[node name="Paddler2" parent="." instance=ExtResource("4_nsqsi")]
+[node name="Player" parent="." instance=ExtResource("4_nsqsi")]
 transform = Transform3D(0.4, 0, 0, 0, 0.4, 0, 0, 0, 0.4, 0, -0.173997, -5.40134)
 offset = 2
 swingInt = 4
 
 [connection signal="ballHeight" from="." to="Path3D/PathFollow3D/CharacterBody3D" method="_on_node_3d_ball_height"]
+[connection signal="readyOpp" from="Path3D/PathFollow3D/CharacterBody3D" to="Paddler" method="_on_character_body_3d_ready_opp"]
+[connection signal="readyPlay" from="Path3D/PathFollow3D/CharacterBody3D" to="Player" method="_on_character_body_3d_ready_play"]
+[connection signal="swingOpp" from="Path3D/PathFollow3D/CharacterBody3D" to="Paddler" method="_on_character_body_3d_swing_opp"]
+[connection signal="swingPlay" from="Path3D/PathFollow3D/CharacterBody3D" to="Player" method="_on_character_body_3d_swing_play"]
 [connection signal="beat" from="AudioStreamPlayer" to="." method="_on_audio_stream_player_beat"]
 [connection signal="beat" from="AudioStreamPlayer" to="Path3D/PathFollow3D/CharacterBody3D" method="_on_audio_stream_player_beat"]
 [connection signal="beat" from="AudioStreamPlayer" to="Paddler" method="_on_audio_stream_player_beat"]
-[connection signal="beat" from="AudioStreamPlayer" to="Paddler2" method="_on_audio_stream_player_beat"]
+[connection signal="beat" from="AudioStreamPlayer" to="Player" method="_on_audio_stream_player_beat"]

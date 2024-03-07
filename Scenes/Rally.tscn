@@ -1,25 +1,20 @@
-[gd_scene load_steps=40 format=3 uid="uid://cbs8svi42de1a"]
+[gd_scene load_steps=41 format=3 uid="uid://cbs8svi42de1a"]
 
 [ext_resource type="AudioStream" uid="uid://bc2048varugj4" path="res://SFX/hit1.ogg" id="1_0d0hc"]
 [ext_resource type="Script" path="res://Scenes/GlobalScene.gd" id="1_w0ekv"]
 [ext_resource type="AudioStream" uid="uid://c31qbh30m035e" path="res://SFX/hit3.ogg" id="2_85e1h"]
 [ext_resource type="AudioStream" uid="uid://do3j8arnhthoa" path="res://SFX/hit2.ogg" id="2_oeo32"]
+[ext_resource type="AudioStream" uid="uid://3xq43ocl3wh0" path="res://SFX/whistle.ogg" id="2_t6m7m"]
+[ext_resource type="AudioStream" uid="uid://dxcxypi6msw2y" path="res://SFX/tink.ogg" id="3_gulsh"]
 [ext_resource type="Texture2D" uid="uid://crco24mtgefjh" path="res://Models/Rhyhtm_lambert3.png" id="3_pfwxh"]
+[ext_resource type="AudioStream" uid="uid://dsaaab600qdpk" path="res://SFX/tonk.ogg" id="4_id3kr"]
 [ext_resource type="PackedScene" uid="uid://jeqj0p66btb" path="res://Scenes/Paddler.tscn" id="4_nsqsi"]
 [ext_resource type="Texture2D" uid="uid://cpmqmsp30ppe7" path="res://Models/Rhyhtm_lambert11.png" id="4_y8lf0"]
-[ext_resource type="AudioStream" path="res://Music/Rhythm Rally 2 - Rhythm Heaven.mp3" id="7_vuvhp"]
+[ext_resource type="AudioStream" uid="uid://cyjjh5uqhtkh5" path="res://Music/Rhythm Rally 2 - Rhythm Heaven.mp3" id="7_vuvhp"]
 [ext_resource type="Script" path="res://Scripts/Conductor.gd" id="8_6smow"]
-
-[sub_resource type="ProceduralSkyMaterial" id="ProceduralSkyMaterial_2b5jo"]
-sky_horizon_color = Color(0.64625, 0.65575, 0.67075, 1)
-ground_horizon_color = Color(0.64625, 0.65575, 0.67075, 1)
-
-[sub_resource type="Sky" id="Sky_d77ki"]
-sky_material = SubResource("ProceduralSkyMaterial_2b5jo")
 
 [sub_resource type="Environment" id="Environment_613w8"]
 background_mode = 2
-sky = SubResource("Sky_d77ki")
 tonemap_mode = 2
 ssao_enabled = true
 sdfgi_enabled = true
@@ -28,10 +23,10 @@ glow_enabled = true
 [sub_resource type="Curve3D" id="Curve3D_2py8k"]
 bake_interval = 0.02
 _data = {
-"points": PackedVector3Array(0, -3.60209, 0.493225, 0, 3.60209, -0.493225, 5.56633e-05, -0.572414, 4.74451, 0, 0.388135, 0.12958, 0, -0.388135, -0.12958, 5.56633e-05, 0.0769022, 4.17151),
-"tilts": PackedFloat32Array(0, 0)
+"points": PackedVector3Array(0, -3.60209, 0.493225, 0, 4.32, -2.823, 0, 0, 5, 0, 0, 0, 5.56633e-05, 2.52296, -1.7667, 0, 0.105, -0.6, 5.56633e-05, 2.85315, 1.39473, 0, 0, 0, 0, 0, -5),
+"tilts": PackedFloat32Array(0, 0, 0)
 }
-point_count = 2
+point_count = 3
 
 [sub_resource type="GDScript" id="GDScript_e35jl"]
 resource_name = "BallHeight"
@@ -39,7 +34,7 @@ script/source = "extends Path3D
 
 var heights = [\"regular\",\"slow\",\"fast\",\"superfast\",\"fast\",\"serve\"]
 
-var height : int = 2
+var height : int = 0
 
 
 var data = []
@@ -49,15 +44,8 @@ func _ready():
 
 func _physics_process(delta):
 	
-	if Input.is_action_just_pressed(\"ui_accept\"):
-		print(data)
+	loadCurve(height)
 	
-	if heights[height] == \"regular\":
-		loadCurve(0)
-	elif heights[height] == \"slow\":
-		loadCurve(1)
-	elif heights[height] == \"superfast\":
-		loadCurve(2)
 
 
 func loadCurve(height):
@@ -77,15 +65,15 @@ func loadCurve(height):
 		
 	
 	if height == 0:
-		data = [Vector3(0, 1.56, -2.823), Vector3(0, 0.605, -0.535), Vector3(0, 0, 0), Vector3(0.000056, 0.529403, 1.09527)]
+		data = [Vector3(0.000056, 1.39608, -2.43352), Vector3(0.000056, 0.987539, -2.65724), Vector3(0.000056, 0.729281, 0.620979), Vector3(0.000056, 0.570497, 1.02623)]
 	elif height == 1:
-		data = [Vector3(0, 4.32, -2.823), Vector3(0, 4.25, -1.655), Vector3(0, 0, 0), Vector3(0, 0.999, 0.805)]
+		data = [Vector3(0, 4.32, -2.823), Vector3(0.000056, 2.52296, -1.7667), Vector3(0, 0, 0), Vector3(0.000056, 2.85315, 1.39473)]
 	elif height == 2:
-		data = [Vector3(0, 4.32, -2.823), Vector3(0, 4.25, -1.655), Vector3(0, 0, 0), Vector3(0, 0.999, 0.805)]
+		data = [Vector3(0, 0.825, -2.823), Vector3(0.000056, 0.739877, -1.84035), Vector3(0.000056, 0.729281, 0.620979), Vector3(0, 0.448, 0.906)]
 	
-	curve.set_point_position(0,Vector3(0,0,-5))
-	curve.set_point_in(1,Vector3(0,0,0))
-	curve.set_point_in(1,Vector3(0,0,5))
+	curve.set_point_position(0,Vector3(0,0,5))
+	curve.set_point_position(1,Vector3(0,0.1,-0.6))
+	curve.set_point_position(2,Vector3(0,0,-5))
 	curve.set_point_out(0,data[0])
 	curve.set_point_out(1,data[1])
 	curve.set_point_in(1,data[2])
@@ -93,15 +81,17 @@ func loadCurve(height):
 
 func flip():
 	rotation_degrees.y += 180
-	$PathFollow3D.progress_ratio = 1
+	$PathFollow3D.progress_ratio = 0
 
 
 func saveCurve():
 	
-	data.append(curve.get_point_position(0))
-	data.append(curve.get_point_position(1))
 	data.append(curve.get_point_out(0))
+	data.append(curve.get_point_out(1))
 	data.append(curve.get_point_in(1))
+	data.append(curve.get_point_in(2))
+	
+	print(data)
 "
 
 [sub_resource type="GDScript" id="GDScript_q3xrv"]
@@ -111,7 +101,7 @@ script/source = "extends CharacterBody3D
 
 const tableHitTime : float = 0.58
 
-var back : bool = false
+var back : bool = true
 
 var hitBeat : float = 0.0
 
@@ -139,6 +129,8 @@ signal swingPlay
 signal readyOpp
 signal readyPlay
 
+signal serveDone
+
 # Main difficulty rn is having to make the serve look good. Otherwise most stuff has been done so thats nice!
 
 
@@ -158,9 +150,9 @@ func _physicsTick():
 		_goForward()
 	else:
 		changedHeight = false
-	
-	
-	get_parent().progress_ratio = curvePosition / beatDur1
+	var bakedPos = curvePosition / beatDur1
+	bakedPos = ease(curvePosition / beatDur1,1.3)
+	get_parent().progress_ratio = bakedPos
 	
 
 
@@ -175,15 +167,9 @@ func _goForward():
 			$HitTable.play()
 			
 			if back == true:
-				if swappped == false:
-					emit_signal(\"readyOpp\")
-				else:
-					emit_signal(\"readyPlay\")
+				emit_signal(\"readyPlay\")
 			else:
-				if swappped == false:
-					emit_signal(\"readyPlay\")
-				else:
-					emit_signal(\"readyOpp\")
+				emit_signal(\"readyOpp\")
 			
 			alreadyHit = true
 		
@@ -202,23 +188,18 @@ func _goForward():
 		if back == true:
 			_stopAllSources()
 			$HitOpp.play()
-			if swappped == false:
-				print(\"come tf on\")
-				emit_signal(\"swingOpp\")
-			else:
-				emit_signal(\"swingPlay\")
+			print(\"swingPlay\")
+			emit_signal(\"swingPlay\")
 			
 		else:
 			_stopAllSources()
 			$HitPlayer.play()
-			if swappped == false:
-				emit_signal(\"swingPlay\")
-			else:
-				print(\"come tf on\")
-				emit_signal(\"swingOpp\")
+			print(\"swingOpp\")
+			emit_signal(\"swingOpp\")
 		
 		alreadyHit = false
 		get_parent().get_parent().flip()
+		curvePosition = 0
 		back = not back
 		hitBeat = round(GlobalValues.songInBeats)
 		
@@ -227,6 +208,7 @@ func _goForward():
 
 
 func _on_node_3d_ball_height(height):
+	
 	if height == 0:
 		get_parent().get_parent().flip()
 		beatDur1 = 1
@@ -239,11 +221,10 @@ func _on_node_3d_ball_height(height):
 		get_parent().get_parent().flip()
 		beatDur1 = 0.5
 		beatDur2 = 0.5
-	changedHeight = true
 	alreadyHit = false
 	emit_signal(\"swingOpp\")
+	print(\"swingOpp\")
 	$HitOpp.play()
-	swappped = not swappped
 	hitBeat = round(GlobalValues.songInBeats)
 	
 
@@ -259,10 +240,13 @@ func _serve(starting,beatDur):
 	var hitPosition1 = GlobalValues.posFromBeat(starting,beatDur,true)
 	show()
 	
-	
-	get_parent().progress_ratio = hitPosition1 / beatDur
+	var bakedPos = hitPosition1 / beatDur
+	bakedPos = ease(bakedPos,2.2)
+	get_parent().progress_ratio = bakedPos
 	
 	if get_parent().progress_ratio == 1.0:
+		emit_signal(\"serveDone\")
+		get_parent().get_parent().flip()
 		startServing = false
 		served = true
 "
@@ -550,15 +534,24 @@ shadow_mesh = SubResource("ArrayMesh_nr0au")
 [sub_resource type="GDScript" id="GDScript_y1dis"]
 script/source = "extends Node3D
 
-var tar : float = 740.0
+var tar : float = 0.0
 
 func _physics_process(delta):
 	pass
-	rotation_degrees.y = lerp(rotation_degrees.y,tar,0.01)
+	rotation_degrees.y = lerp(rotation_degrees.y,90.0,0.01)
 "
 
 [node name="Node3D" type="Node3D"]
 script = ExtResource("1_w0ekv")
+
+[node name="Whistle" type="AudioStreamPlayer" parent="."]
+stream = ExtResource("2_t6m7m")
+
+[node name="Tink" type="AudioStreamPlayer" parent="."]
+stream = ExtResource("3_gulsh")
+
+[node name="Tonk" type="AudioStreamPlayer" parent="."]
+stream = ExtResource("4_id3kr")
 
 [node name="WorldEnvironment" type="WorldEnvironment" parent="."]
 environment = SubResource("Environment_613w8")
@@ -573,13 +566,13 @@ curve = SubResource("Curve3D_2py8k")
 script = SubResource("GDScript_e35jl")
 
 [node name="PathFollow3D" type="PathFollow3D" parent="Path3D"]
-transform = Transform3D(1, 0, 0, 0, 0.999959, 0, 0, 0, 0.999959, 5.56633e-05, -0.572414, 4.74451)
+transform = Transform3D(1, 0, 0, 0, 0.999959, 0, 0, 0, 0.999959, 8.1105e-07, 0.166303, 4.398)
+progress = 0.624569
 rotation_mode = 0
 loop = false
 tilt_enabled = false
 
 [node name="CharacterBody3D" type="CharacterBody3D" parent="Path3D/PathFollow3D"]
-visible = false
 script = SubResource("GDScript_q3xrv")
 normalSpeed = SubResource("Curve_dqx15")
 
@@ -601,7 +594,6 @@ stream = ExtResource("2_oeo32")
 stream = ExtResource("1_0d0hc")
 
 [node name="GPUParticles3D" type="GPUParticles3D" parent="Path3D/PathFollow3D/CharacterBody3D"]
-visible = false
 amount = 5
 lifetime = 0.08
 trail_enabled = true
@@ -627,13 +619,13 @@ skeleton = NodePath("")
 
 [node name="AudioStreamPlayer" type="AudioStreamPlayer" parent="."]
 stream = ExtResource("7_vuvhp")
+volume_db = -80.0
 autoplay = true
 script = ExtResource("8_6smow")
-bpm = 259
-msOffset = 250
+bpm = 180
 
 [node name="Pivot" type="Node3D" parent="."]
-transform = Transform3D(-0.0436196, -0.0609904, -0.997184, 0, 0.998135, -0.0610484, 0.999048, -0.00266291, -0.0435383, 0, 0, 0)
+transform = Transform3D(-4.37114e-08, 0.0610485, 0.998134, 0, 0.998135, -0.0610485, -1, -2.66852e-09, -4.36298e-08, 0, 0, 0)
 script = SubResource("GDScript_y1dis")
 
 [node name="Camera3D" type="Camera3D" parent="Pivot"]
@@ -654,6 +646,7 @@ swingInt = 4
 [connection signal="ballHeight" from="." to="Path3D/PathFollow3D/CharacterBody3D" method="_on_node_3d_ball_height"]
 [connection signal="readyOpp" from="Path3D/PathFollow3D/CharacterBody3D" to="Paddler" method="_on_character_body_3d_ready_opp"]
 [connection signal="readyPlay" from="Path3D/PathFollow3D/CharacterBody3D" to="Player" method="_on_character_body_3d_ready_play"]
+[connection signal="serveDone" from="Path3D/PathFollow3D/CharacterBody3D" to="." method="_on_character_body_3d_serve_done"]
 [connection signal="swingOpp" from="Path3D/PathFollow3D/CharacterBody3D" to="Paddler" method="_on_character_body_3d_swing_opp"]
 [connection signal="swingPlay" from="Path3D/PathFollow3D/CharacterBody3D" to="Player" method="_on_character_body_3d_swing_play"]
 [connection signal="beat" from="AudioStreamPlayer" to="." method="_on_audio_stream_player_beat"]

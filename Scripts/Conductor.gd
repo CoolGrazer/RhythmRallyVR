@@ -27,7 +27,7 @@ func _physics_process(_delta):
 	if playing:
 		song_position = get_playback_position() + AudioServer.get_time_since_last_mix()
 		song_position -= AudioServer.get_output_latency()
-		song_position_in_beats = int(floor(song_position / sec_per_beat)) + beats_before_start
+		song_position_in_beats = floorTo(song_position / sec_per_beat,0.5) + beats_before_start
 		
 		
 		GlobalValues.songInBeats = (song_position / sec_per_beat)
@@ -60,4 +60,12 @@ func play_from_beat(beat, offset):
 	play()
 	seek(beat * sec_per_beat)
 	beats_before_start = offset
+
+
+func floorTo(val,snap):
+	
+	if snapped(val,snap) > val:
+		return snapped(val,snap) - snap
+	else:
+		return snapped(val,snap)
 

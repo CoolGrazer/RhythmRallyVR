@@ -8,7 +8,7 @@ var song_position = 0.0
 var song_position_in_beats = 1
 var sec_per_beat = 60.0 / bpm
 var last_reported_beat = 0
-var beats_before_start = 0
+@export var beats_before_start = 0
 
 # Determining how close to the beat an event is
 var closest = 0

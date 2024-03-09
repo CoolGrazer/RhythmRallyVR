@@ -4,11 +4,15 @@ var height : int = 0
 
 var loaded : bool = false
 
-var serveHeight : int = 1
+var serveHeight : int = 3
 
 var tinking : bool = false
 
-var tink : int = 0
+var tink : int = 1
+
+var fast : bool = false
+
+var fastBeat : float = 0.0
 
 signal ballHeight(height)
 
@@ -21,6 +25,20 @@ func _physics_process(delta):
 	pass
 
 func _changeBallHeight(height):
+	if height == 4:
+		
+		$Path3D.height = 3
+		emit_signal("ballHeight",3)
+		
+		return
+	
+	if height == 3:
+		$Path3D.height = 2
+		emit_signal("ballHeight",2)
+		fast = true
+		fastBeat = round(GlobalValues.songInBeats)
+		return
+	
 	$Path3D.height = height
 	
 	emit_signal("ballHeight",height)
@@ -36,18 +54,20 @@ func _on_audio_stream_player_beat(position):
 			tink = 0
 			$Tonk.play()
 	
-	if position == 4:
+	
+	if position == fastBeat and fast == true:
+		_changeBallHeight(4)
+	
+	if position == fastBeat + 2 and fast == true:
+		
+		_changeBallHeight(0)
+		fast = false
+	
+	if position == 6:
 		_serve(2)
 		$Whistle.play()
 	
-	if position == 14:
-		_changeBallHeight(0)
 	
-	if position == 16:
-		tinking = true
-	
-	if position == 22:
-		_changeBallHeight(2)
 
 
 func _serve(length):

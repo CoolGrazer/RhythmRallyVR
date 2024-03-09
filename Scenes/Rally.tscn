@@ -1,7 +1,7 @@
-[gd_scene load_steps=41 format=3 uid="uid://cbs8svi42de1a"]
+[gd_scene load_steps=43 format=3 uid="uid://cbs8svi42de1a"]
 
 [ext_resource type="AudioStream" uid="uid://bc2048varugj4" path="res://SFX/hit1.ogg" id="1_0d0hc"]
-[ext_resource type="Script" path="res://Scenes/GlobalScene.gd" id="1_w0ekv"]
+[ext_resource type="Script" path="res://Scripts/GlobalScene.gd" id="1_w0ekv"]
 [ext_resource type="AudioStream" uid="uid://c31qbh30m035e" path="res://SFX/hit3.ogg" id="2_85e1h"]
 [ext_resource type="AudioStream" uid="uid://do3j8arnhthoa" path="res://SFX/hit2.ogg" id="2_oeo32"]
 [ext_resource type="AudioStream" uid="uid://3xq43ocl3wh0" path="res://SFX/whistle.ogg" id="2_t6m7m"]
@@ -13,17 +13,22 @@
 [ext_resource type="AudioStream" uid="uid://cyjjh5uqhtkh5" path="res://Music/Rhythm Rally 2 - Rhythm Heaven.mp3" id="7_vuvhp"]
 [ext_resource type="Script" path="res://Scripts/Conductor.gd" id="8_6smow"]
 
+[sub_resource type="ProceduralSkyMaterial" id="ProceduralSkyMaterial_qoaev"]
+
+[sub_resource type="Sky" id="Sky_06o8s"]
+sky_material = SubResource("ProceduralSkyMaterial_qoaev")
+
 [sub_resource type="Environment" id="Environment_613w8"]
 background_mode = 2
+sky = SubResource("Sky_06o8s")
 tonemap_mode = 2
 ssao_enabled = true
-sdfgi_enabled = true
 glow_enabled = true
 
 [sub_resource type="Curve3D" id="Curve3D_2py8k"]
 bake_interval = 0.02
 _data = {
-"points": PackedVector3Array(0, -3.60209, 0.493225, 0, 4.32, -2.823, 0, 0, 5, 0, 0, 0, 5.56633e-05, 2.52296, -1.7667, 0, 0.105, -0.6, 5.56633e-05, 2.85315, 1.39473, 0, 0, 0, 0, 0, -5),
+"points": PackedVector3Array(0, -3.60209, 0.493225, 5.56633e-05, 1.0091, -3.5284, 0, 0, 5, -6.6407e-05, -0.00215993, 0.122108, 5.56633e-05, 2.03342, -2.10995, 0, 0.105, -0.6, 5.56633e-05, 2.30121, 2.13744, 0, 0, 0, 0, 0, -5),
 "tilts": PackedFloat32Array(0, 0, 0)
 }
 point_count = 3
@@ -70,6 +75,8 @@ func loadCurve(height):
 		data = [Vector3(0, 4.32, -2.823), Vector3(0.000056, 2.52296, -1.7667), Vector3(0, 0, 0), Vector3(0.000056, 2.85315, 1.39473)]
 	elif height == 2:
 		data = [Vector3(0, 0.825, -2.823), Vector3(0.000056, 0.739877, -1.84035), Vector3(0.000056, 0.729281, 0.620979), Vector3(0, 0.448, 0.906)]
+	elif height == 3:
+		data = [Vector3(0.000056, 1.0091, -3.5284), Vector3(0.000056, 2.03342, -2.10995), Vector3(-0.000066, -0.00216, 0.122108), Vector3(0.000056, 2.30121, 2.13744)]
 	
 	curve.set_point_position(0,Vector3(0,0,5))
 	curve.set_point_position(1,Vector3(0,0.1,-0.6))
@@ -208,7 +215,7 @@ func _goForward():
 
 
 func _on_node_3d_ball_height(height):
-	
+	back = true
 	if height == 0:
 		get_parent().get_parent().flip()
 		beatDur1 = 1
@@ -221,6 +228,11 @@ func _on_node_3d_ball_height(height):
 		get_parent().get_parent().flip()
 		beatDur1 = 0.5
 		beatDur2 = 0.5
+	elif height == 3:
+		get_parent().get_parent().flip()
+		beatDur1 = 1
+		beatDur2 = 2
+		
 	alreadyHit = false
 	emit_signal(\"swingOpp\")
 	print(\"swingOpp\")
@@ -566,7 +578,7 @@ curve = SubResource("Curve3D_2py8k")
 script = SubResource("GDScript_e35jl")
 
 [node name="PathFollow3D" type="PathFollow3D" parent="Path3D"]
-transform = Transform3D(1, 0, 0, 0, 0.999959, 0, 0, 0, 0.999959, 8.1105e-07, 0.166303, 4.398)
+transform = Transform3D(1, 0, 0, 0, 0.999959, 0, 0, 0, 0.999959, 8.02994e-06, 0.158272, 4.39587)
 progress = 0.624569
 rotation_mode = 0
 loop = false
@@ -622,7 +634,9 @@ stream = ExtResource("7_vuvhp")
 volume_db = -80.0
 autoplay = true
 script = ExtResource("8_6smow")
-bpm = 180
+bpm = 210
+msOffset = 294
+beats_before_start = -1
 
 [node name="Pivot" type="Node3D" parent="."]
 transform = Transform3D(-4.37114e-08, 0.0610485, 0.998134, 0, 0.998135, -0.0610485, -1, -2.66852e-09, -4.36298e-08, 0, 0, 0)

@@ -1,4 +1,4 @@
-[gd_scene load_steps=43 format=3 uid="uid://cbs8svi42de1a"]
+[gd_scene load_steps=49 format=3 uid="uid://cbs8svi42de1a"]
 
 [ext_resource type="AudioStream" uid="uid://bc2048varugj4" path="res://SFX/hit1.ogg" id="1_0d0hc"]
 [ext_resource type="Script" path="res://Scripts/GlobalScene.gd" id="1_w0ekv"]
@@ -10,8 +10,8 @@
 [ext_resource type="AudioStream" uid="uid://dsaaab600qdpk" path="res://SFX/tonk.ogg" id="4_id3kr"]
 [ext_resource type="PackedScene" uid="uid://jeqj0p66btb" path="res://Scenes/Paddler.tscn" id="4_nsqsi"]
 [ext_resource type="Texture2D" uid="uid://cpmqmsp30ppe7" path="res://Models/Rhyhtm_lambert11.png" id="4_y8lf0"]
-[ext_resource type="AudioStream" uid="uid://cyjjh5uqhtkh5" path="res://Music/Rhythm Rally 2 - Rhythm Heaven.mp3" id="7_vuvhp"]
 [ext_resource type="Script" path="res://Scripts/Conductor.gd" id="8_6smow"]
+[ext_resource type="AudioStream" uid="uid://bt28nxd1uv55d" path="res://Music/The Slaughter Continues - Remastered.mp3" id="10_c7j7p"]
 
 [sub_resource type="ProceduralSkyMaterial" id="ProceduralSkyMaterial_qoaev"]
 
@@ -19,7 +19,8 @@
 sky_material = SubResource("ProceduralSkyMaterial_qoaev")
 
 [sub_resource type="Environment" id="Environment_613w8"]
-background_mode = 2
+background_mode = 1
+background_color = Color(1, 0.67451, 0, 1)
 sky = SubResource("Sky_06o8s")
 tonemap_mode = 2
 ssao_enabled = true
@@ -136,6 +137,7 @@ signal swingPlay
 signal readyOpp
 signal readyPlay
 
+
 signal serveDone
 
 # Main difficulty rn is having to make the serve look good. Otherwise most stuff has been done so thats nice!
@@ -172,7 +174,7 @@ func _goForward():
 		if alreadyHit == false:
 			_stopAllSources()
 			$HitTable.play()
-			
+			$AnimationPlayer.play(\"And\")
 			if back == true:
 				emit_signal(\"readyPlay\")
 			else:
@@ -184,6 +186,7 @@ func _goForward():
 		
 		curvePosition = (hitPosition2 * (1 - tableHitTime)) + (tableHitTime * beatDur1)
 		
+		# Gotta fix up the FAST rally type.
 		
 	else:
 		
@@ -195,13 +198,13 @@ func _goForward():
 		if back == true:
 			_stopAllSources()
 			$HitOpp.play()
-			print(\"swingPlay\")
+			$AnimationPlayer.play(\"Tink\")
 			emit_signal(\"swingPlay\")
 			
 		else:
 			_stopAllSources()
 			$HitPlayer.play()
-			print(\"swingOpp\")
+			$AnimationPlayer.play(\"Tonk\")
 			emit_signal(\"swingOpp\")
 		
 		alreadyHit = false
@@ -235,7 +238,7 @@ func _on_node_3d_ball_height(height):
 		
 	alreadyHit = false
 	emit_signal(\"swingOpp\")
-	print(\"swingOpp\")
+	$AnimationPlayer.play(\"Tonk\")
 	$HitOpp.play()
 	hitBeat = round(GlobalValues.songInBeats)
 	
@@ -275,18 +278,177 @@ emission_enabled = true
 emission = Color(1, 1, 0, 1)
 emission_energy_multiplier = 16.0
 
+[sub_resource type="Curve" id="Curve_u6sse"]
+_data = [Vector2(0, 1), 0.0, -1.0, 0, 1, Vector2(1, 0), -1.0, 0.0, 1, 0]
+point_count = 2
+metadata/_snap_count = 9
+
+[sub_resource type="CurveTexture" id="CurveTexture_xoygk"]
+curve = SubResource("Curve_u6sse")
+
 [sub_resource type="ParticleProcessMaterial" id="ParticleProcessMaterial_juf2n"]
 gravity = Vector3(0, 0, 0)
-
-[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_wt7lg"]
-albedo_color = Color(1, 1, 0, 1)
+alpha_curve = SubResource("CurveTexture_xoygk")
 
 [sub_resource type="SphereMesh" id="SphereMesh_nt8l3"]
-material = SubResource("StandardMaterial3D_wt7lg")
+material = SubResource("StandardMaterial3D_r0lnq")
 radius = 0.1
 height = 0.2
 radial_segments = 12
 rings = 6
+
+[sub_resource type="Animation" id="Animation_1tvkk"]
+resource_name = "And"
+tracks/0/type = "value"
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/path = NodePath("../../../Pivot/Camera3D/Label:scale")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/keys = {
+"times": PackedFloat32Array(0, 0.2857),
+"transitions": PackedFloat32Array(-2, -0.5),
+"update": 0,
+"values": [Vector2(1, 1), Vector2(1.475, 1.475)]
+}
+tracks/1/type = "value"
+tracks/1/imported = false
+tracks/1/enabled = true
+tracks/1/path = NodePath("../../../Pivot/Camera3D/Label:modulate")
+tracks/1/interp = 1
+tracks/1/loop_wrap = true
+tracks/1/keys = {
+"times": PackedFloat32Array(0, 0.2857),
+"transitions": PackedFloat32Array(1, 1),
+"update": 0,
+"values": [Color(1, 1, 1, 1), Color(1, 1, 1, 0)]
+}
+tracks/2/type = "value"
+tracks/2/imported = false
+tracks/2/enabled = true
+tracks/2/path = NodePath("../../../Pivot/Camera3D/Label:text")
+tracks/2/interp = 1
+tracks/2/loop_wrap = true
+tracks/2/keys = {
+"times": PackedFloat32Array(0),
+"transitions": PackedFloat32Array(1),
+"update": 1,
+"values": ["And"]
+}
+
+[sub_resource type="Animation" id="Animation_7nkht"]
+length = 0.001
+tracks/0/type = "value"
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/path = NodePath("../../../Pivot/Camera3D/Label:scale")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/keys = {
+"times": PackedFloat32Array(0),
+"transitions": PackedFloat32Array(1),
+"update": 0,
+"values": [Vector2(1.475, 1.475)]
+}
+tracks/1/type = "value"
+tracks/1/imported = false
+tracks/1/enabled = true
+tracks/1/path = NodePath("../../../Pivot/Camera3D/Label:modulate")
+tracks/1/interp = 1
+tracks/1/loop_wrap = true
+tracks/1/keys = {
+"times": PackedFloat32Array(0),
+"transitions": PackedFloat32Array(1),
+"update": 0,
+"values": [Color(1, 1, 1, 0)]
+}
+
+[sub_resource type="Animation" id="Animation_2adc6"]
+resource_name = "Tink"
+tracks/0/type = "value"
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/path = NodePath("../../../Pivot/Camera3D/Label:scale")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/keys = {
+"times": PackedFloat32Array(0, 0.2857),
+"transitions": PackedFloat32Array(-2, -0.5),
+"update": 0,
+"values": [Vector2(1, 1), Vector2(1.475, 1.475)]
+}
+tracks/1/type = "value"
+tracks/1/imported = false
+tracks/1/enabled = true
+tracks/1/path = NodePath("../../../Pivot/Camera3D/Label:modulate")
+tracks/1/interp = 1
+tracks/1/loop_wrap = true
+tracks/1/keys = {
+"times": PackedFloat32Array(0, 0.2857),
+"transitions": PackedFloat32Array(1, 1),
+"update": 0,
+"values": [Color(1, 1, 1, 1), Color(1, 1, 1, 0)]
+}
+tracks/2/type = "value"
+tracks/2/imported = false
+tracks/2/enabled = true
+tracks/2/path = NodePath("../../../Pivot/Camera3D/Label:text")
+tracks/2/interp = 1
+tracks/2/loop_wrap = true
+tracks/2/keys = {
+"times": PackedFloat32Array(0),
+"transitions": PackedFloat32Array(1),
+"update": 1,
+"values": ["Tink"]
+}
+
+[sub_resource type="Animation" id="Animation_w5ffe"]
+resource_name = "Tonk"
+length = 0.2857
+tracks/0/type = "value"
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/path = NodePath("../../../Pivot/Camera3D/Label:scale")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/keys = {
+"times": PackedFloat32Array(0, 0.2857),
+"transitions": PackedFloat32Array(-2, -0.5),
+"update": 0,
+"values": [Vector2(1, 1), Vector2(1.475, 1.475)]
+}
+tracks/1/type = "value"
+tracks/1/imported = false
+tracks/1/enabled = true
+tracks/1/path = NodePath("../../../Pivot/Camera3D/Label:modulate")
+tracks/1/interp = 1
+tracks/1/loop_wrap = true
+tracks/1/keys = {
+"times": PackedFloat32Array(0, 0.2857),
+"transitions": PackedFloat32Array(1, 1),
+"update": 0,
+"values": [Color(1, 1, 1, 1), Color(1, 1, 1, 0)]
+}
+tracks/2/type = "value"
+tracks/2/imported = false
+tracks/2/enabled = true
+tracks/2/path = NodePath("../../../Pivot/Camera3D/Label:text")
+tracks/2/interp = 1
+tracks/2/loop_wrap = true
+tracks/2/keys = {
+"times": PackedFloat32Array(0),
+"transitions": PackedFloat32Array(1),
+"update": 1,
+"values": ["Tonk"]
+}
+
+[sub_resource type="AnimationLibrary" id="AnimationLibrary_4q1lp"]
+_data = {
+"And": SubResource("Animation_1tvkk"),
+"RESET": SubResource("Animation_7nkht"),
+"Tink": SubResource("Animation_2adc6"),
+"Tonk": SubResource("Animation_w5ffe")
+}
 
 [sub_resource type="CompressedTexture2D" id="CompressedTexture2D_yvb60"]
 load_path = "res://.godot/imported/Rhyhtm_lambert2.png-d5e07269b4fe2a22fa7f0c53e9c55806.s3tc.ctex"
@@ -296,7 +458,7 @@ resource_name = "lambert2.001"
 transparency = 4
 cull_mode = 2
 albedo_texture = SubResource("CompressedTexture2D_yvb60")
-metallic = 1.0
+metallic = 0.55
 metallic_specular = 1.0
 roughness = 0.0
 
@@ -320,6 +482,7 @@ albedo_texture = ExtResource("3_pfwxh")
 resource_name = "lambert11.001"
 transparency = 4
 cull_mode = 2
+albedo_color = Color(0.996078, 0.996078, 0.996078, 1)
 albedo_texture = ExtResource("4_y8lf0")
 
 [sub_resource type="ArrayMesh" id="ArrayMesh_kuk8i"]
@@ -546,11 +709,24 @@ shadow_mesh = SubResource("ArrayMesh_nr0au")
 [sub_resource type="GDScript" id="GDScript_y1dis"]
 script/source = "extends Node3D
 
-var tar : float = 0.0
+var tar : float = 160.0
+
+var startBeat : float = 0.0
+
+var rotLength : float = 1.0
+
+var currentRot : float = 160.0
 
 func _physics_process(delta):
-	pass
-	rotation_degrees.y = lerp(rotation_degrees.y,90.0,0.01)
+	
+	rotation_degrees.y = lerp(currentRot,tar,ease(GlobalValues.posFromBeat(startBeat,rotLength,true) / rotLength,1.6))
+	
+
+func _goTowards(rot,length):
+	startBeat = round(GlobalValues.songInBeats)
+	rotLength = length
+	currentRot = rotation_degrees.y
+	tar = rot
 "
 
 [node name="Node3D" type="Node3D"]
@@ -585,6 +761,7 @@ loop = false
 tilt_enabled = false
 
 [node name="CharacterBody3D" type="CharacterBody3D" parent="Path3D/PathFollow3D"]
+visible = false
 script = SubResource("GDScript_q3xrv")
 normalSpeed = SubResource("Curve_dqx15")
 
@@ -606,11 +783,16 @@ stream = ExtResource("2_oeo32")
 stream = ExtResource("1_0d0hc")
 
 [node name="GPUParticles3D" type="GPUParticles3D" parent="Path3D/PathFollow3D/CharacterBody3D"]
-amount = 5
+amount = 3
 lifetime = 0.08
 trail_enabled = true
 process_material = SubResource("ParticleProcessMaterial_juf2n")
 draw_pass_1 = SubResource("SphereMesh_nt8l3")
+
+[node name="AnimationPlayer" type="AnimationPlayer" parent="Path3D/PathFollow3D/CharacterBody3D"]
+libraries = {
+"": SubResource("AnimationLibrary_4q1lp")
+}
 
 [node name="Rhyhtm" type="Node3D" parent="."]
 
@@ -630,16 +812,15 @@ mesh = SubResource("ArrayMesh_75btd")
 skeleton = NodePath("")
 
 [node name="AudioStreamPlayer" type="AudioStreamPlayer" parent="."]
-stream = ExtResource("7_vuvhp")
-volume_db = -80.0
+stream = ExtResource("10_c7j7p")
+volume_db = -5.0
 autoplay = true
 script = ExtResource("8_6smow")
-bpm = 210
-msOffset = 294
-beats_before_start = -1
+bpm = 155
+msOffset = 30
 
 [node name="Pivot" type="Node3D" parent="."]
-transform = Transform3D(-4.37114e-08, 0.0610485, 0.998134, 0, 0.998135, -0.0610485, -1, -2.66852e-09, -4.36298e-08, 0, 0, 0)
+transform = Transform3D(-0.939693, 0.0208798, 0.341382, 0, 0.998135, -0.0610485, -0.34202, -0.0573669, -0.937939, 0, 0, 0)
 script = SubResource("GDScript_y1dis")
 
 [node name="Camera3D" type="Camera3D" parent="Pivot"]
@@ -647,6 +828,27 @@ transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 2.68, 6.44)
 current = true
 size = 6.2
 far = 200.0
+
+[node name="Label" type="Label" parent="Pivot/Camera3D"]
+modulate = Color(1, 1, 1, 0)
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -252.0
+offset_top = -258.0
+offset_right = 252.0
+offset_bottom = 32.0
+grow_horizontal = 2
+grow_vertical = 2
+scale = Vector2(1.475, 1.475)
+pivot_offset = Vector2(252, 145)
+theme_override_font_sizes/font_size = 64
+text = "And"
+horizontal_alignment = 1
+vertical_alignment = 1
+metadata/_edit_use_anchors_ = true
 
 [node name="Paddler" parent="." instance=ExtResource("4_nsqsi")]
 transform = Transform3D(-0.4, 0, -3.49691e-08, 0, 0.4, 0, 3.49691e-08, 0, -0.4, 0, -0.174, 5.401)

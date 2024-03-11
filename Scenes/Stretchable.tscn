@@ -1,0 +1,81 @@
+[gd_scene load_steps=7 format=3 uid="uid://2544xanxcg3c"]
+
+[ext_resource type="Script" path="res://Scripts/Strechable.gd" id="1_1omvp"]
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_3d2tr"]
+bg_color = Color(0.278431, 0.419608, 0.74902, 1)
+corner_radius_top_left = 10
+corner_radius_top_right = 10
+corner_radius_bottom_right = 10
+corner_radius_bottom_left = 10
+corner_detail = 20
+anti_aliasing = false
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_4ee6a"]
+bg_color = Color(0.470588, 0.603922, 0.890196, 1)
+corner_radius_top_left = 10
+corner_radius_top_right = 10
+corner_radius_bottom_right = 10
+corner_radius_bottom_left = 10
+anti_aliasing = false
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_d27uf"]
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_ryp71"]
+bg_color = Color(0.278431, 0.419608, 0.74902, 1)
+border_width_left = 2
+border_width_top = 2
+border_width_right = 2
+border_width_bottom = 2
+border_color = Color(0, 1, 0.8, 1)
+corner_radius_top_left = 10
+corner_radius_top_right = 10
+corner_radius_bottom_right = 10
+corner_radius_bottom_left = 10
+anti_aliasing = false
+
+[sub_resource type="GDScript" id="GDScript_35g5b"]
+script/source = "extends Button
+
+
+
+func _input(event: InputEvent):
+	if event is InputEventMouseButton and event.is_pressed() and event.button_index == 1:
+		var evLocal = make_input_local(event)
+		if !Rect2(Vector2(0,0), size).has_point(evLocal.position):
+			release_focus()
+"
+
+[node name="Strecthable" type="Node2D"]
+script = ExtResource("1_1omvp")
+
+[node name="Camera2D" type="Camera2D" parent="."]
+top_level = true
+zoom = Vector2(1.9, 1.9)
+
+[node name="Origin" type="Node2D" parent="."]
+position = Vector2(40, 0)
+
+[node name="Button" type="Button" parent="Origin"]
+offset_left = -40.0
+offset_top = -20.0
+offset_right = 40.0
+offset_bottom = 20.0
+theme_override_styles/normal = SubResource("StyleBoxFlat_3d2tr")
+theme_override_styles/hover = SubResource("StyleBoxFlat_4ee6a")
+theme_override_styles/pressed = SubResource("StyleBoxEmpty_d27uf")
+theme_override_styles/focus = SubResource("StyleBoxFlat_ryp71")
+script = SubResource("GDScript_35g5b")
+
+[node name="Label" type="Label" parent="Origin/Button"]
+layout_mode = 0
+offset_right = 584.0
+offset_bottom = 292.0
+scale = Vector2(0.137, 0.137)
+theme_override_font_sizes/font_size = 128
+text = "Serve"
+horizontal_alignment = 2
+vertical_alignment = 1
+
+[connection signal="mouse_entered" from="Origin/Button" to="." method="_on_button_mouse_entered"]
+[connection signal="mouse_exited" from="Origin/Button" to="." method="_on_button_mouse_exited"]

@@ -1,4 +1,4 @@
-[gd_scene load_steps=49 format=3 uid="uid://cbs8svi42de1a"]
+[gd_scene load_steps=51 format=3 uid="uid://cbs8svi42de1a"]
 
 [ext_resource type="AudioStream" uid="uid://bc2048varugj4" path="res://SFX/hit1.ogg" id="1_0d0hc"]
 [ext_resource type="Script" path="res://Scripts/GlobalScene.gd" id="1_w0ekv"]
@@ -12,6 +12,7 @@
 [ext_resource type="Texture2D" uid="uid://cpmqmsp30ppe7" path="res://Models/Rhyhtm_lambert11.png" id="4_y8lf0"]
 [ext_resource type="Script" path="res://Scripts/Conductor.gd" id="8_6smow"]
 [ext_resource type="AudioStream" uid="uid://bt28nxd1uv55d" path="res://Music/The Slaughter Continues - Remastered.mp3" id="10_c7j7p"]
+[ext_resource type="VoxelGIData" uid="uid://bd8prn7nhgs7k" path="res://Scenes/Rally.VoxelGI_data.res" id="13_j78gn"]
 
 [sub_resource type="ProceduralSkyMaterial" id="ProceduralSkyMaterial_qoaev"]
 
@@ -23,7 +24,6 @@ background_mode = 1
 background_color = Color(1, 0.67451, 0, 1)
 sky = SubResource("Sky_06o8s")
 tonemap_mode = 2
-ssao_enabled = true
 glow_enabled = true
 
 [sub_resource type="Curve3D" id="Curve3D_2py8k"]
@@ -274,7 +274,6 @@ point_count = 3
 
 [sub_resource type="StandardMaterial3D" id="StandardMaterial3D_r0lnq"]
 albedo_color = Color(1, 1, 0, 1)
-emission_enabled = true
 emission = Color(1, 1, 0, 1)
 emission_energy_multiplier = 16.0
 
@@ -283,15 +282,20 @@ _data = [Vector2(0, 1), 0.0, -1.0, 0, 1, Vector2(1, 0), -1.0, 0.0, 1, 0]
 point_count = 2
 metadata/_snap_count = 9
 
-[sub_resource type="CurveTexture" id="CurveTexture_xoygk"]
+[sub_resource type="CurveTexture" id="CurveTexture_5a768"]
 curve = SubResource("Curve_u6sse")
 
 [sub_resource type="ParticleProcessMaterial" id="ParticleProcessMaterial_juf2n"]
 gravity = Vector3(0, 0, 0)
-alpha_curve = SubResource("CurveTexture_xoygk")
+alpha_curve = SubResource("CurveTexture_5a768")
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_1nmaf"]
+albedo_color = Color(1, 1, 0, 1)
+emission = Color(1, 1, 0, 1)
+emission_energy_multiplier = 16.0
 
 [sub_resource type="SphereMesh" id="SphereMesh_nt8l3"]
-material = SubResource("StandardMaterial3D_r0lnq")
+material = SubResource("StandardMaterial3D_1nmaf")
 radius = 0.1
 height = 0.2
 radial_segments = 12
@@ -635,7 +639,8 @@ resource_name = "lambert13.001"
 transparency = 4
 cull_mode = 2
 albedo_texture = SubResource("CompressedTexture2D_xlmg7")
-metallic = 1.0
+metallic = 0.6
+roughness = 0.0
 emission = Color(1, 0.639216, 0, 1)
 
 [sub_resource type="StandardMaterial3D" id="StandardMaterial3D_ksh4g"]
@@ -761,7 +766,6 @@ loop = false
 tilt_enabled = false
 
 [node name="CharacterBody3D" type="CharacterBody3D" parent="Path3D/PathFollow3D"]
-visible = false
 script = SubResource("GDScript_q3xrv")
 normalSpeed = SubResource("Curve_dqx15")
 
@@ -858,6 +862,10 @@ swingInt = 4
 transform = Transform3D(0.4, 0, 0, 0, 0.4, 0, 0, 0, 0.4, 0, -0.173997, -5.40134)
 offset = 2
 swingInt = 4
+
+[node name="VoxelGI" type="VoxelGI" parent="."]
+visible = false
+data = ExtResource("13_j78gn")
 
 [connection signal="ballHeight" from="." to="Path3D/PathFollow3D/CharacterBody3D" method="_on_node_3d_ball_height"]
 [connection signal="readyOpp" from="Path3D/PathFollow3D/CharacterBody3D" to="Paddler" method="_on_character_body_3d_ready_opp"]

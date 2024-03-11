@@ -71,8 +71,8 @@ func _on_audio_stream_player_beat(position):
 		_changeBallHeight(0)
 		fast = false
 	
-	if position == 3:
-		_serve(1)
+	if position == 2:
+		_serve(2)
 		$Whistle.play()
 	
 	if position == 10:

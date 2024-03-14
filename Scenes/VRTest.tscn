@@ -1,4 +1,4 @@
-[gd_scene load_steps=26 format=3 uid="uid://doe717g6mogwx"]
+[gd_scene load_steps=21 format=3 uid="uid://doe717g6mogwx"]
 
 [ext_resource type="Texture2D" uid="uid://crs31io0rygdf" path="res://Models/body.png" id="1_wesn2"]
 [ext_resource type="AudioStream" uid="uid://c31qbh30m035e" path="res://SFX/hit3.ogg" id="2_epyun"]
@@ -61,7 +61,7 @@ script/source = "extends Path3D
 
 var heights = [\"regular\",\"slow\",\"fast\",\"superfast\",\"fast\",\"serve\"]
 
-var height : int = 0
+var height : int = 3
 
 
 var data = []
@@ -70,8 +70,7 @@ func _ready():
 	pass
 
 func _physics_process(delta):
-	
-	loadCurve(4)
+	loadCurve(height)
 	
 
 
@@ -135,7 +134,7 @@ var back : bool = true
 var hitBeat : float = 0.0
 
 var beatDur1 : float = 0.5
-var beatDur2 : float = 0.5
+var beatDur2 : float = 1.0
 
 var curvePosition : float = 0.0
 
@@ -152,6 +151,8 @@ var startServing : bool = false
 
 var serveBeat : float = 0.0
 var serveLength : float = 2.0
+
+var fast : bool = true
 
 signal swingOpp
 signal swingPlay
@@ -176,27 +177,33 @@ func _process(delta):
 
 
 func _physicsTick():
+	var bakedPos
 	
 	if changedHeight == false:
-		_goForward()
+		if fast == false:
+			_goForward()
+			bakedPos = curvePosition / beatDur1
+		else:
+			_fastRally()
+			
 	else:
 		changedHeight = false
-	var bakedPos = curvePosition / beatDur1
-	bakedPos = ease(curvePosition / beatDur1,1.3)
+	
 	get_parent().progress_ratio = bakedPos
 	
 
 
 func _goForward():
-	var hitPosition1 = GlobalValues.posFromBeat(hitBeat,beatDur1,true)
+	var hitPosition1 = GlobalValues.posFromBeat(hitBeat,beatDur1,false)
 	
 	
 	
 	if hitPosition1 >= beatDur1:
 		if alreadyHit == false:
+			
 			_stopAllSources()
 			$HitTable.play()
-			$AnimationPlayer.play(\"And\")
+			#$AnimationPlayer.play(\"And\")
 			if back == true:
 				emit_signal(\"readyPlay\")
 			else:
@@ -204,29 +211,29 @@ func _goForward():
 			
 			alreadyHit = true
 		
-		var hitPosition2 = GlobalValues.posFromBeat(hitBeat + beatDur1, beatDur2,true)
 		
+		var hitPosition2 = GlobalValues.posFromBeat(hitBeat + beatDur1, beatDur2,false)
 		curvePosition = (hitPosition2 * (1 - tableHitTime)) + (tableHitTime * beatDur1)
-		
+			
 		# Gotta fix up the FAST rally type.
 		
 	else:
-		
 		curvePosition = hitPosition1 * tableHitTime
+		#print(curvePosition)
 		
 		
 	
-	if abs(curvePosition) - abs(beatDur1) == 0:
+	if abs(curvePosition) - abs(beatDur2) == 0:
 		if back == true:
 			_stopAllSources()
 			$HitOpp.play()
-			$AnimationPlayer.play(\"Tink\")
+			#$AnimationPlayer.play(\"Tink\")
 			emit_signal(\"swingPlay\")
 			
 		else:
 			_stopAllSources()
 			$HitPlayer.play()
-			$AnimationPlayer.play(\"Tonk\")
+			#$AnimationPlayer.play(\"Tonk\")
 			emit_signal(\"swingOpp\")
 		
 		alreadyHit = false
@@ -236,7 +243,29 @@ func _goForward():
 		hitBeat = round(GlobalValues.songInBeats)
 		
 
-
+func _fastRally():
+	
+	pass
+	
+	
+	if abs(curvePosition) - abs(beatDur2) == 0:
+		if back == true:
+			_stopAllSources()
+			$HitOpp.play()
+			#$AnimationPlayer.play(\"Tink\")
+			emit_signal(\"swingPlay\")
+			
+		else:
+			_stopAllSources()
+			$HitPlayer.play()
+			#$AnimationPlayer.play(\"Tonk\")
+			emit_signal(\"swingOpp\")
+		
+		alreadyHit = false
+		get_parent().get_parent().flip()
+		curvePosition = 0
+		back = not back
+		hitBeat = round(GlobalValues.songInBeats)
 
 
 func _on_node_3d_ball_height(height):
@@ -260,7 +289,7 @@ func _on_node_3d_ball_height(height):
 		
 	alreadyHit = false
 	emit_signal(\"swingOpp\")
-	$AnimationPlayer.play(\"Tonk\")
+	#$AnimationPlayer.play(\"Tonk\")
 	$HitOpp.play()
 	hitBeat = round(GlobalValues.songInBeats)
 	
@@ -286,6 +315,7 @@ func _serve(starting,beatDur):
 		get_parent().get_parent().flip()
 		startServing = false
 		served = true
+		hitBeat = round(GlobalValues.songInBeats)
 "
 
 [sub_resource type="SphereShape3D" id="SphereShape3D_lgsbl"]
@@ -319,159 +349,6 @@ height = 0.2
 radial_segments = 12
 rings = 6
 
-[sub_resource type="Animation" id="Animation_1tvkk"]
-resource_name = "And"
-tracks/0/type = "value"
-tracks/0/imported = false
-tracks/0/enabled = true
-tracks/0/path = NodePath("../../../Pivot/Camera3D/Label:scale")
-tracks/0/interp = 1
-tracks/0/loop_wrap = true
-tracks/0/keys = {
-"times": PackedFloat32Array(0, 0.2857),
-"transitions": PackedFloat32Array(-2, -0.5),
-"update": 0,
-"values": [Vector2(1, 1), Vector2(1.475, 1.475)]
-}
-tracks/1/type = "value"
-tracks/1/imported = false
-tracks/1/enabled = true
-tracks/1/path = NodePath("../../../Pivot/Camera3D/Label:modulate")
-tracks/1/interp = 1
-tracks/1/loop_wrap = true
-tracks/1/keys = {
-"times": PackedFloat32Array(0, 0.2857),
-"transitions": PackedFloat32Array(1, 1),
-"update": 0,
-"values": [Color(1, 1, 1, 1), Color(1, 1, 1, 0)]
-}
-tracks/2/type = "value"
-tracks/2/imported = false
-tracks/2/enabled = true
-tracks/2/path = NodePath("../../../Pivot/Camera3D/Label:text")
-tracks/2/interp = 1
-tracks/2/loop_wrap = true
-tracks/2/keys = {
-"times": PackedFloat32Array(0),
-"transitions": PackedFloat32Array(1),
-"update": 1,
-"values": ["And"]
-}
-
-[sub_resource type="Animation" id="Animation_7nkht"]
-length = 0.001
-tracks/0/type = "value"
-tracks/0/imported = false
-tracks/0/enabled = true
-tracks/0/path = NodePath("../../../Pivot/Camera3D/Label:scale")
-tracks/0/interp = 1
-tracks/0/loop_wrap = true
-tracks/0/keys = {
-"times": PackedFloat32Array(0),
-"transitions": PackedFloat32Array(1),
-"update": 0,
-"values": [Vector2(1.475, 1.475)]
-}
-tracks/1/type = "value"
-tracks/1/imported = false
-tracks/1/enabled = true
-tracks/1/path = NodePath("../../../Pivot/Camera3D/Label:modulate")
-tracks/1/interp = 1
-tracks/1/loop_wrap = true
-tracks/1/keys = {
-"times": PackedFloat32Array(0),
-"transitions": PackedFloat32Array(1),
-"update": 0,
-"values": [Color(1, 1, 1, 0)]
-}
-
-[sub_resource type="Animation" id="Animation_2adc6"]
-resource_name = "Tink"
-tracks/0/type = "value"
-tracks/0/imported = false
-tracks/0/enabled = true
-tracks/0/path = NodePath("../../../Pivot/Camera3D/Label:scale")
-tracks/0/interp = 1
-tracks/0/loop_wrap = true
-tracks/0/keys = {
-"times": PackedFloat32Array(0, 0.2857),
-"transitions": PackedFloat32Array(-2, -0.5),
-"update": 0,
-"values": [Vector2(1, 1), Vector2(1.475, 1.475)]
-}
-tracks/1/type = "value"
-tracks/1/imported = false
-tracks/1/enabled = true
-tracks/1/path = NodePath("../../../Pivot/Camera3D/Label:modulate")
-tracks/1/interp = 1
-tracks/1/loop_wrap = true
-tracks/1/keys = {
-"times": PackedFloat32Array(0, 0.2857),
-"transitions": PackedFloat32Array(1, 1),
-"update": 0,
-"values": [Color(1, 1, 1, 1), Color(1, 1, 1, 0)]
-}
-tracks/2/type = "value"
-tracks/2/imported = false
-tracks/2/enabled = true
-tracks/2/path = NodePath("../../../Pivot/Camera3D/Label:text")
-tracks/2/interp = 1
-tracks/2/loop_wrap = true
-tracks/2/keys = {
-"times": PackedFloat32Array(0),
-"transitions": PackedFloat32Array(1),
-"update": 1,
-"values": ["Tink"]
-}
-
-[sub_resource type="Animation" id="Animation_w5ffe"]
-resource_name = "Tonk"
-length = 0.2857
-tracks/0/type = "value"
-tracks/0/imported = false
-tracks/0/enabled = true
-tracks/0/path = NodePath("../../../Pivot/Camera3D/Label:scale")
-tracks/0/interp = 1
-tracks/0/loop_wrap = true
-tracks/0/keys = {
-"times": PackedFloat32Array(0, 0.2857),
-"transitions": PackedFloat32Array(-2, -0.5),
-"update": 0,
-"values": [Vector2(1, 1), Vector2(1.475, 1.475)]
-}
-tracks/1/type = "value"
-tracks/1/imported = false
-tracks/1/enabled = true
-tracks/1/path = NodePath("../../../Pivot/Camera3D/Label:modulate")
-tracks/1/interp = 1
-tracks/1/loop_wrap = true
-tracks/1/keys = {
-"times": PackedFloat32Array(0, 0.2857),
-"transitions": PackedFloat32Array(1, 1),
-"update": 0,
-"values": [Color(1, 1, 1, 1), Color(1, 1, 1, 0)]
-}
-tracks/2/type = "value"
-tracks/2/imported = false
-tracks/2/enabled = true
-tracks/2/path = NodePath("../../../Pivot/Camera3D/Label:text")
-tracks/2/interp = 1
-tracks/2/loop_wrap = true
-tracks/2/keys = {
-"times": PackedFloat32Array(0),
-"transitions": PackedFloat32Array(1),
-"update": 1,
-"values": ["Tonk"]
-}
-
-[sub_resource type="AnimationLibrary" id="AnimationLibrary_4q1lp"]
-_data = {
-"And": SubResource("Animation_1tvkk"),
-"RESET": SubResource("Animation_7nkht"),
-"Tink": SubResource("Animation_2adc6"),
-"Tonk": SubResource("Animation_w5ffe")
-}
-
 [sub_resource type="AudioStreamGenerator" id="AudioStreamGenerator_wc1ud"]
 
 [node name="VRTest" type="Node3D"]
@@ -491,11 +368,11 @@ size = Vector3(8, 5, 8)
 material = SubResource("StandardMaterial3D_icp8i")
 
 [node name="Camera3D" type="Camera3D" parent="."]
-transform = Transform3D(-4.37114e-08, 0, 1, 0, 1, 0, -1, 0, -4.37114e-08, 4.72221, 0, 0.320421)
+transform = Transform3D(-4.37114e-08, 0, 1, 0, 1, 0, -1, 0, -4.37114e-08, 4.722, 0, 0)
 current = true
 
 [node name="Path3D" type="Path3D" parent="."]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.018, -0.10369, -1.00611)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -0.104, 0)
 curve = SubResource("Curve3D_5gr0s")
 script = SubResource("GDScript_y1hhq")
 
@@ -532,11 +409,6 @@ lifetime = 0.08
 trail_enabled = true
 process_material = SubResource("ParticleProcessMaterial_gru4d")
 draw_pass_1 = SubResource("SphereMesh_fqid0")
-
-[node name="AnimationPlayer" type="AnimationPlayer" parent="Path3D/PathFollow3D/CharacterBody3D"]
-libraries = {
-"": SubResource("AnimationLibrary_4q1lp")
-}
 
 [node name="AudioStreamPlayer" type="AudioStreamPlayer" parent="."]
 stream = SubResource("AudioStreamGenerator_wc1ud")

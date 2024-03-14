@@ -20,6 +20,7 @@ GlobalValues="*res://Scripts/GlobalValues.gd"
 
 [display]
 
+window/stretch/mode="canvas_items"
 window/vsync/vsync_mode=0
 
 [editor_plugins]

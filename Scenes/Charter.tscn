@@ -742,99 +742,110 @@ anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
 
-[node name="SubViewportContainer" type="SubViewportContainer" parent="."]
-layout_mode = 0
-offset_right = 800.0
-offset_bottom = 450.0
+[node name="Camera2D" type="Camera2D" parent="."]
 
-[node name="SubViewport" type="SubViewport" parent="SubViewportContainer"]
+[node name="SubViewportContainer" type="SubViewportContainer" parent="Camera2D"]
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_left = -1133.0
+offset_top = -639.0
+offset_right = 787.0
+offset_bottom = 441.0
+grow_horizontal = 2
+grow_vertical = 2
+stretch = true
+
+[node name="SubViewport" type="SubViewport" parent="Camera2D/SubViewportContainer"]
 handle_input_locally = false
 msaa_3d = 3
-size = Vector2i(800, 450)
+size = Vector2i(1920, 1080)
+size_2d_override = Vector2i(120, 120)
+size_2d_override_stretch = true
 render_target_update_mode = 4
 
-[node name="Node3D" type="Node3D" parent="SubViewportContainer/SubViewport"]
+[node name="Node3D" type="Node3D" parent="Camera2D/SubViewportContainer/SubViewport"]
 script = ExtResource("1_di6nh")
 
-[node name="Whistle" type="AudioStreamPlayer" parent="SubViewportContainer/SubViewport/Node3D"]
+[node name="Whistle" type="AudioStreamPlayer" parent="Camera2D/SubViewportContainer/SubViewport/Node3D"]
 stream = ExtResource("2_to4g3")
 
-[node name="Tink" type="AudioStreamPlayer" parent="SubViewportContainer/SubViewport/Node3D"]
+[node name="Tink" type="AudioStreamPlayer" parent="Camera2D/SubViewportContainer/SubViewport/Node3D"]
 stream = ExtResource("3_ni6po")
 
-[node name="Tonk" type="AudioStreamPlayer" parent="SubViewportContainer/SubViewport/Node3D"]
+[node name="Tonk" type="AudioStreamPlayer" parent="Camera2D/SubViewportContainer/SubViewport/Node3D"]
 stream = ExtResource("4_5q0io")
 
-[node name="WorldEnvironment" type="WorldEnvironment" parent="SubViewportContainer/SubViewport/Node3D"]
+[node name="WorldEnvironment" type="WorldEnvironment" parent="Camera2D/SubViewportContainer/SubViewport/Node3D"]
 environment = SubResource("Environment_613w8")
 
-[node name="DirectionalLight3D" type="DirectionalLight3D" parent="SubViewportContainer/SubViewport/Node3D"]
+[node name="DirectionalLight3D" type="DirectionalLight3D" parent="Camera2D/SubViewportContainer/SubViewport/Node3D"]
 transform = Transform3D(-0.866023, -0.433016, 0.250001, 0, 0.499998, 0.866027, -0.500003, 0.749999, -0.43301, 0, 0, 0)
 shadow_enabled = true
 
-[node name="Path3D" type="Path3D" parent="SubViewportContainer/SubViewport/Node3D"]
+[node name="Path3D" type="Path3D" parent="Camera2D/SubViewportContainer/SubViewport/Node3D"]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.018, 1.45, 0)
 curve = SubResource("Curve3D_2py8k")
 script = SubResource("GDScript_e35jl")
 
-[node name="PathFollow3D" type="PathFollow3D" parent="SubViewportContainer/SubViewport/Node3D/Path3D"]
+[node name="PathFollow3D" type="PathFollow3D" parent="Camera2D/SubViewportContainer/SubViewport/Node3D/Path3D"]
 transform = Transform3D(1, 0, 0, 0, 0.999959, 0, 0, 0, 0.999959, 8.02994e-06, 0.158272, 4.39587)
 progress = 0.624569
 rotation_mode = 0
 loop = false
 tilt_enabled = false
 
-[node name="CharacterBody3D" type="CharacterBody3D" parent="SubViewportContainer/SubViewport/Node3D/Path3D/PathFollow3D"]
+[node name="CharacterBody3D" type="CharacterBody3D" parent="Camera2D/SubViewportContainer/SubViewport/Node3D/Path3D/PathFollow3D"]
 script = SubResource("GDScript_q3xrv")
 normalSpeed = SubResource("Curve_dqx15")
 
-[node name="CollisionShape3D" type="CollisionShape3D" parent="SubViewportContainer/SubViewport/Node3D/Path3D/PathFollow3D/CharacterBody3D"]
+[node name="CollisionShape3D" type="CollisionShape3D" parent="Camera2D/SubViewportContainer/SubViewport/Node3D/Path3D/PathFollow3D/CharacterBody3D"]
 transform = Transform3D(0.2, 0, 0, 0, 0.2, 0, 0, 0, 0.2, 0, 0, 0)
 shape = SubResource("SphereShape3D_dlq2d")
 
-[node name="CSGSphere3D" type="CSGSphere3D" parent="SubViewportContainer/SubViewport/Node3D/Path3D/PathFollow3D/CharacterBody3D"]
+[node name="CSGSphere3D" type="CSGSphere3D" parent="Camera2D/SubViewportContainer/SubViewport/Node3D/Path3D/PathFollow3D/CharacterBody3D"]
 transform = Transform3D(0.2, 0, 0, 0, 0.2, 0, 0, 0, 0.2, 0, 0, 0)
 material = SubResource("StandardMaterial3D_r0lnq")
 
-[node name="HitPlayer" type="AudioStreamPlayer" parent="SubViewportContainer/SubViewport/Node3D/Path3D/PathFollow3D/CharacterBody3D"]
+[node name="HitPlayer" type="AudioStreamPlayer" parent="Camera2D/SubViewportContainer/SubViewport/Node3D/Path3D/PathFollow3D/CharacterBody3D"]
 stream = ExtResource("5_y3uv1")
 
-[node name="HitTable" type="AudioStreamPlayer" parent="SubViewportContainer/SubViewport/Node3D/Path3D/PathFollow3D/CharacterBody3D"]
+[node name="HitTable" type="AudioStreamPlayer" parent="Camera2D/SubViewportContainer/SubViewport/Node3D/Path3D/PathFollow3D/CharacterBody3D"]
 stream = ExtResource("6_3pd4q")
 
-[node name="HitOpp" type="AudioStreamPlayer" parent="SubViewportContainer/SubViewport/Node3D/Path3D/PathFollow3D/CharacterBody3D"]
+[node name="HitOpp" type="AudioStreamPlayer" parent="Camera2D/SubViewportContainer/SubViewport/Node3D/Path3D/PathFollow3D/CharacterBody3D"]
 stream = ExtResource("7_6cnml")
 
-[node name="GPUParticles3D" type="GPUParticles3D" parent="SubViewportContainer/SubViewport/Node3D/Path3D/PathFollow3D/CharacterBody3D"]
+[node name="GPUParticles3D" type="GPUParticles3D" parent="Camera2D/SubViewportContainer/SubViewport/Node3D/Path3D/PathFollow3D/CharacterBody3D"]
 amount = 3
 lifetime = 0.08
 trail_enabled = true
 process_material = SubResource("ParticleProcessMaterial_juf2n")
 draw_pass_1 = SubResource("SphereMesh_nt8l3")
 
-[node name="AnimationPlayer" type="AnimationPlayer" parent="SubViewportContainer/SubViewport/Node3D/Path3D/PathFollow3D/CharacterBody3D"]
+[node name="AnimationPlayer" type="AnimationPlayer" parent="Camera2D/SubViewportContainer/SubViewport/Node3D/Path3D/PathFollow3D/CharacterBody3D"]
 libraries = {
 "": SubResource("AnimationLibrary_4q1lp")
 }
 
-[node name="Rhyhtm" type="Node3D" parent="SubViewportContainer/SubViewport/Node3D"]
+[node name="Rhyhtm" type="Node3D" parent="Camera2D/SubViewportContainer/SubViewport/Node3D"]
 
-[node name="Level" type="MeshInstance3D" parent="SubViewportContainer/SubViewport/Node3D/Rhyhtm"]
+[node name="Level" type="MeshInstance3D" parent="Camera2D/SubViewportContainer/SubViewport/Node3D/Rhyhtm"]
 transform = Transform3D(1, 0, 0, 0, 0, -1, 0, 1, 0, 0, -0.156497, 0)
 mesh = SubResource("ArrayMesh_ffagt")
 skeleton = NodePath("")
 
-[node name="Level_001" type="MeshInstance3D" parent="SubViewportContainer/SubViewport/Node3D/Rhyhtm"]
+[node name="Level_001" type="MeshInstance3D" parent="Camera2D/SubViewportContainer/SubViewport/Node3D/Rhyhtm"]
 transform = Transform3D(5, 0, 0, 0, -2.18557e-07, -5, 0, 5, -2.18557e-07, 0, 9.3, 269.459)
 mesh = SubResource("ArrayMesh_6u008")
 skeleton = NodePath("")
 
-[node name="Platform" type="MeshInstance3D" parent="SubViewportContainer/SubViewport/Node3D/Rhyhtm"]
+[node name="Platform" type="MeshInstance3D" parent="Camera2D/SubViewportContainer/SubViewport/Node3D/Rhyhtm"]
 transform = Transform3D(1, 0, 0, 0, 0, -1, 0, 1, 0, 0, 0, 0)
 mesh = SubResource("ArrayMesh_75btd")
 skeleton = NodePath("")
 
-[node name="AudioStreamPlayer" type="AudioStreamPlayer" parent="SubViewportContainer/SubViewport/Node3D"]
+[node name="AudioStreamPlayer" type="AudioStreamPlayer" parent="Camera2D/SubViewportContainer/SubViewport/Node3D"]
 stream = ExtResource("10_fgkup")
 volume_db = -5.0
 autoplay = true
@@ -842,17 +853,17 @@ script = ExtResource("11_l2sok")
 bpm = 155
 msOffset = 30
 
-[node name="Pivot" type="Node3D" parent="SubViewportContainer/SubViewport/Node3D"]
+[node name="Pivot" type="Node3D" parent="Camera2D/SubViewportContainer/SubViewport/Node3D"]
 transform = Transform3D(-0.939693, 0.0208798, 0.341382, 0, 0.998135, -0.0610485, -0.34202, -0.0573669, -0.937939, 0, 0, 0)
 script = SubResource("GDScript_y1dis")
 
-[node name="Camera3D" type="Camera3D" parent="SubViewportContainer/SubViewport/Node3D/Pivot"]
+[node name="Camera3D" type="Camera3D" parent="Camera2D/SubViewportContainer/SubViewport/Node3D/Pivot"]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 2.68, 6.44)
 current = true
 size = 6.2
 far = 200.0
 
-[node name="Label" type="Label" parent="SubViewportContainer/SubViewport/Node3D/Pivot/Camera3D"]
+[node name="Label" type="Label" parent="Camera2D/SubViewportContainer/SubViewport/Node3D/Pivot/Camera3D"]
 modulate = Color(1, 1, 1, 0)
 anchors_preset = 8
 anchor_left = 0.5
@@ -873,26 +884,26 @@ horizontal_alignment = 1
 vertical_alignment = 1
 metadata/_edit_use_anchors_ = true
 
-[node name="Paddler" parent="SubViewportContainer/SubViewport/Node3D" instance=ExtResource("12_5wl6y")]
+[node name="Paddler" parent="Camera2D/SubViewportContainer/SubViewport/Node3D" instance=ExtResource("12_5wl6y")]
 transform = Transform3D(-0.4, 0, -3.49691e-08, 0, 0.4, 0, 3.49691e-08, 0, -0.4, 0, -0.174, 5.401)
 swingInt = 4
 
-[node name="Player" parent="SubViewportContainer/SubViewport/Node3D" instance=ExtResource("12_5wl6y")]
+[node name="Player" parent="Camera2D/SubViewportContainer/SubViewport/Node3D" instance=ExtResource("12_5wl6y")]
 transform = Transform3D(0.4, 0, 0, 0, 0.4, 0, 0, 0, 0.4, 0, -0.173997, -5.40134)
 offset = 2
 swingInt = 4
 
-[node name="VoxelGI" type="VoxelGI" parent="SubViewportContainer/SubViewport/Node3D"]
+[node name="VoxelGI" type="VoxelGI" parent="Camera2D/SubViewportContainer/SubViewport/Node3D"]
 visible = false
 data = ExtResource("13_u1hjc")
 
-[connection signal="ballHeight" from="SubViewportContainer/SubViewport/Node3D" to="SubViewportContainer/SubViewport/Node3D/Path3D/PathFollow3D/CharacterBody3D" method="_on_node_3d_ball_height"]
-[connection signal="readyOpp" from="SubViewportContainer/SubViewport/Node3D/Path3D/PathFollow3D/CharacterBody3D" to="SubViewportContainer/SubViewport/Node3D/Paddler" method="_on_character_body_3d_ready_opp"]
-[connection signal="readyPlay" from="SubViewportContainer/SubViewport/Node3D/Path3D/PathFollow3D/CharacterBody3D" to="SubViewportContainer/SubViewport/Node3D/Player" method="_on_character_body_3d_ready_play"]
-[connection signal="serveDone" from="SubViewportContainer/SubViewport/Node3D/Path3D/PathFollow3D/CharacterBody3D" to="SubViewportContainer/SubViewport/Node3D" method="_on_character_body_3d_serve_done"]
-[connection signal="swingOpp" from="SubViewportContainer/SubViewport/Node3D/Path3D/PathFollow3D/CharacterBody3D" to="SubViewportContainer/SubViewport/Node3D/Paddler" method="_on_character_body_3d_swing_opp"]
-[connection signal="swingPlay" from="SubViewportContainer/SubViewport/Node3D/Path3D/PathFollow3D/CharacterBody3D" to="SubViewportContainer/SubViewport/Node3D/Player" method="_on_character_body_3d_swing_play"]
-[connection signal="beat" from="SubViewportContainer/SubViewport/Node3D/AudioStreamPlayer" to="SubViewportContainer/SubViewport/Node3D" method="_on_audio_stream_player_beat"]
-[connection signal="beat" from="SubViewportContainer/SubViewport/Node3D/AudioStreamPlayer" to="SubViewportContainer/SubViewport/Node3D/Path3D/PathFollow3D/CharacterBody3D" method="_on_audio_stream_player_beat"]
-[connection signal="beat" from="SubViewportContainer/SubViewport/Node3D/AudioStreamPlayer" to="SubViewportContainer/SubViewport/Node3D/Paddler" method="_on_audio_stream_player_beat"]
-[connection signal="beat" from="SubViewportContainer/SubViewport/Node3D/AudioStreamPlayer" to="SubViewportContainer/SubViewport/Node3D/Player" method="_on_audio_stream_player_beat"]
+[connection signal="ballHeight" from="Camera2D/SubViewportContainer/SubViewport/Node3D" to="Camera2D/SubViewportContainer/SubViewport/Node3D/Path3D/PathFollow3D/CharacterBody3D" method="_on_node_3d_ball_height"]
+[connection signal="readyOpp" from="Camera2D/SubViewportContainer/SubViewport/Node3D/Path3D/PathFollow3D/CharacterBody3D" to="Camera2D/SubViewportContainer/SubViewport/Node3D/Paddler" method="_on_character_body_3d_ready_opp"]
+[connection signal="readyPlay" from="Camera2D/SubViewportContainer/SubViewport/Node3D/Path3D/PathFollow3D/CharacterBody3D" to="Camera2D/SubViewportContainer/SubViewport/Node3D/Player" method="_on_character_body_3d_ready_play"]
+[connection signal="serveDone" from="Camera2D/SubViewportContainer/SubViewport/Node3D/Path3D/PathFollow3D/CharacterBody3D" to="Camera2D/SubViewportContainer/SubViewport/Node3D" method="_on_character_body_3d_serve_done"]
+[connection signal="swingOpp" from="Camera2D/SubViewportContainer/SubViewport/Node3D/Path3D/PathFollow3D/CharacterBody3D" to="Camera2D/SubViewportContainer/SubViewport/Node3D/Paddler" method="_on_character_body_3d_swing_opp"]
+[connection signal="swingPlay" from="Camera2D/SubViewportContainer/SubViewport/Node3D/Path3D/PathFollow3D/CharacterBody3D" to="Camera2D/SubViewportContainer/SubViewport/Node3D/Player" method="_on_character_body_3d_swing_play"]
+[connection signal="beat" from="Camera2D/SubViewportContainer/SubViewport/Node3D/AudioStreamPlayer" to="Camera2D/SubViewportContainer/SubViewport/Node3D" method="_on_audio_stream_player_beat"]
+[connection signal="beat" from="Camera2D/SubViewportContainer/SubViewport/Node3D/AudioStreamPlayer" to="Camera2D/SubViewportContainer/SubViewport/Node3D/Path3D/PathFollow3D/CharacterBody3D" method="_on_audio_stream_player_beat"]
+[connection signal="beat" from="Camera2D/SubViewportContainer/SubViewport/Node3D/AudioStreamPlayer" to="Camera2D/SubViewportContainer/SubViewport/Node3D/Paddler" method="_on_audio_stream_player_beat"]
+[connection signal="beat" from="Camera2D/SubViewportContainer/SubViewport/Node3D/AudioStreamPlayer" to="Camera2D/SubViewportContainer/SubViewport/Node3D/Player" method="_on_audio_stream_player_beat"]

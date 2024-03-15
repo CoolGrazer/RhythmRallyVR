@@ -1,4 +1,4 @@
-[gd_scene load_steps=51 format=3 uid="uid://cowf7p1wtlhej"]
+[gd_scene load_steps=54 format=3 uid="uid://cowf7p1wtlhej"]
 
 [ext_resource type="Script" path="res://Scripts/GlobalScene.gd" id="1_di6nh"]
 [ext_resource type="AudioStream" uid="uid://3xq43ocl3wh0" path="res://SFX/whistle.ogg" id="2_to4g3"]
@@ -734,6 +734,19 @@ func _goTowards(rot,length):
 	tar = rot
 "
 
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_33evk"]
+bg_color = Color(0.129412, 0.129412, 0.129412, 1)
+corner_radius_top_left = 20
+corner_radius_top_right = 20
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_71n7l"]
+bg_color = Color(0.129412, 0.129412, 0.129412, 1)
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_tfigo"]
+bg_color = Color(0.129412, 0.129412, 0.129412, 1)
+corner_radius_bottom_right = 20
+corner_radius_bottom_left = 20
+
 [node name="Charter" type="Control"]
 layout_mode = 3
 anchors_preset = 15
@@ -909,15 +922,120 @@ visible = false
 data = ExtResource("13_u1hjc")
 
 [node name="VBoxContainer" type="VBoxContainer" parent="Camera2D"]
-offset_left = 399.0
+offset_left = -576.0
 offset_top = 36.0
-offset_right = 576.0
+offset_right = -399.0
 offset_bottom = 324.0
 theme_override_constants/separation = 0
 
-[node name="Panel5" type="Panel" parent="Camera2D/VBoxContainer"]
+[node name="Label1" type="Panel" parent="Camera2D/VBoxContainer"]
 custom_minimum_size = Vector2(0, 41)
 layout_mode = 2
+theme_override_styles/panel = SubResource("StyleBoxFlat_33evk")
+
+[node name="Label" type="Label" parent="Camera2D/VBoxContainer/Label1"]
+layout_mode = 0
+offset_right = 1292.0
+offset_bottom = 299.0
+scale = Vector2(0.137, 0.137)
+theme_override_font_sizes/font_size = 128
+text = "Layer 1"
+horizontal_alignment = 2
+vertical_alignment = 1
+
+[node name="Label2" type="Panel" parent="Camera2D/VBoxContainer"]
+custom_minimum_size = Vector2(0, 41)
+layout_mode = 2
+theme_override_styles/panel = SubResource("StyleBoxFlat_71n7l")
+
+[node name="Label" type="Label" parent="Camera2D/VBoxContainer/Label2"]
+layout_mode = 0
+offset_right = 1292.0
+offset_bottom = 299.0
+scale = Vector2(0.137, 0.137)
+theme_override_font_sizes/font_size = 128
+text = "Layer 2"
+horizontal_alignment = 2
+vertical_alignment = 1
+
+[node name="Label3" type="Panel" parent="Camera2D/VBoxContainer"]
+custom_minimum_size = Vector2(0, 41)
+layout_mode = 2
+theme_override_styles/panel = SubResource("StyleBoxFlat_71n7l")
+
+[node name="Label" type="Label" parent="Camera2D/VBoxContainer/Label3"]
+layout_mode = 0
+offset_right = 1292.0
+offset_bottom = 299.0
+scale = Vector2(0.137, 0.137)
+theme_override_font_sizes/font_size = 128
+text = "Label 3"
+horizontal_alignment = 2
+vertical_alignment = 1
+
+[node name="Label4" type="Panel" parent="Camera2D/VBoxContainer"]
+custom_minimum_size = Vector2(0, 41)
+layout_mode = 2
+theme_override_styles/panel = SubResource("StyleBoxFlat_71n7l")
+
+[node name="Label" type="Label" parent="Camera2D/VBoxContainer/Label4"]
+layout_mode = 0
+offset_right = 1292.0
+offset_bottom = 299.0
+scale = Vector2(0.137, 0.137)
+theme_override_font_sizes/font_size = 128
+text = "Label 4"
+horizontal_alignment = 2
+vertical_alignment = 1
+
+[node name="Label5" type="Panel" parent="Camera2D/VBoxContainer"]
+custom_minimum_size = Vector2(0, 41)
+layout_mode = 2
+theme_override_styles/panel = SubResource("StyleBoxFlat_71n7l")
+
+[node name="Label" type="Label" parent="Camera2D/VBoxContainer/Label5"]
+layout_mode = 0
+offset_right = 1292.0
+offset_bottom = 299.0
+scale = Vector2(0.137, 0.137)
+theme_override_font_sizes/font_size = 128
+text = "Label 5"
+horizontal_alignment = 2
+vertical_alignment = 1
+
+[node name="Label6" type="Panel" parent="Camera2D/VBoxContainer"]
+custom_minimum_size = Vector2(0, 41)
+layout_mode = 2
+theme_override_styles/panel = SubResource("StyleBoxFlat_71n7l")
+
+[node name="Label" type="Label" parent="Camera2D/VBoxContainer/Label6"]
+layout_mode = 0
+offset_right = 1292.0
+offset_bottom = 299.0
+scale = Vector2(0.137, 0.137)
+theme_override_font_sizes/font_size = 128
+text = "Label 6"
+horizontal_alignment = 2
+vertical_alignment = 1
+
+[node name="Label7" type="Panel" parent="Camera2D/VBoxContainer"]
+custom_minimum_size = Vector2(0, 41)
+layout_mode = 2
+theme_override_styles/panel = SubResource("StyleBoxFlat_tfigo")
+
+[node name="Label" type="Label" parent="Camera2D/VBoxContainer/Label7"]
+layout_mode = 0
+offset_right = 1292.0
+offset_bottom = 299.0
+scale = Vector2(0.137, 0.137)
+theme_override_font_sizes/font_size = 128
+text = "Label 7"
+horizontal_alignment = 2
+vertical_alignment = 1
+
+[node name="Tick" type="HBoxContainer" parent="Camera2D"]
+offset_right = 40.0
+offset_bottom = 40.0
 
 [connection signal="ballHeight" from="Camera2D/SubViewportContainer/SubViewport/Node3D" to="Camera2D/SubViewportContainer/SubViewport/Node3D/Path3D/PathFollow3D/CharacterBody3D" method="_on_node_3d_ball_height"]
 [connection signal="readyOpp" from="Camera2D/SubViewportContainer/SubViewport/Node3D/Path3D/PathFollow3D/CharacterBody3D" to="Camera2D/SubViewportContainer/SubViewport/Node3D/Paddler" method="_on_character_body_3d_ready_opp"]

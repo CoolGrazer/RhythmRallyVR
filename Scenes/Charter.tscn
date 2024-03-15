@@ -744,14 +744,22 @@ grow_vertical = 2
 
 [node name="Camera2D" type="Camera2D" parent="."]
 
+[node name="BGColor" type="Panel" parent="Camera2D"]
+offset_left = -3569.0
+offset_top = -2992.0
+offset_right = 3609.0
+offset_bottom = 3032.0
+
 [node name="SubViewportContainer" type="SubViewportContainer" parent="Camera2D"]
-anchors_preset = 15
-anchor_right = 1.0
-anchor_bottom = 1.0
-offset_left = -1133.0
-offset_top = -639.0
-offset_right = 787.0
-offset_bottom = 441.0
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -576.0
+offset_top = -324.0
+offset_right = 64.0
+offset_bottom = 36.0
 grow_horizontal = 2
 grow_vertical = 2
 stretch = true
@@ -759,8 +767,11 @@ stretch = true
 [node name="SubViewport" type="SubViewport" parent="Camera2D/SubViewportContainer"]
 handle_input_locally = false
 msaa_3d = 3
-size = Vector2i(1920, 1080)
-size_2d_override = Vector2i(120, 120)
+screen_space_aa = 1
+use_taa = true
+use_debanding = true
+size = Vector2i(640, 360)
+size_2d_override = Vector2i(640, 360)
 size_2d_override_stretch = true
 render_target_update_mode = 4
 
@@ -896,6 +907,17 @@ swingInt = 4
 [node name="VoxelGI" type="VoxelGI" parent="Camera2D/SubViewportContainer/SubViewport/Node3D"]
 visible = false
 data = ExtResource("13_u1hjc")
+
+[node name="VBoxContainer" type="VBoxContainer" parent="Camera2D"]
+offset_left = 399.0
+offset_top = 36.0
+offset_right = 576.0
+offset_bottom = 324.0
+theme_override_constants/separation = 0
+
+[node name="Panel5" type="Panel" parent="Camera2D/VBoxContainer"]
+custom_minimum_size = Vector2(0, 41)
+layout_mode = 2
 
 [connection signal="ballHeight" from="Camera2D/SubViewportContainer/SubViewport/Node3D" to="Camera2D/SubViewportContainer/SubViewport/Node3D/Path3D/PathFollow3D/CharacterBody3D" method="_on_node_3d_ball_height"]
 [connection signal="readyOpp" from="Camera2D/SubViewportContainer/SubViewport/Node3D/Path3D/PathFollow3D/CharacterBody3D" to="Camera2D/SubViewportContainer/SubViewport/Node3D/Paddler" method="_on_character_body_3d_ready_opp"]

@@ -19,17 +19,18 @@ var ogMouse : Vector2 = Vector2.ZERO
 
 func _ready():
 	button.size.x = deafaultLength * 50
-	label.size.x = button.size.x
+	selected = true
+	
 
 func _physics_process(delta):
 	beat = global_position / 50
 	
 	
-	
+	label.custom_minimum_size.x = button.size.x - 10
 	
 	if selected == true:
 		offset.x = snapped(get_global_mouse_position().x - ogMouse.x,50/2)
-		offset.y = snapped(get_global_mouse_position().y,40)
+		offset.y = snapped(get_global_mouse_position().y - ogMouse.y,40)
 		
 		global_position = ogPosition + offset
 		
@@ -45,7 +46,7 @@ func _physics_process(delta):
 		selected = false
 		Input.set_default_cursor_shape(Input.CURSOR_ARROW)
 	
-	label.size.x = button.size.x * 7.29927
+	
 
 
 		

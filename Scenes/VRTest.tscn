@@ -1,16 +1,13 @@
-[gd_scene load_steps=21 format=3 uid="uid://doe717g6mogwx"]
+[gd_scene load_steps=12 format=3 uid="uid://doe717g6mogwx"]
 
-[ext_resource type="Texture2D" uid="uid://crs31io0rygdf" path="res://Models/body.png" id="1_wesn2"]
-[ext_resource type="AudioStream" uid="uid://c31qbh30m035e" path="res://SFX/hit3.ogg" id="2_epyun"]
-[ext_resource type="AudioStream" uid="uid://do3j8arnhthoa" path="res://SFX/hit2.ogg" id="3_5tm41"]
-[ext_resource type="AudioStream" uid="uid://bc2048varugj4" path="res://SFX/hit1.ogg" id="4_idc4k"]
+[ext_resource type="Script" path="res://Scripts/Hands.gd" id="2_s6g60"]
 [ext_resource type="Script" path="res://Scripts/Conductor.gd" id="5_cgs5d"]
 
 [sub_resource type="GDScript" id="GDScript_3yyvi"]
 script/source = "extends Node3D
 
 var xr_interface: XRInterface
-
+signal ballHeight(height)
 func _ready():
 	xr_interface = XRServer.find_interface(\"OpenXR\")
 	if xr_interface and xr_interface.is_initialized():
@@ -25,334 +22,61 @@ func _ready():
 		print(\"OpenXR not initialized, please check if your headset is connected\")
 
 
-func _physics_process(delta):
-	
-	pass
-
-
-func _on_audio_stream_player_beat(position):
-	if position == 4:
-		$Path3D/PathFollow3D/CharacterBody3D.startServing = true
 "
+
+[sub_resource type="ProceduralSkyMaterial" id="ProceduralSkyMaterial_r0eqs"]
+
+[sub_resource type="Sky" id="Sky_h5lfm"]
+sky_material = SubResource("ProceduralSkyMaterial_r0eqs")
 
 [sub_resource type="Environment" id="Environment_niket"]
 background_mode = 2
+sky = SubResource("Sky_h5lfm")
 tonemap_mode = 2
-ssao_enabled = true
-
-[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_c1fgh"]
-albedo_texture = ExtResource("1_wesn2")
 
 [sub_resource type="StandardMaterial3D" id="StandardMaterial3D_icp8i"]
 metallic_specular = 0.0
 roughness = 0.1
 
-[sub_resource type="Curve3D" id="Curve3D_5gr0s"]
-bake_interval = 0.02
-_data = {
-"points": PackedVector3Array(0, -3.60209, 0.493225, 5.56633e-05, 1.0091, -3.5284, 0, 0, 5, -6.6407e-05, -0.00215993, 0.122108, 5.56633e-05, 2.03342, -2.10995, 0, 0.105, -0.6, 5.56633e-05, 2.30121, 2.13744, 0, 0, 0, 0, 0, -5),
-"tilts": PackedFloat32Array(0, 0, 0)
-}
-point_count = 3
+[sub_resource type="AudioStreamGenerator" id="AudioStreamGenerator_wc1ud"]
 
-[sub_resource type="GDScript" id="GDScript_y1hhq"]
-resource_name = "BallHeight"
-script/source = "extends Path3D
+[sub_resource type="BoxShape3D" id="BoxShape3D_xlaeq"]
+size = Vector3(0.2, 0.2, 0.2)
 
-var heights = [\"regular\",\"slow\",\"fast\",\"superfast\",\"fast\",\"serve\"]
-
-var height : int = 3
-
-
-var data = []
-
-func _ready():
-	pass
-
-func _physics_process(delta):
-	loadCurve(height)
-	
-
-
-func loadCurve(height):
-	
-	if height == 4:
-		data = [Vector3(0.000056, -0.572414, 4.74451), Vector3(0.000056, 0.076902, 4.17151), Vector3(0, 1.75121, -0.120804), Vector3(0, 4.60177, 0.276292)]
-		if curve.point_count == 3:
-			curve.remove_point(2)
-		curve.set_point_position(0,data[0])
-		curve.set_point_position(1,data[1])
-		curve.set_point_out(0,data[2])
-		curve.set_point_in(1,data[3])
-		return
-		
-	if curve.point_count == 2:
-		curve.add_point(Vector3(0,0,-5))
-		
-	
-	if height == 0:
-		data = [Vector3(0.000056, 1.39608, -2.43352), Vector3(0.000056, 0.987539, -2.65724), Vector3(0.000056, 0.729281, 0.620979), Vector3(0.000056, 0.570497, 1.02623)]
-	elif height == 1:
-		data = [Vector3(0, 4.32, -2.823), Vector3(0.000056, 2.52296, -1.7667), Vector3(0, 0, 0), Vector3(0.000056, 2.85315, 1.39473)]
-	elif height == 2:
-		data = [Vector3(0, 0.825, -2.823), Vector3(0.000056, 0.739877, -1.84035), Vector3(0.000056, 0.729281, 0.620979), Vector3(0, 0.448, 0.906)]
-	elif height == 3:
-		data = [Vector3(0.000056, 1.0091, -3.5284), Vector3(0.000056, 2.03342, -2.10995), Vector3(-0.000066, -0.00216, 0.122108), Vector3(0.000056, 2.30121, 2.13744)]
-	
-	curve.set_point_position(0,Vector3(0,0,5))
-	curve.set_point_position(1,Vector3(0,0.1,-0.6))
-	curve.set_point_position(2,Vector3(0,0,-5))
-	curve.set_point_out(0,data[0])
-	curve.set_point_out(1,data[1])
-	curve.set_point_in(1,data[2])
-	curve.set_point_in(2,data[3])
-
-func flip():
-	rotation_degrees.y += 180
-	$PathFollow3D.progress_ratio = 0
-
-
-func saveCurve():
-	
-	data.append(curve.get_point_out(0))
-	data.append(curve.get_point_out(1))
-	data.append(curve.get_point_in(1))
-	data.append(curve.get_point_in(2))
-	
-	print(data)
-"
-
-[sub_resource type="GDScript" id="GDScript_kkkd7"]
+[sub_resource type="GDScript" id="GDScript_8vrio"]
 script/source = "extends CharacterBody3D
 
-@export var normalSpeed : Curve;
+@onready var leftHand = get_node(get_path_to(get_parent().get_child(0)))
+@onready var rightHand = get_node(get_path_to(get_parent().get_child(1)))
+@onready var camera = get_node(get_path_to(get_parent().get_child(3)))
+@onready var origin = get_node(get_path_to(get_parent()))
 
-const tableHitTime : float = 0.58
+var h_input : int = 0
+var f_input : int = 0
+var direction : Vector3
 
-var back : bool = true
-
-var hitBeat : float = 0.0
-
-var beatDur1 : float = 0.5
-var beatDur2 : float = 1.0
-
-var curvePosition : float = 0.0
-
-var swappped : bool = false
-
-
-var alreadyHit : bool = false
-
-var changedHeight : bool = false
-
-var served : bool = false
-
-var startServing : bool = false
-
-var serveBeat : float = 0.0
-var serveLength : float = 2.0
-
-var fast : bool = true
-
-signal swingOpp
-signal swingPlay
-signal readyOpp
-signal readyPlay
-
-
-signal serveDone
-
-# Main difficulty rn is having to make the serve look good. Otherwise most stuff has been done so thats nice!
-
-func _ready():
-	pass
-
-func _process(delta):
-	if served == true:
-		show()
-		_physicsTick()
+func _physics_process(delta):
+	var h_rot = camera.rotation.y
+	$CollisionShape3D.global_position = Vector3(get_parent().get_child(3).global_position.x,0,get_parent().get_child(3).global_position.z)
 	
-	if startServing == true:
-		_serve(serveBeat,serveLength)
-
-
-func _physicsTick():
-	var bakedPos
+	h_input = leftHand.get_vector2(\"primary\").x
+	f_input = leftHand.get_vector2(\"primary\").y * -1
+	direction = Vector3(h_input,0,f_input)
 	
-	if changedHeight == false:
-		if fast == false:
-			_goForward()
-			bakedPos = curvePosition / beatDur1
-		else:
-			_fastRally()
-			
-	else:
-		changedHeight = false
+	velocity = direction * 5
+	move_and_slide()
 	
-	get_parent().progress_ratio = bakedPos
-	
-
-
-func _goForward():
-	var hitPosition1 = GlobalValues.posFromBeat(hitBeat,beatDur1,false)
-	
-	
-	
-	if hitPosition1 >= beatDur1:
-		if alreadyHit == false:
-			
-			_stopAllSources()
-			$HitTable.play()
-			#$AnimationPlayer.play(\"And\")
-			if back == true:
-				emit_signal(\"readyPlay\")
-			else:
-				emit_signal(\"readyOpp\")
-			
-			alreadyHit = true
-		
-		
-		var hitPosition2 = GlobalValues.posFromBeat(hitBeat + beatDur1, beatDur2,false)
-		curvePosition = (hitPosition2 * (1 - tableHitTime)) + (tableHitTime * beatDur1)
-			
-		# Gotta fix up the FAST rally type.
-		
-	else:
-		curvePosition = hitPosition1 * tableHitTime
-		#print(curvePosition)
-		
-		
-	
-	if abs(curvePosition) - abs(beatDur2) == 0:
-		if back == true:
-			_stopAllSources()
-			$HitOpp.play()
-			#$AnimationPlayer.play(\"Tink\")
-			emit_signal(\"swingPlay\")
-			
-		else:
-			_stopAllSources()
-			$HitPlayer.play()
-			#$AnimationPlayer.play(\"Tonk\")
-			emit_signal(\"swingOpp\")
-		
-		alreadyHit = false
-		get_parent().get_parent().flip()
-		curvePosition = 0
-		back = not back
-		hitBeat = round(GlobalValues.songInBeats)
-		
-
-func _fastRally():
-	
-	pass
-	
-	
-	if abs(curvePosition) - abs(beatDur2) == 0:
-		if back == true:
-			_stopAllSources()
-			$HitOpp.play()
-			#$AnimationPlayer.play(\"Tink\")
-			emit_signal(\"swingPlay\")
-			
-		else:
-			_stopAllSources()
-			$HitPlayer.play()
-			#$AnimationPlayer.play(\"Tonk\")
-			emit_signal(\"swingOpp\")
-		
-		alreadyHit = false
-		get_parent().get_parent().flip()
-		curvePosition = 0
-		back = not back
-		hitBeat = round(GlobalValues.songInBeats)
-
-
-func _on_node_3d_ball_height(height):
-	back = true
-	if height == 0:
-		get_parent().get_parent().flip()
-		beatDur1 = 1
-		beatDur2 = 1
-	elif height == 1:
-		get_parent().get_parent().flip()
-		beatDur1 = 2
-		beatDur2 = 2
-	elif height == 2:
-		get_parent().get_parent().flip()
-		beatDur1 = 0.5
-		beatDur2 = 0.5
-	elif height == 3:
-		get_parent().get_parent().flip()
-		beatDur1 = 1
-		beatDur2 = 2
-		
-	alreadyHit = false
-	emit_signal(\"swingOpp\")
-	#$AnimationPlayer.play(\"Tonk\")
-	$HitOpp.play()
-	hitBeat = round(GlobalValues.songInBeats)
-	
-
-
-func _stopAllSources():
-	$HitOpp.stop()
-	$HitTable.stop()
-	$HitPlayer.stop()
-
-
-
-func _serve(starting,beatDur):
-	var hitPosition1 = GlobalValues.posFromBeat(starting,beatDur,true)
-	show()
-	
-	var bakedPos = hitPosition1 / beatDur
-	bakedPos = ease(bakedPos,0.8)
-	get_parent().progress_ratio = bakedPos
-	
-	if get_parent().progress_ratio == 1.0:
-		emit_signal(\"serveDone\")
-		get_parent().get_parent().flip()
-		startServing = false
-		served = true
-		hitBeat = round(GlobalValues.songInBeats)
+	origin.global_position = global_position - Vector3(0,1,0)
 "
 
-[sub_resource type="SphereShape3D" id="SphereShape3D_lgsbl"]
-
-[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_1nmaf"]
-albedo_color = Color(1, 1, 0, 1)
-emission = Color(1, 1, 0, 1)
-emission_energy_multiplier = 16.0
-
-[sub_resource type="Curve" id="Curve_t7jfs"]
-_data = [Vector2(0, 1), 0.0, -1.0, 0, 1, Vector2(1, 0), -1.0, 0.0, 1, 0]
-point_count = 2
-metadata/_snap_count = 9
-
-[sub_resource type="CurveTexture" id="CurveTexture_xoygk"]
-curve = SubResource("Curve_t7jfs")
-
-[sub_resource type="ParticleProcessMaterial" id="ParticleProcessMaterial_gru4d"]
-gravity = Vector3(0, 0, 0)
-alpha_curve = SubResource("CurveTexture_xoygk")
-
-[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_r0lnq"]
-albedo_color = Color(1, 1, 0, 1)
-emission = Color(1, 1, 0, 1)
-emission_energy_multiplier = 16.0
-
-[sub_resource type="SphereMesh" id="SphereMesh_fqid0"]
-material = SubResource("StandardMaterial3D_r0lnq")
-radius = 0.1
-height = 0.2
-radial_segments = 12
-rings = 6
-
-[sub_resource type="AudioStreamGenerator" id="AudioStreamGenerator_wc1ud"]
+[sub_resource type="CapsuleShape3D" id="CapsuleShape3D_w0hky"]
 
 [node name="VRTest" type="Node3D"]
 script = SubResource("GDScript_3yyvi")
+
+[node name="DirectionalLight3D" type="DirectionalLight3D" parent="."]
+transform = Transform3D(-0.866023, -0.433016, 0.250001, 0, 0.499998, 0.866027, -0.500003, 0.749999, -0.43301, 0, 0, 0)
+shadow_enabled = true
 
 [node name="OmniLight3D" type="OmniLight3D" parent="."]
 omni_range = 13.362
@@ -361,59 +85,64 @@ omni_range = 13.362
 environment = SubResource("Environment_niket")
 
 [node name="CSGBox3D" type="CSGBox3D" parent="."]
-visible = false
-material_override = SubResource("StandardMaterial3D_c1fgh")
-flip_faces = true
-size = Vector3(8, 5, 8)
+collision_layer = 3
+size = Vector3(16, 0.5, 16)
 material = SubResource("StandardMaterial3D_icp8i")
-
-[node name="Camera3D" type="Camera3D" parent="."]
-transform = Transform3D(-4.37114e-08, 0, 1, 0, 1, 0, -1, 0, -4.37114e-08, 4.722, 0, 0)
-current = true
-
-[node name="Path3D" type="Path3D" parent="."]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -0.104, 0)
-curve = SubResource("Curve3D_5gr0s")
-script = SubResource("GDScript_y1hhq")
-
-[node name="PathFollow3D" type="PathFollow3D" parent="Path3D"]
-transform = Transform3D(1, 0, 0, 0, 0.999959, 0, 0, 0, 0.999959, 0, 0, 5)
-rotation_mode = 0
-loop = false
-tilt_enabled = false
-
-[node name="CharacterBody3D" type="CharacterBody3D" parent="Path3D/PathFollow3D"]
-visible = false
-script = SubResource("GDScript_kkkd7")
-
-[node name="CollisionShape3D" type="CollisionShape3D" parent="Path3D/PathFollow3D/CharacterBody3D"]
-transform = Transform3D(0.2, 0, 0, 0, 0.2, 0, 0, 0, 0.2, 0, 0, 0)
-shape = SubResource("SphereShape3D_lgsbl")
-
-[node name="CSGSphere3D" type="CSGSphere3D" parent="Path3D/PathFollow3D/CharacterBody3D"]
-transform = Transform3D(0.2, 0, 0, 0, 0.2, 0, 0, 0, 0.2, 0, 0, 0)
-material = SubResource("StandardMaterial3D_1nmaf")
-
-[node name="HitPlayer" type="AudioStreamPlayer" parent="Path3D/PathFollow3D/CharacterBody3D"]
-stream = ExtResource("2_epyun")
-
-[node name="HitTable" type="AudioStreamPlayer" parent="Path3D/PathFollow3D/CharacterBody3D"]
-stream = ExtResource("3_5tm41")
-
-[node name="HitOpp" type="AudioStreamPlayer" parent="Path3D/PathFollow3D/CharacterBody3D"]
-stream = ExtResource("4_idc4k")
-
-[node name="GPUParticles3D" type="GPUParticles3D" parent="Path3D/PathFollow3D/CharacterBody3D"]
-amount = 3
-lifetime = 0.08
-trail_enabled = true
-process_material = SubResource("ParticleProcessMaterial_gru4d")
-draw_pass_1 = SubResource("SphereMesh_fqid0")
 
 [node name="AudioStreamPlayer" type="AudioStreamPlayer" parent="."]
 stream = SubResource("AudioStreamGenerator_wc1ud")
-autoplay = true
 script = ExtResource("5_cgs5d")
 bpm = 180
+
+[node name="XROrigin3D" type="XROrigin3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 2.52257, 0)
+
+[node name="Left" type="XRController3D" parent="XROrigin3D"]
+tracker = &"left_hand"
+
+[node name="Hands" type="StaticBody3D" parent="XROrigin3D/Left"]
+script = ExtResource("2_s6g60")
+
+[node name="CSGBox3D" type="CSGBox3D" parent="XROrigin3D/Left/Hands"]
+size = Vector3(0.2, 0.2, 0.2)
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="XROrigin3D/Left/Hands"]
+shape = SubResource("BoxShape3D_xlaeq")
+
+[node name="Area3D" type="Area3D" parent="XROrigin3D/Left/Hands"]
+collision_mask = 2
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="XROrigin3D/Left/Hands/Area3D"]
+shape = SubResource("BoxShape3D_xlaeq")
+
+[node name="Right" type="XRController3D" parent="XROrigin3D"]
+tracker = &"right_hand"
+
+[node name="Hands" type="StaticBody3D" parent="XROrigin3D/Right"]
+script = ExtResource("2_s6g60")
+
+[node name="Area3D" type="Area3D" parent="XROrigin3D/Right/Hands"]
+collision_layer = 0
+collision_mask = 2
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="XROrigin3D/Right/Hands/Area3D"]
+shape = SubResource("BoxShape3D_xlaeq")
+
+[node name="CSGBox3D" type="CSGBox3D" parent="XROrigin3D/Right/Hands"]
+size = Vector3(0.2, 0.2, 0.2)
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="XROrigin3D/Right/Hands"]
+shape = SubResource("BoxShape3D_xlaeq")
+
+[node name="CharacterBody3D" type="CharacterBody3D" parent="XROrigin3D"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1, 0)
+top_level = true
+script = SubResource("GDScript_8vrio")
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="XROrigin3D/CharacterBody3D"]
+shape = SubResource("CapsuleShape3D_w0hky")
+
+[node name="XRCamera3D" type="XRCamera3D" parent="XROrigin3D"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1, 0)
 
 [connection signal="beat" from="AudioStreamPlayer" to="." method="_on_audio_stream_player_beat"]

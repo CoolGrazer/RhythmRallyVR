@@ -1,0 +1,19 @@
+[remap]
+
+importer="mp3"
+type="AudioStreamMP3"
+uid="uid://bie78n805wxu5"
+path="res://.godot/imported/[Rhythm Heaven Fever]  Cheer Readers 2 (Perfect).mp3-3f20df940aec2d751cedad99f052ee29.mp3str"
+
+[deps]
+
+source_file="res://Music/[Rhythm Heaven Fever]  Cheer Readers 2 (Perfect).mp3"
+dest_files=["res://.godot/imported/[Rhythm Heaven Fever]  Cheer Readers 2 (Perfect).mp3-3f20df940aec2d751cedad99f052ee29.mp3str"]
+
+[params]
+
+loop=false
+loop_offset=0
+bpm=0
+beat_count=0
+bar_beats=4

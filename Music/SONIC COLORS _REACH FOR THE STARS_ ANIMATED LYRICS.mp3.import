@@ -1,0 +1,19 @@
+[remap]
+
+importer="mp3"
+type="AudioStreamMP3"
+uid="uid://qfk603byb7md"
+path="res://.godot/imported/SONIC COLORS _REACH FOR THE STARS_ ANIMATED LYRICS.mp3-e15d4f226756c598d7d2119b74a88287.mp3str"
+
+[deps]
+
+source_file="res://Music/SONIC COLORS _REACH FOR THE STARS_ ANIMATED LYRICS.mp3"
+dest_files=["res://.godot/imported/SONIC COLORS _REACH FOR THE STARS_ ANIMATED LYRICS.mp3-e15d4f226756c598d7d2119b74a88287.mp3str"]
+
+[params]
+
+loop=false
+loop_offset=0
+bpm=0
+beat_count=0
+bar_beats=4

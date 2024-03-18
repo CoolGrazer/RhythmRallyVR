@@ -1,7 +1,7 @@
 extends AudioStreamPlayer
 
 @export var bpm := 100
-@export var msOffset := 0
+@export var msOffset : float = 0
 
 # Tracking the beat and song position
 var song_position = 0.0
@@ -20,7 +20,7 @@ signal beat(position)
 func _ready():
 	sec_per_beat = 60.0 / bpm
 	GlobalValues.bpm = bpm
-	seek(msOffset / 1000)
+	seek(msOffset / 1000.0)
 
 
 func _physics_process(_delta):
@@ -56,9 +56,9 @@ func closest_beat(nth):
 
 
 
-func play_from_beat(beat, offset):
+func play_from_beat(_beat, offset):
 	play()
-	seek(beat * sec_per_beat)
+	seek(_beat * sec_per_beat)
 	beats_before_start = offset
 
 

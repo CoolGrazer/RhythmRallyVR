@@ -1,16 +1,41 @@
-[gd_scene format=3 uid="uid://baehpbr65xuvs"]
+[gd_scene load_steps=3 format=3 uid="uid://baehpbr65xuvs"]
+
+[ext_resource type="Script" path="res://Scripts/Tick.gd" id="1_wvabv"]
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_ki47x"]
+bg_color = Color(0.541176, 0.541176, 0.541176, 1)
+corner_radius_top_left = 20
+corner_radius_top_right = 20
+corner_radius_bottom_right = 20
+corner_radius_bottom_left = 20
+corner_detail = 20
+anti_aliasing = false
 
 [node name="Panel" type="Panel"]
-offset_left = -2.0
-offset_right = 2.0
-offset_bottom = 64.0
+custom_minimum_size = Vector2(4, 0)
+anchors_preset = -1
+anchor_right = 0.00347222
+anchor_bottom = 0.0123456
+offset_bottom = 1.90735e-05
+theme_override_styles/panel = SubResource("StyleBoxFlat_ki47x")
+script = ExtResource("1_wvabv")
+metadata/_edit_use_anchors_ = true
 
 [node name="Label" type="Label" parent="."]
-layout_mode = 0
-offset_left = -142.0
+layout_mode = 1
+anchors_preset = -1
+anchor_left = 0.5
+anchor_top = 4.9375
+anchor_right = 0.5
+anchor_bottom = 4.9375
+offset_left = -143.0
 offset_top = -87.0
-offset_right = 146.0
-offset_bottom = 1.0
-theme_override_font_sizes/font_size = 64
-text = "123"
+offset_right = 145.0
+offset_bottom = 88.0
+theme_override_font_sizes/font_size = 16
+text = "0
+"
 horizontal_alignment = 1
+metadata/_edit_use_anchors_ = true
+
+[node name="Camera2D" type="Camera2D" parent="."]

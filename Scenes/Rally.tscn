@@ -103,6 +103,14 @@ func saveCurve():
 	data.append(curve.get_point_in(2))
 	
 	print(data)
+
+
+func _on_character_body_3d_force_fast_path():
+	height = 3
+
+
+func _on_character_body_3d_force_normal_path():
+	height = 0
 "
 
 [sub_resource type="GDScript" id="GDScript_q3xrv"]
@@ -146,6 +154,8 @@ signal readyOpp
 signal readyPlay
 
 signal forceFastPath
+signal forceNormalPath
+
 
 signal serveDone
 
@@ -336,7 +346,9 @@ func _changeToFast():
 	$HitOpp.play()
 	beatToNormal = round(GlobalValues.songInBeats) + 3
 	emit_signal(\"swingPlay\")
+	emit_signal(\"forceFastPath\")
 	back = false
+	
 
 func _on_audio_stream_player_beat(position):
 	if position == beatToFast:
@@ -350,6 +362,7 @@ func _on_audio_stream_player_beat(position):
 		get_parent().get_parent().flip()
 		$HitOpp.play()
 		emit_signal(\"swingOpp\")
+		emit_signal(\"forceNormalPath\")
 		back = true
 
 func _on_vr_test_ball_height(height):
@@ -969,6 +982,8 @@ visible = false
 data = ExtResource("13_j78gn")
 
 [connection signal="ballHeight" from="." to="Path3D/PathFollow3D/CharacterBody3D" method="_on_node_3d_ball_height"]
+[connection signal="forceFastPath" from="Path3D/PathFollow3D/CharacterBody3D" to="Path3D" method="_on_character_body_3d_force_fast_path"]
+[connection signal="forceNormalPath" from="Path3D/PathFollow3D/CharacterBody3D" to="Path3D" method="_on_character_body_3d_force_normal_path"]
 [connection signal="readyOpp" from="Path3D/PathFollow3D/CharacterBody3D" to="Paddler" method="_on_character_body_3d_ready_opp"]
 [connection signal="readyPlay" from="Path3D/PathFollow3D/CharacterBody3D" to="Player" method="_on_character_body_3d_ready_play"]
 [connection signal="serveDone" from="Path3D/PathFollow3D/CharacterBody3D" to="." method="_on_character_body_3d_serve_done"]

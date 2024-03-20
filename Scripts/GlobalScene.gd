@@ -175,3 +175,15 @@ func _serve(length):
 func _on_character_body_3d_serve_done():
 	height = serveHeight
 	_changeBallHeight(serveHeight)
+
+
+func _on_character_body_3d_opp_hit():
+	$WorldEnvironment.environment.background_color = Color.SALMON
+
+
+func _on_character_body_3d_play_hit():
+	$WorldEnvironment.environment.background_color = Color.SALMON
+
+
+func _on_character_body_3d_table_hit():
+	$WorldEnvironment.environment.background_color = Color.RED

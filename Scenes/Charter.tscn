@@ -6,14 +6,69 @@
 script/source = "extends Control
 
 var selected = \"\"
+var mouseEntered : bool = false
+var spawnBuffered : bool = false
+var block = preload(\"res://Scenes/Block.tscn\")
+
+# yo hey you need to make the mouse entered work more 
 
 func _physics_process(delta):
+	print(mouseEntered)
 	_findSelected()
-	print(selected)
+	if Input.is_action_just_pressed(\"Click\") and mouseEntered == true:
+		spawnBuffered = true
+	elif Input.is_action_just_released(\"Click\"):
+		spawnBuffered = false
+	
+	if spawnBuffered == true and get_global_mouse_position().y > 400 - 40:
+		_spawn(selected)
+		spawnBuffered = false
 
+
+func _spawn(selection):
+	var b = block.instantiate()
+	
+	match selection:
+		\"serve\":
+			b.text = \"Serve\"
+			b.length = 2
+		\"regular\":
+			b.text = \"Regular\"
+			b.length = 2
+		\"slow\":
+			b.text = \"Slow\"
+			b.length = 2
+		\"superfast\":
+			b.text = \"Superfast\"
+			b.length = 2
+		\"fast\":
+			b.text = \"Fast\"
+			b.length = 6
+		\"superbaked\":
+			b.text = \"SuperfastB\"
+		\"tinkStart\":
+			b.text = \"TinkStart\"
+		\"tinkEnd\":
+			b.text = \"TinkEnd\"
+			
+	add_child(b)
 
 func _findSelected():
 	get_tree().call_group(\"Selection\",\"_findSelected\")
+
+
+
+
+func _on_blocks_mouse_entered():
+	mouseEntered = true
+
+
+func _on_blocks_mouse_exited():
+	mouseEntered = false
+
+
+func _allButtonMouse():
+	mouseEntered = true
 "
 
 [sub_resource type="GDScript" id="GDScript_26yky"]
@@ -31,7 +86,7 @@ bg_color = Color(0.0784314, 0.0784314, 0.0784314, 1)
 bg_color = Color(0.0784314, 0.0784314, 0.0784314, 1)
 
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_wvu4j"]
-bg_color = Color(0, 0, 0, 1)
+bg_color = Color(0.215686, 0.215686, 0.215686, 1)
 
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_33evk"]
 bg_color = Color(0.129412, 0.129412, 0.129412, 1)
@@ -100,10 +155,12 @@ offset_bottom = 118.0
 theme_override_styles/panel = SubResource("StyleBoxFlat_8em8o")
 
 [node name="SelectionBG" type="Panel" parent="Camera2D"]
+z_index = 1
 offset_left = 64.0
 offset_top = -324.0
 offset_right = 576.0
 offset_bottom = 36.0
+mouse_filter = 1
 theme_override_styles/panel = SubResource("StyleBoxFlat_wvu4j")
 
 [node name="SubViewportContainer" type="SubViewportContainer" parent="Camera2D"]
@@ -190,7 +247,7 @@ offset_left = -8.0
 offset_right = 169.0
 offset_bottom = 45.0
 theme_override_font_sizes/font_size = 32
-text = "Layer 1"
+text = "Layer 2"
 horizontal_alignment = 2
 vertical_alignment = 1
 
@@ -233,6 +290,7 @@ offset_bottom = 324.0
 max_value = 5000.0
 
 [node name="Blocks" type="VBoxContainer" parent="Camera2D"]
+z_index = 2
 offset_left = 63.0
 offset_top = -327.0
 offset_right = 577.0
@@ -241,9 +299,9 @@ theme_override_constants/separation = 5
 
 [node name="Serve" type="Button" parent="Camera2D/Blocks" groups=["Selection"]]
 layout_mode = 2
+mouse_filter = 2
 theme_override_styles/normal = SubResource("StyleBoxEmpty_wj07m")
 theme_override_styles/focus = SubResource("StyleBoxEmpty_iqkic")
-keep_pressed_outside = true
 text = "    Serve"
 alignment = 0
 script = ExtResource("1_1msia")
@@ -251,6 +309,7 @@ property = "serve"
 
 [node name="Regular" type="Button" parent="Camera2D/Blocks" groups=["Selection"]]
 layout_mode = 2
+mouse_filter = 2
 theme_override_styles/normal = SubResource("StyleBoxEmpty_wj07m")
 theme_override_styles/focus = SubResource("StyleBoxEmpty_iqkic")
 text = "    SwitchToRally"
@@ -260,6 +319,7 @@ property = "regular"
 
 [node name="Slow" type="Button" parent="Camera2D/Blocks" groups=["Selection"]]
 layout_mode = 2
+mouse_filter = 2
 theme_override_styles/normal = SubResource("StyleBoxEmpty_wj07m")
 theme_override_styles/focus = SubResource("StyleBoxEmpty_iqkic")
 text = "    SwitchToSlow"
@@ -269,6 +329,7 @@ property = "slow"
 
 [node name="Superfast" type="Button" parent="Camera2D/Blocks" groups=["Selection"]]
 layout_mode = 2
+mouse_filter = 2
 theme_override_styles/normal = SubResource("StyleBoxEmpty_wj07m")
 theme_override_styles/focus = SubResource("StyleBoxEmpty_iqkic")
 text = "    SwitchToSuperfast"
@@ -278,6 +339,7 @@ property = "superfast"
 
 [node name="FastRally" type="Button" parent="Camera2D/Blocks" groups=["Selection"]]
 layout_mode = 2
+mouse_filter = 2
 theme_override_styles/normal = SubResource("StyleBoxEmpty_wj07m")
 theme_override_styles/focus = SubResource("StyleBoxEmpty_iqkic")
 text = "    Fast Rally"
@@ -287,6 +349,7 @@ property = "fast"
 
 [node name="SuperBaked" type="Button" parent="Camera2D/Blocks" groups=["Selection"]]
 layout_mode = 2
+mouse_filter = 2
 theme_override_styles/normal = SubResource("StyleBoxEmpty_wj07m")
 theme_override_styles/focus = SubResource("StyleBoxEmpty_iqkic")
 text = "    Superfast Rally"
@@ -296,6 +359,7 @@ property = "superbaked"
 
 [node name="TinkStart" type="Button" parent="Camera2D/Blocks" groups=["Selection"]]
 layout_mode = 2
+mouse_filter = 2
 theme_override_styles/normal = SubResource("StyleBoxEmpty_wj07m")
 theme_override_styles/focus = SubResource("StyleBoxEmpty_iqkic")
 text = "    TinkStart"
@@ -305,6 +369,7 @@ property = "tinkStart"
 
 [node name="TinkEnd" type="Button" parent="Camera2D/Blocks" groups=["Selection"]]
 layout_mode = 2
+mouse_filter = 2
 theme_override_styles/normal = SubResource("StyleBoxEmpty_wj07m")
 theme_override_styles/focus = SubResource("StyleBoxEmpty_iqkic")
 text = "    TinkEnd"
@@ -341,3 +406,13 @@ theme_override_constants/separation = 46
 script = SubResource("GDScript_34xyb")
 
 [connection signal="value_changed" from="Camera2D/HSlider" to="Camera2D" method="_on_h_slider_value_changed"]
+[connection signal="mouse_entered" from="Camera2D/Blocks" to="." method="_on_blocks_mouse_entered"]
+[connection signal="mouse_exited" from="Camera2D/Blocks" to="." method="_on_blocks_mouse_exited"]
+[connection signal="mouse_entered" from="Camera2D/Blocks/Serve" to="." method="_allButtonMouse"]
+[connection signal="mouse_entered" from="Camera2D/Blocks/Regular" to="." method="_allButtonMouse"]
+[connection signal="mouse_entered" from="Camera2D/Blocks/Slow" to="." method="_allButtonMouse"]
+[connection signal="mouse_entered" from="Camera2D/Blocks/Superfast" to="." method="_allButtonMouse"]
+[connection signal="mouse_entered" from="Camera2D/Blocks/FastRally" to="." method="_allButtonMouse"]
+[connection signal="mouse_entered" from="Camera2D/Blocks/SuperBaked" to="." method="_allButtonMouse"]
+[connection signal="mouse_entered" from="Camera2D/Blocks/TinkStart" to="." method="_allButtonMouse"]
+[connection signal="mouse_entered" from="Camera2D/Blocks/TinkEnd" to="." method="_allButtonMouse"]

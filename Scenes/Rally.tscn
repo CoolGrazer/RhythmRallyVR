@@ -1,4 +1,4 @@
-[gd_scene load_steps=52 format=3 uid="uid://cbs8svi42de1a"]
+[gd_scene load_steps=51 format=3 uid="uid://cbs8svi42de1a"]
 
 [ext_resource type="AudioStream" uid="uid://bc2048varugj4" path="res://SFX/hit1.ogg" id="1_0d0hc"]
 [ext_resource type="Script" path="res://Scripts/GlobalScene.gd" id="1_w0ekv"]
@@ -116,8 +116,6 @@ func _on_character_body_3d_force_normal_path():
 [sub_resource type="GDScript" id="GDScript_q3xrv"]
 script/source = "extends CharacterBody3D
 
-@export var normalSpeed : Curve;
-
 const tableHitTime : float = 0.58
 
 var back : bool = true
@@ -156,6 +154,9 @@ signal readyPlay
 signal forceFastPath
 signal forceNormalPath
 
+signal playHit
+signal tableHit
+signal oppHit
 
 signal serveDone
 
@@ -200,7 +201,7 @@ func _goForward():
 			
 			_stopAllSources()
 			$HitTable.play()
-			
+			emit_signal(\"tableHit\")
 			#$AnimationPlayer.play(\"And\")
 			if back == true:
 				emit_signal(\"readyPlay\")
@@ -227,11 +228,13 @@ func _goForward():
 			$HitOpp.play()
 			#$AnimationPlayer.play(\"Tink\")
 			emit_signal(\"swingPlay\")
+			emit_signal(\"playHit\")
 			
 		else:
 			_stopAllSources()
 			$HitPlayer.play()
 			#$AnimationPlayer.play(\"Tonk\")
+			emit_signal(\"oppHit\")
 			emit_signal(\"swingOpp\")
 		
 		alreadyHit = false
@@ -249,7 +252,7 @@ func _fastRally():
 		var offsetFromStart2 = GlobalValues.posFromBeat(hitBeat + 1,beatDur2,false)
 		
 		if alreadyHit == false:
-			print(\"the table fucking hit\")
+			emit_signal(\"tableHit\")
 			_stopAllSources()
 			$HitTable.play()
 			
@@ -306,6 +309,7 @@ func _on_node_3d_ball_height(height):
 		
 	alreadyHit = false
 	emit_signal(\"swingOpp\")
+	emit_signal(\"oppHit\")
 	#$AnimationPlayer.play(\"Tonk\")
 	$HitOpp.play()
 	hitBeat = round(GlobalValues.songInBeats)
@@ -396,10 +400,6 @@ func _on_vr_test_ball_height(height):
 	hitBeat = round(GlobalValues.songInBeats)
 	
 "
-
-[sub_resource type="Curve" id="Curve_dqx15"]
-_data = [Vector2(0, 0), 0.0, 0.0, 0, 0, Vector2(0.510526, 1), 0.0, 0.0, 0, 0, Vector2(0.963158, 0), 0.0, 0.0, 0, 0]
-point_count = 3
 
 [sub_resource type="SphereShape3D" id="SphereShape3D_dlq2d"]
 
@@ -880,7 +880,6 @@ tilt_enabled = false
 
 [node name="CharacterBody3D" type="CharacterBody3D" parent="Path3D/PathFollow3D"]
 script = SubResource("GDScript_q3xrv")
-normalSpeed = SubResource("Curve_dqx15")
 
 [node name="CollisionShape3D" type="CollisionShape3D" parent="Path3D/PathFollow3D/CharacterBody3D"]
 transform = Transform3D(0.2, 0, 0, 0, 0.2, 0, 0, 0, 0.2, 0, 0, 0)
@@ -984,11 +983,14 @@ data = ExtResource("13_j78gn")
 [connection signal="ballHeight" from="." to="Path3D/PathFollow3D/CharacterBody3D" method="_on_node_3d_ball_height"]
 [connection signal="forceFastPath" from="Path3D/PathFollow3D/CharacterBody3D" to="Path3D" method="_on_character_body_3d_force_fast_path"]
 [connection signal="forceNormalPath" from="Path3D/PathFollow3D/CharacterBody3D" to="Path3D" method="_on_character_body_3d_force_normal_path"]
+[connection signal="oppHit" from="Path3D/PathFollow3D/CharacterBody3D" to="." method="_on_character_body_3d_opp_hit"]
+[connection signal="playHit" from="Path3D/PathFollow3D/CharacterBody3D" to="." method="_on_character_body_3d_play_hit"]
 [connection signal="readyOpp" from="Path3D/PathFollow3D/CharacterBody3D" to="Paddler" method="_on_character_body_3d_ready_opp"]
 [connection signal="readyPlay" from="Path3D/PathFollow3D/CharacterBody3D" to="Player" method="_on_character_body_3d_ready_play"]
 [connection signal="serveDone" from="Path3D/PathFollow3D/CharacterBody3D" to="." method="_on_character_body_3d_serve_done"]
 [connection signal="swingOpp" from="Path3D/PathFollow3D/CharacterBody3D" to="Paddler" method="_on_character_body_3d_swing_opp"]
 [connection signal="swingPlay" from="Path3D/PathFollow3D/CharacterBody3D" to="Player" method="_on_character_body_3d_swing_play"]
+[connection signal="tableHit" from="Path3D/PathFollow3D/CharacterBody3D" to="." method="_on_character_body_3d_table_hit"]
 [connection signal="beat" from="AudioStreamPlayer" to="." method="_on_audio_stream_player_beat"]
 [connection signal="beat" from="AudioStreamPlayer" to="Path3D/PathFollow3D/CharacterBody3D" method="_on_audio_stream_player_beat"]
 [connection signal="beat" from="AudioStreamPlayer" to="Paddler" method="_on_audio_stream_player_beat"]

@@ -32,9 +32,10 @@ func _ready():
 
 
 func _physics_process(delta):
+	print($Origin/Button.focus)
 	button.size.x = length * 50
 	adjText = text + " "
-	if Input.is_action_just_pressed("Delete") and selected == true:
+	if Input.is_action_just_pressed("Delete") and $Origin/Button:
 		$AnimationPlayer.play("Delete")
 	
 	$Origin/Button/Label.text = adjText
@@ -68,7 +69,8 @@ func _physics_process(delta):
 		Input.set_default_cursor_shape(Input.CURSOR_ARROW)
 	
 	
-	
+	position.x = clamp(position.x,175,10000000)
+	position.y = clamp(position.y,464,584)
 
 
 func _on_button_mouse_entered():

@@ -21,6 +21,7 @@ var ogMouse : Vector2 = Vector2.ZERO
 var firstAnim : bool = true
 
 var target : Vector2 = Vector2.ZERO
+var canDelete : bool = false
 
 func _ready():
 	adjText = text + " "
@@ -32,14 +33,15 @@ func _ready():
 
 
 func _physics_process(delta):
+	
 	button.size.x = length * 50
 	adjText = text + " "
-	if Input.is_action_just_pressed("Delete") and selected == true:
+	if Input.is_action_just_pressed("Delete") and canDelete == true:
 		$AnimationPlayer.play("Delete")
 	
 	$Origin/Button/Label.text = adjText
 	
-	beat = global_position / 50
+	beat = (global_position.x / 50) - 3.5
 	
 	
 	label.custom_minimum_size.x = button.size.x
@@ -61,6 +63,7 @@ func _physics_process(delta):
 		ogPosition = global_position
 		ogMouse = get_global_mouse_position()
 		selected = true
+		canDelete = true
 		
 	
 	if Input.is_action_just_released("Click") and (selected == true):
@@ -79,10 +82,13 @@ func _on_button_mouse_exited():
 	inMouse = false
 
 
+# reduce size of tru proeptie
+
 func _returnProperties():
 	var truProperties = []
 	
 	for x in properties:
 		truProperties.append([x[0] + beat,x[1]])
+		
 	
 	return truProperties

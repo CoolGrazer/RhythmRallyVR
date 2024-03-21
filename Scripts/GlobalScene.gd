@@ -14,7 +14,7 @@ var fast : bool = false
 
 var fastBeat : float = 0.0
 
-
+var chart = []
 
 var lastBeat : float = 0.0
 

@@ -1,4 +1,4 @@
-[gd_scene load_steps=16 format=3 uid="uid://cowf7p1wtlhej"]
+[gd_scene load_steps=17 format=3 uid="uid://cowf7p1wtlhej"]
 
 [ext_resource type="Script" path="res://Scripts/UIButton.gd" id="1_1msia"]
 
@@ -13,7 +13,9 @@ var block = preload(\"res://Scenes/Block.tscn\")
 # yo hey you need to make the mouse entered work more 
 
 func _physics_process(delta):
-	print(mouseEntered)
+	if Input.is_action_just_pressed(\"Delete\"):
+		_generateChart()
+		
 	_findSelected()
 	if Input.is_action_just_pressed(\"Click\") and mouseEntered == true:
 		spawnBuffered = true
@@ -32,15 +34,19 @@ func _spawn(selection):
 		\"serve\":
 			b.text = \"Serve\"
 			b.length = 2
+			b.properties = [[0,\"Serve\"]]
 		\"regular\":
 			b.text = \"Regular\"
-			b.length = 2
+			b.length = 4
+			b.properties = [[0,\"Regular\"]]
 		\"slow\":
 			b.text = \"Slow\"
-			b.length = 2
+			b.length = 8
+			b.properties = [[0,\"Slow\"]]
 		\"superfast\":
-			b.text = \"Superfast\"
+			b.text = \"SF\"
 			b.length = 2
+			b.properties = [[0,\"SFast\"]]
 		\"fast\":
 			b.text = \"Fast\"
 			b.length = 6
@@ -56,7 +62,18 @@ func _spawn(selection):
 func _findSelected():
 	get_tree().call_group(\"Selection\",\"_findSelected\")
 
-
+func _generateChart():
+	var finishedChart = []
+	var preSortChart = []
+	
+	for x in get_tree().get_nodes_in_group(\"Block\"):
+		preSortChart.append(x._returnProperties())
+	
+	preSortChart.sort_custom(sort_ascending)
+	finishedChart = preSortChart
+	print(finishedChart)
+	print(finishedChart[0])
+	print(finishedChart[0][0])
 
 
 func _on_blocks_mouse_entered():
@@ -69,6 +86,13 @@ func _on_blocks_mouse_exited():
 
 func _allButtonMouse():
 	mouseEntered = true
+
+
+func sort_ascending(a, b):
+	if a[0] < b[0]:
+		return true
+	return false
+
 "
 
 [sub_resource type="GDScript" id="GDScript_26yky"]
@@ -112,6 +136,8 @@ anti_aliasing = false
 [sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_wj07m"]
 
 [sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_iqkic"]
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_3dywd"]
 
 [sub_resource type="GDScript" id="GDScript_34xyb"]
 script/source = "extends HBoxContainer
@@ -385,14 +411,17 @@ offset_bottom = 77.0
 
 [node name="Button" type="Button" parent="Camera2D/HBoxContainer"]
 layout_mode = 2
+theme_override_styles/focus = SubResource("StyleBoxEmpty_3dywd")
 text = "Play"
 
 [node name="Button2" type="Button" parent="Camera2D/HBoxContainer"]
 layout_mode = 2
+theme_override_styles/focus = SubResource("StyleBoxEmpty_3dywd")
 text = "Pause"
 
 [node name="Button3" type="Button" parent="Camera2D/HBoxContainer"]
 layout_mode = 2
+theme_override_styles/focus = SubResource("StyleBoxEmpty_3dywd")
 text = "Stop"
 
 [node name="Tick" type="HBoxContainer" parent="."]

@@ -36,6 +36,8 @@ func _input(event: InputEvent):
 		var evLocal = make_input_local(event)
 		if !Rect2(Vector2(0,0), size).has_point(evLocal.position):
 			release_focus()
+			get_parent().get_parent().canDelete = false
+			
 "
 
 [sub_resource type="Animation" id="Animation_5omg6"]
@@ -151,7 +153,7 @@ _data = {
 "RESET": SubResource("Animation_k4xdn")
 }
 
-[node name="Block" type="Node2D"]
+[node name="Block" type="Node2D" groups=["Block"]]
 position = Vector2(0, 24)
 script = ExtResource("1_uuw21")
 

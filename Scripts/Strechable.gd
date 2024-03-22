@@ -33,10 +33,17 @@ func _ready():
 
 
 func _physics_process(delta):
+<<<<<<< HEAD
 	
 	button.size.x = length * 50
 	adjText = text + " "
 	if Input.is_action_just_pressed("Delete") and canDelete == true:
+=======
+	print($Origin/Button.focus)
+	button.size.x = length * 50
+	adjText = text + " "
+	if Input.is_action_just_pressed("Delete") and $Origin/Button:
+>>>>>>> cef4f244899a6197164d29f153f46f76720fd6de
 		$AnimationPlayer.play("Delete")
 	
 	$Origin/Button/Label.text = adjText
@@ -71,7 +78,8 @@ func _physics_process(delta):
 		Input.set_default_cursor_shape(Input.CURSOR_ARROW)
 	
 	
-	
+	position.x = clamp(position.x,175,10000000)
+	position.y = clamp(position.y,464,584)
 
 
 func _on_button_mouse_entered():

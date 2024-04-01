@@ -1,7 +1,7 @@
 extends Node2D
 
 @export var length : float = 5
-@export var properties = [[0,"serve"]]
+@export var properties = [[0,"rotate"],[0.5,"me"]]
 @export var text = "Serve"
 
 var beat = 0
@@ -16,40 +16,63 @@ var adjText : String = ""
 var inMouse : bool = false
 
 var offset : Vector2 = Vector2.ZERO
-var ogPosition : Vector2 = Vector2.ZERO
-var ogMouse : Vector2 = Vector2.ZERO
+var ogPosition : Vector2 = Vector2(176,0)
+var ogMouse : Vector2
 var firstAnim : bool = true
 
 var target : Vector2 = Vector2.ZERO
+var canDelete : bool = true
+
+
 
 func _ready():
 	adjText = text + " "
 	button.size.x = length * 50
 	$Origin/Button.grab_focus()
-	ogPosition += Vector2(0,24)
+	var subPos = get_global_mouse_position().x - 177
+	subPos = snapped(subPos,27)
+	global_position.x = subPos + 177
 	selected = true
-	global_position = get_global_mouse_position() + Vector2(0,24)
+	
+	
+	
+	# my blocks won't work anymore :(
+	
 
 
 func _physics_process(delta):
-	print($Origin/Button.focus)
-	button.size.x = length * 50
+	if position == Vector2(0,24):
+		hide()
+	else:
+		show()
+	button.size.x = length * 54
 	adjText = text + " "
-	if Input.is_action_just_pressed("Delete") and $Origin/Button:
+	if Input.is_action_just_pressed("Delete") and canDelete == true:
 		$AnimationPlayer.play("Delete")
 	
 	$Origin/Button/Label.text = adjText
 	
-	beat = global_position / 50
+	beat = ((global_position.x - 177) / 54)
+	
+	
 	
 	
 	label.custom_minimum_size.x = button.size.x
 	label.position.x = 0
 	
 	
+	if firstAnim == true:
+		#global_position.x = get_global_mouse_position().x
+		ogMouse = get_global_mouse_position()
+		ogPosition = global_position
+		
+		$Origin/Button.grab_focus()
+	
 	if selected == true and firstAnim == false:
-		offset.x = snapped(get_global_mouse_position().x - ogMouse.x,50/2)
+		offset.x = snapped(get_global_mouse_position().x - ogMouse.x,54/2)
 		offset.y = snapped(get_global_mouse_position().y - ogMouse.y,40)
+		
+		
 		
 		global_position = ogPosition + offset
 		
@@ -62,6 +85,8 @@ func _physics_process(delta):
 		ogPosition = global_position
 		ogMouse = get_global_mouse_position()
 		selected = true
+		canDelete = true
+		show()
 		
 	
 	if Input.is_action_just_released("Click") and (selected == true):
@@ -69,8 +94,11 @@ func _physics_process(delta):
 		Input.set_default_cursor_shape(Input.CURSOR_ARROW)
 	
 	
-	position.x = clamp(position.x,175,10000000)
+	position.x = clamp(position.x,177,10000000)
 	position.y = clamp(position.y,464,584)
+	
+	
+	# Figure out how to do the beat var good.
 
 
 func _on_button_mouse_entered():
@@ -85,6 +113,19 @@ func _returnProperties():
 	var truProperties = []
 	
 	for x in properties:
-		truProperties.append([x[0] + beat,x[1]])
+		if x.size() == 2:
+			truProperties.append([x[0] + beat,x[1]])
+		elif x.size() == 3:
+			truProperties.append([x[0] + beat,x[1],x[2]])
+		elif x.size() == 4:
+			truProperties.append([x[0] + beat,x[1],x[2],x[3]])
 	
 	return truProperties
+
+
+func _on_area_2d_mouse_entered():
+	pass
+
+
+func _on_area_2d_mouse_exited():
+	pass # Replace with function body.

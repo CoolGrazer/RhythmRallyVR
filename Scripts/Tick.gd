@@ -1,8 +1,9 @@
 extends Panel
 
 func _physics_process(delta):
-	$Label.text = str((position.x) / 50)
-	if fmod(position.x / 50,4) == 0:
+	#print(global_position.x)
+	$Label.text = str((position.x) / 54)
+	if fmod(position.x / 54,4) == 0:
 		modulate = Color.YELLOW
 	else:
 		modulate = Color.WHITE

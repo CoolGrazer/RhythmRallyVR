@@ -21,24 +21,28 @@ func _ready():
 	sec_per_beat = 60.0 / bpm
 	GlobalValues.bpm = bpm
 	seek(msOffset / 1000.0)
+	#emit_signal("beat",0)
 
 
 func _physics_process(_delta):
 	if playing:
+		
+		
 		song_position = get_playback_position() + AudioServer.get_time_since_last_mix()
 		song_position -= AudioServer.get_output_latency()
 		song_position_in_beats = floorTo(song_position / sec_per_beat,0.5) + beats_before_start
 		
-		
 		GlobalValues.songInBeats = (song_position / sec_per_beat)
 		
+		
 		_report_beat()
-
 
 func _report_beat():
 	if last_reported_beat < song_position_in_beats:
 		emit_signal("beat", song_position_in_beats)
 		last_reported_beat = song_position_in_beats
+		
+
 
 
 func play_with_beat_offset(num):
@@ -53,8 +57,8 @@ func closest_beat(nth):
 	return Vector2(closest, time_off_beat)
 
 
-
-
+func _restart():
+	last_reported_beat = 0
 
 func play_from_beat(_beat, offset):
 	play()

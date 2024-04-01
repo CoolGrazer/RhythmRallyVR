@@ -12,11 +12,11 @@ corner_detail = 20
 anti_aliasing = false
 
 [node name="Panel" type="Panel"]
-custom_minimum_size = Vector2(4, 0)
+custom_minimum_size = Vector2(4, 16)
 anchors_preset = -1
 anchor_right = 0.00347222
-anchor_bottom = 0.0123456
-offset_bottom = 1.90735e-05
+anchor_bottom = 0.311728
+offset_bottom = -186.0
 theme_override_styles/panel = SubResource("StyleBoxFlat_ki47x")
 script = ExtResource("1_wvabv")
 metadata/_edit_use_anchors_ = true
@@ -25,13 +25,13 @@ metadata/_edit_use_anchors_ = true
 layout_mode = 1
 anchors_preset = -1
 anchor_left = 0.5
-anchor_top = 4.9375
+anchor_top = 7.4375
 anchor_right = 0.5
-anchor_bottom = 4.9375
+anchor_bottom = 7.4375
 offset_left = -143.0
-offset_top = -87.0
+offset_top = -151.0
 offset_right = 145.0
-offset_bottom = 88.0
+offset_bottom = 24.0
 theme_override_font_sizes/font_size = 16
 text = "0
 "

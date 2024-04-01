@@ -1,21 +1,22 @@
-[gd_scene load_steps=51 format=3 uid="uid://cbs8svi42de1a"]
+[gd_scene load_steps=59 format=3 uid="uid://cbs8svi42de1a"]
 
 [ext_resource type="AudioStream" uid="uid://bc2048varugj4" path="res://SFX/hit1.ogg" id="1_0d0hc"]
 [ext_resource type="Script" path="res://Scripts/GlobalScene.gd" id="1_w0ekv"]
 [ext_resource type="AudioStream" uid="uid://c31qbh30m035e" path="res://SFX/hit3.ogg" id="2_85e1h"]
 [ext_resource type="AudioStream" uid="uid://do3j8arnhthoa" path="res://SFX/hit2.ogg" id="2_oeo32"]
 [ext_resource type="AudioStream" uid="uid://3xq43ocl3wh0" path="res://SFX/whistle.ogg" id="2_t6m7m"]
+[ext_resource type="Script" path="res://Scripts/Chart.gd" id="2_vs18r"]
 [ext_resource type="AudioStream" uid="uid://dxcxypi6msw2y" path="res://SFX/tink.ogg" id="3_gulsh"]
 [ext_resource type="Texture2D" uid="uid://crco24mtgefjh" path="res://Models/Rhyhtm_lambert3.png" id="3_pfwxh"]
+[ext_resource type="Script" path="res://Scripts/Input.gd" id="3_ux4ka"]
 [ext_resource type="AudioStream" uid="uid://dsaaab600qdpk" path="res://SFX/tonk.ogg" id="4_id3kr"]
 [ext_resource type="PackedScene" uid="uid://jeqj0p66btb" path="res://Scenes/Paddler.tscn" id="4_nsqsi"]
 [ext_resource type="Texture2D" uid="uid://cpmqmsp30ppe7" path="res://Models/Rhyhtm_lambert11.png" id="4_y8lf0"]
+[ext_resource type="AudioStream" uid="uid://ca1baokajk2r7" path="res://SFX/gongSerious.ogg" id="5_mrmr3"]
 [ext_resource type="Script" path="res://Scripts/Conductor.gd" id="8_6smow"]
 [ext_resource type="Texture2D" uid="uid://1fd150e13ip4" path="res://Models/Rhyhtm_lambert4.png" id="8_h1sl4"]
 [ext_resource type="AudioStream" uid="uid://bt28nxd1uv55d" path="res://Music/The Slaughter Continues - Remastered.mp3" id="10_c7j7p"]
-[ext_resource type="Texture2D" uid="uid://dwbmc80v5k5qr" path="res://Models/Rhyhtm_lambert12.png" id="10_fu2pj"]
 [ext_resource type="Texture2D" uid="uid://bsqxvaltvkmcu" path="res://Models/Rhyhtm_lambert13.png" id="11_ea10v"]
-[ext_resource type="VoxelGIData" uid="uid://bd8prn7nhgs7k" path="res://Scenes/Rally.VoxelGI_data.res" id="13_j78gn"]
 
 [sub_resource type="ProceduralSkyMaterial" id="ProceduralSkyMaterial_qoaev"]
 
@@ -24,24 +25,26 @@ sky_material = SubResource("ProceduralSkyMaterial_qoaev")
 
 [sub_resource type="Environment" id="Environment_613w8"]
 background_mode = 1
-background_color = Color(1, 0.67451, 0, 1)
+background_color = Color(1, 1, 1, 1)
+background_energy_multiplier = 0.8
 sky = SubResource("Sky_06o8s")
-tonemap_mode = 2
-glow_enabled = true
+tonemap_exposure = 0.75
+ssao_power = 0.0177623
+glow_bloom = 0.25
+glow_blend_mode = 0
 
 [sub_resource type="Curve3D" id="Curve3D_2py8k"]
 bake_interval = 0.02
 _data = {
-"points": PackedVector3Array(0, -3.60209, 0.493225, 5.56633e-05, 1.0091, -3.5284, 0, 0, 5, -6.6407e-05, -0.00215993, 0.122108, 5.56633e-05, 2.03342, -2.10995, 0, 0.105, -0.6, 5.56633e-05, 2.30121, 2.13744, 0, 0, 0, 0, 0, -5),
-"tilts": PackedFloat32Array(0, 0, 0)
+"points": PackedVector3Array(0, -0.399246, 0.0289307, 0, 0.399246, -0.0289307, 5.56633e-05, -1.45286, 5.87943, -0.00012207, 0.185423, 0.632131, 0.00012207, -0.185423, -0.632131, 5.56633e-05, -0.000798583, 5.00428),
+"tilts": PackedFloat32Array(0, 0)
 }
-point_count = 3
+point_count = 2
 
 [sub_resource type="GDScript" id="GDScript_e35jl"]
 resource_name = "BallHeight"
 script/source = "extends Path3D
 
-var heights = [\"regular\",\"slow\",\"fast\",\"superfast\",\"fast\",\"serve\"]
 
 var height : int = 0
 
@@ -59,8 +62,28 @@ func _physics_process(delta):
 
 func loadCurve(height):
 	
+	if height == 6:
+		data = [Vector3(0.000056, -1.45286, 5.87943), Vector3(0.000056, -0.000799, 5.00428), Vector3(0, 0.399246, -0.028931), Vector3(-0.000122, 0.185423, 0.632131)]
+		if curve.point_count == 3:
+			curve.remove_point(2)
+		curve.set_point_position(0,data[0])
+		curve.set_point_position(1,data[1])
+		curve.set_point_out(0,data[2])
+		curve.set_point_in(1,data[3])
+		return
+	
 	if height == 4:
 		data = [Vector3(0.000056, -0.572414, 4.74451), Vector3(0.000056, 0.076902, 4.17151), Vector3(0, 1.75121, -0.120804), Vector3(0, 4.60177, 0.276292)]
+		if curve.point_count == 3:
+			curve.remove_point(2)
+		curve.set_point_position(0,data[0])
+		curve.set_point_position(1,data[1])
+		curve.set_point_out(0,data[2])
+		curve.set_point_in(1,data[3])
+		return
+	
+	if height == 5:
+		data = [Vector3(0, 0, 5), Vector3(2.1392, -0.291539, 3.48901), Vector3(1.64, 1.587, -0.855), Vector3(0, 0.288, 0.122)]
 		if curve.point_count == 3:
 			curve.remove_point(2)
 		curve.set_point_position(0,data[0])
@@ -97,10 +120,10 @@ func flip():
 
 func saveCurve():
 	
+	data.append(curve.get_point_position(0))
+	data.append(curve.get_point_position(1))
 	data.append(curve.get_point_out(0))
-	data.append(curve.get_point_out(1))
 	data.append(curve.get_point_in(1))
-	data.append(curve.get_point_in(2))
 	
 	print(data)
 
@@ -127,8 +150,6 @@ var beatDur2 : float = 1.0
 
 var curvePosition : float = 0.0
 
-var swappped : bool = false
-
 
 var alreadyHit : bool = false
 
@@ -142,9 +163,9 @@ var serveBeat : float = 2.0
 var serveLength : float = 2.0
 
 var fast : bool = false
-var beatToFast : int = 0
-var beatToNormal : int = 0
-var speedToChangeTo : int = 0
+var beatToFast : int = -1
+var beatToNormal : int = -1
+
 
 signal swingOpp
 signal swingPlay
@@ -153,6 +174,8 @@ signal readyPlay
 
 signal forceFastPath
 signal forceNormalPath
+signal forceBarelyPath
+signal forceServe
 
 signal playHit
 signal tableHit
@@ -165,14 +188,16 @@ signal serveDone
 func _ready():
 	pass
 
-func _process(delta):
+func _physics_process(delta):
+	print(startServing)
+	
 	if served == true:
-		show()
 		_physicsTick()
+		GlobalValues.beatDurs = beatDur1 + beatDur2
+		GlobalValues.hitBeat = hitBeat
 	
 	if startServing == true:
 		_serve(serveBeat,serveLength)
-
 
 func _physicsTick():
 	var bakedPos
@@ -223,25 +248,19 @@ func _goForward():
 		
 	
 	if abs(curvePosition) - abs(beatDur2) == 0:
-		if back == true:
-			_stopAllSources()
-			$HitOpp.play()
-			#$AnimationPlayer.play(\"Tink\")
-			emit_signal(\"swingPlay\")
-			emit_signal(\"playHit\")
-			
-		else:
+		if back == false:
 			_stopAllSources()
 			$HitPlayer.play()
 			#$AnimationPlayer.play(\"Tonk\")
 			emit_signal(\"oppHit\")
 			emit_signal(\"swingOpp\")
+			alreadyHit = false
+			get_parent().get_parent().flip()
+			curvePosition = 0
+			back = not back
+			hitBeat = round(GlobalValues.songInBeats)
+			
 		
-		alreadyHit = false
-		get_parent().get_parent().flip()
-		curvePosition = 0
-		back = not back
-		hitBeat = round(GlobalValues.songInBeats)
 		
 
 func _fastRally():
@@ -267,21 +286,6 @@ func _fastRally():
 	else:
 		curvePosition = offsetFromStart * 0.58
 	
-	
-	if abs(curvePosition) - abs(beatDur2) == 0:
-		_stopAllSources()
-		$HitOpp.play()
-		#$AnimationPlayer.play(\"Tink\")
-		emit_signal(\"swingOpp\")
-			
-		
-		alreadyHit = false
-		get_parent().get_parent().flip()
-		curvePosition = 0
-		back = false
-		fast = false
-		hitBeat = round(GlobalValues.songInBeats)
-
 
 func _on_node_3d_ball_height(height):
 	back = true
@@ -397,32 +401,67 @@ func _on_vr_test_ball_height(height):
 	emit_signal(\"swingOpp\")
 	#$AnimationPlayer.play(\"Tonk\")
 	$HitOpp.play()
-	hitBeat = round(GlobalValues.songInBeats)
-	
+	hitBeat = hitBeat + beatDur1 + beatDur2
+
+
+func _barely():
+	pass
+
+func _miss():
+	pass
+
+func _hit():
+	_stopAllSources()
+	$HitOpp.play()
+	#$AnimationPlayer.play(\"Tink\")
+	emit_signal(\"swingPlay\")
+	emit_signal(\"playHit\")
+	alreadyHit = false
+	get_parent().get_parent().flip()
+	curvePosition = 0
+	back = not back
+	hitBeat = hitBeat + beatDur1 + beatDur2
+
+func _restart():
+	back = true
+	hitBeat = 0.0
+	beatDur1 = 1.0
+	beatDur2 = 1.0
+	curvePosition = 0.0
+	alreadyHit = false
+	changedHeight = false
+	served = false
+	startServing = false
+	serveBeat = -1.0
+	serveLength = 2.0
+	fast = false
+	beatToFast = -1
+	beatToNormal = -1
 "
 
 [sub_resource type="SphereShape3D" id="SphereShape3D_dlq2d"]
 
 [sub_resource type="StandardMaterial3D" id="StandardMaterial3D_r0lnq"]
 albedo_color = Color(1, 1, 0, 1)
-emission = Color(1, 1, 0, 1)
+emission_enabled = true
 emission_energy_multiplier = 16.0
 
-[sub_resource type="Curve" id="Curve_u6sse"]
-_data = [Vector2(0, 1), 0.0, -1.0, 0, 1, Vector2(1, 0), -1.0, 0.0, 1, 0]
+[sub_resource type="Curve" id="Curve_2vnpv"]
+_data = [Vector2(0, 1), 0.0, 0.0, 0, 0, Vector2(1, 0), 0.0, 0.0, 0, 0]
 point_count = 2
-metadata/_snap_count = 9
 
-[sub_resource type="CurveTexture" id="CurveTexture_5a768"]
-curve = SubResource("Curve_u6sse")
+[sub_resource type="CurveTexture" id="CurveTexture_8qsjv"]
+curve = SubResource("Curve_2vnpv")
 
 [sub_resource type="ParticleProcessMaterial" id="ParticleProcessMaterial_juf2n"]
 gravity = Vector3(0, 0, 0)
-alpha_curve = SubResource("CurveTexture_5a768")
+alpha_curve = SubResource("CurveTexture_8qsjv")
 
 [sub_resource type="StandardMaterial3D" id="StandardMaterial3D_1nmaf"]
+transparency = 1
+vertex_color_use_as_albedo = true
 albedo_color = Color(1, 1, 0, 1)
-emission = Color(1, 1, 0, 1)
+emission_enabled = true
 emission_energy_multiplier = 16.0
 
 [sub_resource type="SphereMesh" id="SphereMesh_nt8l3"]
@@ -594,7 +633,7 @@ transparency = 4
 cull_mode = 2
 albedo_texture = SubResource("CompressedTexture2D_rib2h")
 metallic_specular = 1.0
-roughness = 0.1
+roughness = 0.0
 
 [sub_resource type="StandardMaterial3D" id="StandardMaterial3D_6kjed"]
 resource_name = "lambert4.001"
@@ -717,43 +756,8 @@ _surfaces = [{
 blend_shape_mode = 0
 shadow_mesh = SubResource("ArrayMesh_gq45n")
 
-[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_m4mwo"]
-resource_name = "lambert12.001"
-transparency = 4
-cull_mode = 2
-albedo_texture = ExtResource("10_fu2pj")
-
-[sub_resource type="ArrayMesh" id="ArrayMesh_3ryd4"]
-_surfaces = [{
-"aabb": AABB(-342.531, -177.797, 2, 685.063, 253.906, 1.00136e-05),
-"format": 34896613377,
-"index_count": 6,
-"index_data": PackedByteArray(0, 0, 2, 0, 1, 0, 0, 0, 3, 0, 2, 0),
-"name": "lambert12.001",
-"primitive": 3,
-"uv_scale": Vector4(0, 0, 0, 0),
-"vertex_count": 4,
-"vertex_data": PackedByteArray(0, 0, 254, 255, 0, 0, 0, 0, 255, 255, 254, 255, 0, 0, 0, 0, 255, 255, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0)
-}]
-blend_shape_mode = 0
-
-[sub_resource type="ArrayMesh" id="ArrayMesh_1dpdu"]
-resource_name = "Rhyhtm_Level_006"
-_surfaces = [{
-"aabb": AABB(-342.531, -177.797, 2, 685.063, 253.906, 1.00136e-05),
-"attribute_data": PackedByteArray(0, 0, 255, 255, 0, 0, 255, 255, 0, 0, 255, 255, 0, 0, 255, 255),
-"format": 34896613399,
-"index_count": 6,
-"index_data": PackedByteArray(0, 0, 2, 0, 1, 0, 0, 0, 3, 0, 2, 0),
-"material": SubResource("StandardMaterial3D_m4mwo"),
-"name": "lambert12.001",
-"primitive": 3,
-"uv_scale": Vector4(0, 0, 0, 0),
-"vertex_count": 4,
-"vertex_data": PackedByteArray(0, 0, 254, 255, 0, 0, 255, 255, 255, 255, 254, 255, 0, 0, 255, 255, 255, 255, 0, 0, 0, 0, 255, 255, 0, 0, 0, 0, 0, 0, 255, 255, 255, 255, 255, 127, 255, 255, 255, 127, 255, 255, 255, 127, 255, 255, 255, 127)
-}]
-blend_shape_mode = 0
-shadow_mesh = SubResource("ArrayMesh_3ryd4")
+[sub_resource type="ConcavePolygonShape3D" id="ConcavePolygonShape3D_lf13n"]
+data = PackedVector3Array(1.9375, -3.9219, -1.625, 1.9375, 3.9219, -1.625, 0.0312, -3.9219, -1.625, 0.0312, -3.9219, -1.625, 1.9375, 3.9219, -1.625, 0.0312, 3.9219, -1.625, -0.0313, -3.9219, -1.625, -0.0313, 3.9219, -1.625, -1.9219, -3.9219, -1.625, -1.9219, -3.9219, -1.625, -0.0313, 3.9219, -1.625, -1.9219, 3.9219, -1.625, -2.0625, 0, -1.8438, -2.0625, 0, -1.625, 2.0625, 0, -1.8438, 2.0625, 0, -1.8438, -2.0625, 0, -1.625, 2.0625, 0, -1.625, 2.0625, 0, -1.8438, 2.0625, 0, -1.625, -2.0625, 0, -1.8438, -2.0625, 0, -1.8438, 2.0625, 0, -1.625, -2.0625, 0, -1.625, -2.0625, -0.0001, -1.9063, -2.0625, -0.0001, -1.8438, 2.0625, -0.0001, -1.9063, 2.0625, -0.0001, -1.9063, -2.0625, -0.0001, -1.8438, 2.0625, -0.0001, -1.8438, 2.0625, -0.0001, -1.9063, 2.0625, -0.0001, -1.625, 2.125, -0.0001, -1.9063, 2.125, -0.0001, -1.9063, 2.0625, -0.0001, -1.625, 2.125, -0.0001, -1.625, -2.125, -0.0001, -1.9063, -2.125, -0.0001, -1.625, -2.0625, -0.0001, -1.9063, -2.0625, -0.0001, -1.9063, -2.125, -0.0001, -1.625, -2.0625, -0.0001, -1.625, 2.0625, -0.0001, -1.9063, 2.0625, -0.0001, -1.8438, -2.0625, -0.0001, -1.9063, -2.0625, -0.0001, -1.9063, 2.0625, -0.0001, -1.8438, -2.0625, -0.0001, -1.8438, -2.0625, -0.0001, -1.9063, -2.0625, -0.0001, -1.625, -2.125, -0.0001, -1.9063, -2.125, -0.0001, -1.9063, -2.0625, -0.0001, -1.625, -2.125, -0.0001, -1.625, 2.125, -0.0001, -1.9063, 2.125, -0.0001, -1.625, 2.0625, -0.0001, -1.9063, 2.0625, -0.0001, -1.9063, 2.125, -0.0001, -1.625, 2.0625, -0.0001, -1.625, 0.0312, -3.922, -1.625, 0.0312, 3.9219, -1.625, -0.0313, -3.922, -1.625, -0.0313, -3.922, -1.625, 0.0312, 3.9219, -1.625, -0.0313, 3.9219, -1.625, 2, -4, -1.625, 2, -3.922, -1.625, -2, -4, -1.625, -2, -4, -1.625, 2, -3.922, -1.625, -2, -3.922, -1.625, 1.9375, 3.9219, -1.625, 2, -3.922, -1.625, 2, 3.9219, -1.625, 1.9375, 3.9219, -1.625, 1.9375, -3.922, -1.625, 2, -3.922, -1.625, -2, 3.9219, -1.625, -1.9219, -3.922, -1.625, -1.9219, 3.9219, -1.625, -2, 3.9219, -1.625, -2, -3.922, -1.625, -1.9219, -3.922, -1.625, -2, 4, -1.625, 2, 3.9219, -1.625, 2, 4, -1.625, -2, 4, -1.625, -2, 3.9219, -1.625, 2, 3.9219, -1.625, 1.5, -3.0001, -1.5, 1.5, -3.0001, 0, 1.5, -3.1251, -1.5, 1.5, -3.1251, -1.5, 1.5, -3.0001, 0, 1.5, -3.1251, 0, 1.625, -3.1251, -1.5, 1.625, -3.1251, 0, 1.625, -3.0001, -1.5, 1.625, -3.0001, -1.5, 1.625, -3.1251, 0, 1.625, -3.0001, 0, 1.625, -3.1251, 0, 1.625, -3.1251, -1.5, 1.5, -3.1251, 0, 1.5, -3.1251, 0, 1.625, -3.1251, -1.5, 1.5, -3.1251, -1.5, 1.625, -3.0001, -1.5, 1.625, -3.0001, 0, 1.5, -3.0001, -1.5, 1.5, -3.0001, -1.5, 1.625, -3.0001, 0, 1.5, -3.0001, 0, -1.6251, -3.0001, -1.5, -1.6251, -3.0001, 0, -1.6251, -3.1251, -1.5, -1.6251, -3.1251, -1.5, -1.6251, -3.0001, 0, -1.6251, -3.1251, 0, -1.5001, -3.1251, -1.5, -1.5001, -3.1251, 0, -1.5001, -3.0001, -1.5, -1.5001, -3.0001, -1.5, -1.5001, -3.1251, 0, -1.5001, -3.0001, 0, -1.5001, -3.1251, 0, -1.5001, -3.1251, -1.5, -1.6251, -3.1251, 0, -1.6251, -3.1251, 0, -1.5001, -3.1251, -1.5, -1.6251, -3.1251, -1.5, -1.5001, -3.0001, -1.5, -1.5001, -3.0001, 0, -1.6251, -3.0001, -1.5, -1.6251, -3.0001, -1.5, -1.5001, -3.0001, 0, -1.6251, -3.0001, 0, 1.5, 3.125, -1.5, 1.5, 3.125, 0, 1.5, 3, -1.5, 1.5, 3, -1.5, 1.5, 3.125, 0, 1.5, 3, 0, 1.625, 3, -1.5, 1.625, 3, 0, 1.625, 3.125, -1.5, 1.625, 3.125, -1.5, 1.625, 3, 0, 1.625, 3.125, 0, 1.625, 3, 0, 1.625, 3, -1.5, 1.5, 3, 0, 1.5, 3, 0, 1.625, 3, -1.5, 1.5, 3, -1.5, 1.625, 3.125, -1.5, 1.625, 3.125, 0, 1.5, 3.125, -1.5, 1.5, 3.125, -1.5, 1.625, 3.125, 0, 1.5, 3.125, 0, -1.6251, 3.125, -1.5, -1.6251, 3.125, 0, -1.6251, 3, -1.5, -1.6251, 3, -1.5, -1.6251, 3.125, 0, -1.6251, 3, 0, -1.5001, 3, -1.5, -1.5001, 3, 0, -1.5001, 3.125, -1.5, -1.5001, 3.125, -1.5, -1.5001, 3, 0, -1.5001, 3.125, 0, -1.5001, 3, 0, -1.5001, 3, -1.5, -1.6251, 3, 0, -1.6251, 3, 0, -1.5001, 3, -1.5, -1.6251, 3, -1.5, -1.5001, 3.125, -1.5, -1.5001, 3.125, 0, -1.6251, 3.125, -1.5, -1.6251, 3.125, -1.5, -1.5001, 3.125, 0, -1.6251, 3.125, 0, -2, 4, -1.625, -2, 4, -1.5, -2, -4, -1.625, -2, -4, -1.625, -2, 4, -1.5, -2, -4, -1.5, 2, -4, -1.625, 2, -4, -1.5, 2, 4, -1.625, 2, 4, -1.625, 2, -4, -1.5, 2, 4, -1.5, 2, 4, -1.5, 2, -4, -1.5, -2, 4, -1.5, -2, 4, -1.5, 2, -4, -1.5, -2, -4, -1.5, 2, -4, -1.5, 2, -4, -1.625, -2, -4, -1.5, -2, -4, -1.5, 2, -4, -1.625, -2, -4, -1.625, 2, 4, -1.625, 2, 4, -1.5, -2, 4, -1.625, -2, 4, -1.625, 2, 4, -1.5, -2, 4, -1.5)
 
 [sub_resource type="StandardMaterial3D" id="StandardMaterial3D_m40mt"]
 resource_name = "lambert13.001"
@@ -825,6 +829,25 @@ _surfaces = [{
 blend_shape_mode = 0
 shadow_mesh = SubResource("ArrayMesh_emmpe")
 
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_3p8ry"]
+metallic_specular = 1.0
+
+[sub_resource type="PlaneMesh" id="PlaneMesh_0cydb"]
+material = SubResource("StandardMaterial3D_3p8ry")
+size = Vector2(512, 512)
+
+[sub_resource type="GDScript" id="GDScript_tf22s"]
+script/source = "extends MeshInstance3D
+
+
+func _on_node_3d_serious_mode():
+	get_active_material(0).albedo_color = Color(0,0,0,1)
+	get_active_material(0).metallic = 1
+"
+
+[sub_resource type="ConcavePolygonShape3D" id="ConcavePolygonShape3D_w18ir"]
+data = PackedVector3Array(256, 0, 256, -256, 0, 256, 256, 0, -256, -256, 0, 256, -256, 0, -256, 256, 0, -256)
+
 [sub_resource type="GDScript" id="GDScript_y1dis"]
 script/source = "extends Node3D
 
@@ -836,29 +859,100 @@ var rotLength : float = 1.0
 
 var currentRot : float = 160.0
 
+var ease : float = 0.0
+
 func _physics_process(delta):
 	
-	rotation_degrees.y = lerp(currentRot,tar,ease(GlobalValues.posFromBeat(startBeat,rotLength,true) / rotLength,1.6))
+	rotation_degrees.y = lerp(currentRot,tar,ease(GlobalValues.posFromBeat(startBeat,rotLength,true) / rotLength,ease))
 	
 
-func _goTowards(rot,length):
+func _goTowards(rot,length,e):
 	startBeat = round(GlobalValues.songInBeats)
 	rotLength = length
 	currentRot = rotation_degrees.y
 	tar = rot
+	ease = e
+"
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_o86ux"]
+shading_mode = 0
+albedo_color = Color(0, 0, 0, 1)
+
+[sub_resource type="PlaneMesh" id="PlaneMesh_bwp12"]
+material = SubResource("StandardMaterial3D_o86ux")
+orientation = 2
+
+[sub_resource type="Shader" id="Shader_phj8y"]
+code = "shader_type spatial;
+
+uniform float alpha;
+
+void vertex() {
+	// Called for every vertex the material is visible on.
+}
+
+void fragment() {
+	ALPHA = alpha;
+}
+
+//void light() {
+	// Called for every pixel for every light affecting the material.
+	// Uncomment to replace the default light processing function with this one.
+//}
+"
+
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_cqvpf"]
+render_priority = 0
+shader = SubResource("Shader_phj8y")
+shader_parameter/alpha = 0.0
+
+[sub_resource type="GDScript" id="GDScript_deufs"]
+script/source = "extends MeshInstance3D
+
+var alpha = 0.0
+var startBeat : float = 0.0
+var length : float = 0.0
+var interp : bool = false
+
+
+func _on_node_3d_serious_mode():
+	get_active_material(0).set_shader_parameter(\"alpha\",1)
+	alpha = 1.0
+	length = 1
+	startBeat = round(GlobalValues.songInBeats)
+	interp = true
+
+func _physics_process(delta):
+	get_active_material(0).set_shader_parameter(\"alpha\",alpha)
+	
+	
+	if interp == true:
+		alpha = lerp(1.0,0.0,GlobalValues.posFromBeat(startBeat,length,true))
+	
+	if alpha >= 1:
+		interp = false
 "
 
 [node name="Node3D" type="Node3D"]
 script = ExtResource("1_w0ekv")
 
-[node name="Whistle" type="AudioStreamPlayer" parent="."]
-stream = ExtResource("2_t6m7m")
+[node name="Chart" type="Node" parent="."]
+script = ExtResource("2_vs18r")
+
+[node name="Input" type="Node" parent="."]
+script = ExtResource("3_ux4ka")
 
 [node name="Tink" type="AudioStreamPlayer" parent="."]
 stream = ExtResource("3_gulsh")
+volume_db = 5.0
 
 [node name="Tonk" type="AudioStreamPlayer" parent="."]
 stream = ExtResource("4_id3kr")
+volume_db = 5.0
+
+[node name="GongSerious" type="AudioStreamPlayer" parent="."]
+stream = ExtResource("5_mrmr3")
+volume_db = 10.0
 
 [node name="WorldEnvironment" type="WorldEnvironment" parent="."]
 environment = SubResource("Environment_613w8")
@@ -873,12 +967,13 @@ curve = SubResource("Curve3D_2py8k")
 script = SubResource("GDScript_e35jl")
 
 [node name="PathFollow3D" type="PathFollow3D" parent="Path3D"]
-transform = Transform3D(1, 0, 0, 0, 0.999959, 0, 0, 0, 0.999959, 0, 0, 5)
+transform = Transform3D(1, 0, 0, 0, 0.999959, 0, 0, 0, 0.999959, 5.56633e-05, -1.45286, 5.87943)
 rotation_mode = 0
 loop = false
 tilt_enabled = false
 
 [node name="CharacterBody3D" type="CharacterBody3D" parent="Path3D/PathFollow3D"]
+visible = false
 script = SubResource("GDScript_q3xrv")
 
 [node name="CollisionShape3D" type="CollisionShape3D" parent="Path3D/PathFollow3D/CharacterBody3D"]
@@ -891,17 +986,15 @@ material = SubResource("StandardMaterial3D_r0lnq")
 
 [node name="HitPlayer" type="AudioStreamPlayer" parent="Path3D/PathFollow3D/CharacterBody3D"]
 stream = ExtResource("2_85e1h")
-
-[node name="HitTable" type="AudioStreamPlayer" parent="Path3D/PathFollow3D/CharacterBody3D"]
-stream = ExtResource("2_oeo32")
+volume_db = 10.0
 
 [node name="HitOpp" type="AudioStreamPlayer" parent="Path3D/PathFollow3D/CharacterBody3D"]
 stream = ExtResource("1_0d0hc")
+volume_db = 10.0
 
 [node name="GPUParticles3D" type="GPUParticles3D" parent="Path3D/PathFollow3D/CharacterBody3D"]
-amount = 3
+amount = 64
 lifetime = 0.08
-trail_enabled = true
 process_material = SubResource("ParticleProcessMaterial_juf2n")
 draw_pass_1 = SubResource("SphereMesh_nt8l3")
 
@@ -910,29 +1003,41 @@ libraries = {
 "": SubResource("AnimationLibrary_4q1lp")
 }
 
-[node name="Rhyhtm" type="Node3D" parent="."]
+[node name="HitTable" type="AudioStreamPlayer" parent="Path3D/PathFollow3D/CharacterBody3D"]
+stream = ExtResource("2_oeo32")
 
-[node name="Rhyhtm" type="Node3D" parent="Rhyhtm"]
+[node name="Level" type="Node3D" parent="."]
 
-[node name="Level" type="MeshInstance3D" parent="Rhyhtm/Rhyhtm"]
+[node name="Rhyhtm" type="Node3D" parent="Level"]
+
+[node name="Table" type="MeshInstance3D" parent="Level/Rhyhtm"]
 transform = Transform3D(1, 0, 0, 0, 0, -1, 0, 1, 0, 0, -0.156497, 0)
 mesh = SubResource("ArrayMesh_puvo6")
 skeleton = NodePath("")
 
-[node name="Level_001" type="MeshInstance3D" parent="Rhyhtm/Rhyhtm"]
-transform = Transform3D(1, 0, 0, 0, 0, -1, 0, 1, 0, 0, 0, 0)
-mesh = SubResource("ArrayMesh_1dpdu")
-skeleton = NodePath("")
+[node name="StaticBody3D" type="StaticBody3D" parent="Level/Rhyhtm/Table"]
 
-[node name="Platform" type="MeshInstance3D" parent="Rhyhtm/Rhyhtm"]
+[node name="CollisionShape3D" type="CollisionShape3D" parent="Level/Rhyhtm/Table/StaticBody3D"]
+shape = SubResource("ConcavePolygonShape3D_lf13n")
+
+[node name="Platform" type="MeshInstance3D" parent="Level/Rhyhtm"]
 transform = Transform3D(1, 0, 0, 0, 0, -1, 0, 1, 0, 0, 0, 0)
+visible = false
 mesh = SubResource("ArrayMesh_w6p5x")
 skeleton = NodePath("")
 
+[node name="MeshInstance3D" type="MeshInstance3D" parent="Level/Rhyhtm"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -0.175793, 0)
+mesh = SubResource("PlaneMesh_0cydb")
+script = SubResource("GDScript_tf22s")
+
+[node name="StaticBody3D" type="StaticBody3D" parent="Level/Rhyhtm/MeshInstance3D"]
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="Level/Rhyhtm/MeshInstance3D/StaticBody3D"]
+shape = SubResource("ConcavePolygonShape3D_w18ir")
+
 [node name="AudioStreamPlayer" type="AudioStreamPlayer" parent="."]
 stream = ExtResource("10_c7j7p")
-volume_db = -5.0
-autoplay = true
 script = ExtResource("8_6smow")
 bpm = 155
 
@@ -944,7 +1049,6 @@ script = SubResource("GDScript_y1dis")
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 2.68, 6.44)
 current = true
 size = 6.2
-far = 200.0
 
 [node name="Label" type="Label" parent="Pivot/Camera3D"]
 modulate = Color(1, 1, 1, 0)
@@ -967,20 +1071,30 @@ horizontal_alignment = 1
 vertical_alignment = 1
 metadata/_edit_use_anchors_ = true
 
+[node name="MeshInstance3D" type="MeshInstance3D" parent="Pivot/Camera3D"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, -0.485)
+mesh = SubResource("PlaneMesh_bwp12")
+surface_material_override/0 = SubResource("ShaderMaterial_cqvpf")
+script = SubResource("GDScript_deufs")
+
 [node name="Paddler" parent="." instance=ExtResource("4_nsqsi")]
 transform = Transform3D(-0.4, 0, -3.49691e-08, 0, 0.4, 0, 3.49691e-08, 0, -0.4, 0, -0.174, 5.401)
 swingInt = 4
 
 [node name="Player" parent="." instance=ExtResource("4_nsqsi")]
-transform = Transform3D(0.4, 0, 0, 0, 0.4, 0, 0, 0, 0.4, 0, -0.173997, -5.40134)
+transform = Transform3D(0.4, 0, 0, 0, 0.4, 0, 0, 0, 0.4, 0, -0.174, -5.401)
 offset = 2
 swingInt = 4
 
-[node name="VoxelGI" type="VoxelGI" parent="."]
-visible = false
-data = ExtResource("13_j78gn")
+[node name="Whistle" type="AudioStreamPlayer" parent="."]
+stream = ExtResource("2_t6m7m")
 
 [connection signal="ballHeight" from="." to="Path3D/PathFollow3D/CharacterBody3D" method="_on_node_3d_ball_height"]
+[connection signal="seriousMode" from="." to="Level/Rhyhtm/MeshInstance3D" method="_on_node_3d_serious_mode"]
+[connection signal="seriousMode" from="." to="Pivot/Camera3D/MeshInstance3D" method="_on_node_3d_serious_mode"]
+[connection signal="seriousMode" from="." to="Paddler" method="_on_node_3d_serious_mode"]
+[connection signal="seriousMode" from="." to="Player" method="_on_node_3d_serious_mode"]
+[connection signal="serve" from="Chart" to="." method="_on_chart_serve"]
 [connection signal="forceFastPath" from="Path3D/PathFollow3D/CharacterBody3D" to="Path3D" method="_on_character_body_3d_force_fast_path"]
 [connection signal="forceNormalPath" from="Path3D/PathFollow3D/CharacterBody3D" to="Path3D" method="_on_character_body_3d_force_normal_path"]
 [connection signal="oppHit" from="Path3D/PathFollow3D/CharacterBody3D" to="." method="_on_character_body_3d_opp_hit"]
@@ -992,6 +1106,7 @@ data = ExtResource("13_j78gn")
 [connection signal="swingPlay" from="Path3D/PathFollow3D/CharacterBody3D" to="Player" method="_on_character_body_3d_swing_play"]
 [connection signal="tableHit" from="Path3D/PathFollow3D/CharacterBody3D" to="." method="_on_character_body_3d_table_hit"]
 [connection signal="beat" from="AudioStreamPlayer" to="." method="_on_audio_stream_player_beat"]
+[connection signal="beat" from="AudioStreamPlayer" to="Chart" method="_on_audio_stream_player_beat"]
 [connection signal="beat" from="AudioStreamPlayer" to="Path3D/PathFollow3D/CharacterBody3D" method="_on_audio_stream_player_beat"]
 [connection signal="beat" from="AudioStreamPlayer" to="Paddler" method="_on_audio_stream_player_beat"]
 [connection signal="beat" from="AudioStreamPlayer" to="Player" method="_on_audio_stream_player_beat"]

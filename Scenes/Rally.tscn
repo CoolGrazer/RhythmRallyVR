@@ -189,7 +189,6 @@ func _ready():
 	pass
 
 func _physics_process(delta):
-	print(startServing)
 	
 	if served == true:
 		_physicsTick()
@@ -197,8 +196,8 @@ func _physics_process(delta):
 		GlobalValues.hitBeat = hitBeat
 	
 	if startServing == true:
-		_serve(serveBeat,serveLength)
-
+		_serve(0,serveLength)
+# the issue with serving is that the beat isn't being prop resset lmao :(
 func _physicsTick():
 	var bakedPos
 	
@@ -1038,6 +1037,7 @@ shape = SubResource("ConcavePolygonShape3D_w18ir")
 
 [node name="AudioStreamPlayer" type="AudioStreamPlayer" parent="."]
 stream = ExtResource("10_c7j7p")
+volume_db = -80.0
 script = ExtResource("8_6smow")
 bpm = 155
 

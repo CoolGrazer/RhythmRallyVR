@@ -186,6 +186,7 @@ func restart():
 	$Path3D/PathFollow3D/CharacterBody3D._restart()
 
 func _serve(length):
+	
 	$Path3D/PathFollow3D/CharacterBody3D.startServing = true
 	$Path3D/PathFollow3D/CharacterBody3D.serveBeat = round(GlobalValues.songInBeats)
 	$Path3D/PathFollow3D/CharacterBody3D.serveLength = length

@@ -125,7 +125,6 @@ func saveCurve():
 	data.append(curve.get_point_out(0))
 	data.append(curve.get_point_in(1))
 	
-	print(data)
 
 
 func _on_character_body_3d_force_fast_path():
@@ -242,7 +241,7 @@ func _goForward():
 		
 	else:
 		curvePosition = hitPosition1 * tableHitTime
-		#print(curvePosition)
+		
 		
 		
 	

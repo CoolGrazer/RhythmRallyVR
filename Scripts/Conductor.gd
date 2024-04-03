@@ -33,7 +33,7 @@ func _physics_process(_delta):
 		song_position_in_beats = floorTo(song_position / sec_per_beat,0.5) + beats_before_start
 		
 		GlobalValues.songInBeats = (song_position / sec_per_beat)
-		print(round(GlobalValues.songInBeats))
+		
 		
 		_report_beat()
 

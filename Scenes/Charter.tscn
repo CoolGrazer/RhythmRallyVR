@@ -128,7 +128,7 @@ func _generateChart():
 		if x[0] < beatPlayingFrom:
 			$Camera2D/SubViewportContainer/SubViewport/Node3D/Chart.indx1 += 1
 	
-	$Camera2D/SubViewportContainer/SubViewport/Node3D/AudioStreamPlayer.emit_signal(\"beat\",0)
+	
 
 func sort_ascending(a, b):
 	if a[0] < b[0]:
@@ -159,6 +159,8 @@ func _play():
 	paused = false
 	$ColorRect.playing = true
 	_generateChart()
+	get_tree().paused = paused
+	$Camera2D/SubViewportContainer/SubViewport/Node3D/AudioStreamPlayer.emit_signal(\"beat\",0)
 
 
 func _on_pause_pressed():

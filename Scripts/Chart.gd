@@ -17,7 +17,7 @@ func _on_audio_stream_player_beat(position):
 		var string = chart1[indx1][1]
 		if string == "serve":
 			var length = chart1[indx1][2]
-			print(length)
+			print("Will serve!")
 			emit_signal("serve",length)
 			
 		indx1 += 1

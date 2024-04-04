@@ -335,6 +335,9 @@ render_target_update_mode = 4
 [node name="Node3D" parent="Camera2D/SubViewportContainer/SubViewport" instance=ExtResource("2_x2x18")]
 process_mode = 1
 
+[node name="AudioStreamPlayer" parent="Camera2D/SubViewportContainer/SubViewport/Node3D" index="9"]
+bpm = 100.0
+
 [node name="Tracks" type="VBoxContainer" parent="Camera2D"]
 process_mode = 3
 z_index = 1

@@ -65,3 +65,4 @@ environment/ssao/quality=3
 environment/ssil/quality=3
 environment/screen_space_reflection/roughness_quality=3
 environment/subsurface_scattering/subsurface_scattering_quality=3
+environment/defaults/default_clear_color=Color(0, 0, 0, 1)

@@ -1038,7 +1038,6 @@ shape = SubResource("ConcavePolygonShape3D_w18ir")
 stream = ExtResource("10_c7j7p")
 volume_db = -80.0
 script = ExtResource("8_6smow")
-bpm = 155
 
 [node name="Pivot" type="Node3D" parent="."]
 transform = Transform3D(-0.939693, 0.0208798, 0.341382, 0, 0.998135, -0.0610485, -0.34202, -0.0573669, -0.937939, 0, 0, 0)

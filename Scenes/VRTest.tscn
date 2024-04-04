@@ -166,7 +166,6 @@ script = SubResource("GDScript_0hg2q")
 stream = ExtResource("1_vw2tn")
 volume_db = 10.0
 script = ExtResource("5_cgs5d")
-bpm = 124
 
 [node name="XROrigin3D" type="XROrigin3D" parent="."]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 1.5)

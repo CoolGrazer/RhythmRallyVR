@@ -41,7 +41,7 @@ func _report_beat():
 	if last_reported_beat < song_position_in_beats:
 		emit_signal("beat", song_position_in_beats)
 		last_reported_beat = song_position_in_beats
-		print("yo")
+		
 
 
 

@@ -4,7 +4,6 @@ var velocity : Vector3
 
 
 var lastPos = Vector3.ZERO
-@onready var area3D = get_node("Area3D")
 @export var right = false
 
 var bufferedSwing : bool = false
@@ -25,7 +24,7 @@ func _physics_process(_delta):
 	velocity = lastPos - global_position
 	justReleased = false
 	
-	if !is_button_pressed("trigger") and held == true:
+	if !is_button_pressed("trigger_click") and held == true:
 		justReleased = true
 	
 	
@@ -35,7 +34,7 @@ func _physics_process(_delta):
 		$AudioStreamPlayer.play()
 	
 	
-	held = is_button_pressed("trigger")
+	held = is_button_pressed("trigger_click")
 	
 	if frameTimer > 0:
 		frameTimer -= 1
@@ -45,17 +44,12 @@ func _physics_process(_delta):
 		swinging = false
 	
 	if recoveryTimer > 0:
-		print(recoveryTimer)
+		
 		recoveryTimer -= 1
 	elif recoveryTimer == 0:
 		recoveryTimer = -1
 		
 	
-	
-	
-	for x in area3D.get_overlapping_bodies():
-		if !x == self:
-			x.contact(velocity)
 	
 	
 	lastPos = global_position

@@ -4,12 +4,17 @@ extends Node
 
 var served : bool = false
 
+signal hit
+
 func _process(delta):
 	served = get_parent().get_child(7).get_child(0).get_child(0).served
 	
 	if served == true:
 		var offset = getOffset(GlobalValues.hitBeat + GlobalValues.beatDurs)
-		#print(offset)
+		#print_rich("[color=green]" + str(offset) + "[/color]")
+		if abs(offset) < 0.1:
+			#emit_signal("hit")
+			pass
 	
 	
 

@@ -1,21 +1,23 @@
-[gd_scene load_steps=21 format=3 uid="uid://bx8aixtoq3n75"]
+[gd_scene load_steps=16 format=3 uid="uid://bx8aixtoq3n75"]
 
 [ext_resource type="Texture2D" uid="uid://3olw0gxwhckg" path="res://Sprites/title.png" id="1_s7a3f"]
 [ext_resource type="AudioStream" uid="uid://dq2xhcy0pfm5b" path="res://SFX/click.wav" id="2_02xui"]
 [ext_resource type="AudioStream" uid="uid://dpulwgm3w3p0h" path="res://SFX/woosh.wav" id="3_uqrl8"]
 [ext_resource type="AudioStream" uid="uid://bi5l5yo6tbpy" path="res://SFX/1-03 - Greetings! (1).mp3" id="4_7obf8"]
 [ext_resource type="Script" path="res://Scripts/Conductor.gd" id="5_i8sqs"]
-[ext_resource type="Texture2D" uid="uid://w0wiaya6kv0h" path="res://icon.png" id="6_thown"]
-[ext_resource type="AudioStream" uid="uid://do3j8arnhthoa" path="res://SFX/hit2.ogg" id="7_cj3pd"]
-[ext_resource type="AudioStream" uid="uid://bc2048varugj4" path="res://SFX/hit1.ogg" id="8_mhcil"]
 
 [sub_resource type="GDScript" id="GDScript_6ge2g"]
 resource_name = "Title"
 script/source = "extends Control
 
+var fading : bool = false
 
 func _physics_process(delta):
-	pass
+	if fading == true:
+		$PlaceMusic.volume_db -= 0.1
+	
+	if $PlaceMusic.volume_db < -30:
+		get_tree().quit()
 
 func _on_button_pressed():
 	$AnimationPlayer.play_backwards(\"Enter\")
@@ -29,6 +31,8 @@ func _on_button_mouse_entered():
 func _on_button_2_pressed():
 	$AnimationPlayer.play_backwards(\"Enter\")
 	$Woosh.play()
+	fading = true
+	
 
 
 func _on_button_2_mouse_entered():
@@ -124,39 +128,6 @@ corner_radius_bottom_right = 100
 
 [sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_y7ql7"]
 
-[sub_resource type="Curve2D" id="Curve2D_02l4l"]
-bake_interval = 0.01
-_data = {
-"points": PackedVector2Array(0, 0, 0, 0, 50, 586, -259.071, -196.363, 223.616, -98.7818, 550, 588, 0, 0, 0, 0, 1050, 580)
-}
-point_count = 3
-
-[sub_resource type="GDScript" id="GDScript_7l0vf"]
-script/source = "extends Sprite2D
-
-var startBeat : float = 0.0
-var back : bool = false
-
-func _physics_process(delta):
-	if back == false:
-		get_parent().progress_ratio = ease(GlobalValues.posFromBeat(startBeat,1,false),1)
-	else:
-		get_parent().progress_ratio = ease(1 - GlobalValues.posFromBeat(startBeat,1,false),1)
-	
-
-func _refreshBeat():
-	$GONG.play()
-	startBeat = round(GlobalValues.songInBeats)
-	back = !back
-	rotation_degrees += 180
-
-func _on_place_music_beat(position):
-	if fmod(position,1) == 0:
-		_refreshBeat()
-	else:
-		$Off.play()
-"
-
 [node name="Control" type="Control"]
 layout_mode = 3
 anchors_preset = 15
@@ -169,7 +140,7 @@ script = SubResource("GDScript_6ge2g")
 [node name="TextureRect" type="TextureRect" parent="."]
 layout_mode = 0
 offset_right = 1169.0
-offset_bottom = 647.001
+offset_bottom = 647.0
 texture = ExtResource("1_s7a3f")
 expand_mode = 1
 stretch_mode = 4
@@ -189,8 +160,7 @@ offset_bottom = 40.0
 texture_filter = 1
 custom_minimum_size = Vector2(0, 100)
 layout_mode = 2
-offset_left = -528.0
-offset_right = -3.0
+offset_right = 525.0
 offset_bottom = 100.0
 theme_override_font_sizes/font_size = 64
 theme_override_styles/normal = SubResource("StyleBoxFlat_b0f0a")
@@ -204,9 +174,8 @@ expand_icon = true
 [node name="Button2" type="Button" parent="Control"]
 custom_minimum_size = Vector2(0, 100)
 layout_mode = 2
-offset_left = -528.0
 offset_top = 120.0
-offset_right = -3.0
+offset_right = 525.0
 offset_bottom = 220.0
 theme_override_font_sizes/font_size = 64
 theme_override_styles/normal = SubResource("StyleBoxFlat_6vfv8")
@@ -228,31 +197,8 @@ pitch_scale = 0.8
 stream = ExtResource("4_7obf8")
 autoplay = true
 script = ExtResource("5_i8sqs")
-bpm = 110
-
-[node name="Path2D" type="Path2D" parent="."]
-curve = SubResource("Curve2D_02l4l")
-
-[node name="PathFollow2D" type="PathFollow2D" parent="Path2D"]
-position = Vector2(53.7103, 583.161)
-rotation = -0.639427
-progress = 4.67213
-
-[node name="Icon" type="Sprite2D" parent="Path2D/PathFollow2D"]
-texture_filter = 1
-rotation = 1.5708
-scale = Vector2(2, 2)
-texture = ExtResource("6_thown")
-script = SubResource("GDScript_7l0vf")
-
-[node name="GONG" type="AudioStreamPlayer" parent="Path2D/PathFollow2D/Icon"]
-stream = ExtResource("8_mhcil")
-
-[node name="Off" type="AudioStreamPlayer" parent="Path2D/PathFollow2D/Icon"]
-stream = ExtResource("7_cj3pd")
 
 [connection signal="mouse_entered" from="Control/Button" to="." method="_on_button_mouse_entered"]
 [connection signal="pressed" from="Control/Button" to="." method="_on_button_pressed"]
 [connection signal="mouse_entered" from="Control/Button2" to="." method="_on_button_2_mouse_entered"]
 [connection signal="pressed" from="Control/Button2" to="." method="_on_button_2_pressed"]
-[connection signal="beat" from="PlaceMusic" to="Path2D/PathFollow2D/Icon" method="_on_place_music_beat"]

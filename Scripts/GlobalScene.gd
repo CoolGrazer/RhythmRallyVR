@@ -67,7 +67,7 @@ func _changeBallHeight(height):
 
 
 func _on_audio_stream_player_beat(position):
-	return
+	
 	if position == 2:
 		_serve(2)
 		$Paddler/AnimationPlayer2.play("Ready2")

@@ -1,0 +1,19 @@
+[remap]
+
+importer="mp3"
+type="AudioStreamMP3"
+uid="uid://csiomnwt6rwos"
+path="res://.godot/imported/Title Theme - Rhythm Heaven Megamix (1).mp3-979a9c42024938d4c9bbf31e9668a5f5.mp3str"
+
+[deps]
+
+source_file="res://Music/Title Theme - Rhythm Heaven Megamix (1).mp3"
+dest_files=["res://.godot/imported/Title Theme - Rhythm Heaven Megamix (1).mp3-979a9c42024938d4c9bbf31e9668a5f5.mp3str"]
+
+[params]
+
+loop=false
+loop_offset=0
+bpm=0
+beat_count=0
+bar_beats=4

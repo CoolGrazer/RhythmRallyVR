@@ -11,6 +11,7 @@ config_version=5
 [application]
 
 config/name="RhythmRallyVR"
+run/main_scene="res://Scenes/Title.tscn"
 config/features=PackedStringArray("4.2", "Forward Plus")
 boot_splash/image="res://Sprites/Funny.png"
 config/icon="res://icon.svg"
@@ -18,6 +19,7 @@ config/icon="res://icon.svg"
 [autoload]
 
 GlobalValues="*res://Scripts/GlobalValues.gd"
+XRToolsUserSettings="*res://addons/godot-xr-tools/user_settings/user_settings.gd"
 
 [display]
 
@@ -26,7 +28,7 @@ window/vsync/vsync_mode=0
 
 [editor_plugins]
 
-enabled=PackedStringArray("res://addons/koala_time/plugin.cfg")
+enabled=PackedStringArray("res://addons/godot-xr-tools/plugin.cfg", "res://addons/koala_time/plugin.cfg")
 
 [input]
 
@@ -59,7 +61,7 @@ common/physics_ticks_per_second=120
 
 [rendering]
 
-lights_and_shadows/directional_shadow/soft_shadow_filter_quality=5
+lights_and_shadows/directional_shadow/size=8192
 global_illumination/voxel_gi/quality=1
 environment/ssao/quality=3
 environment/ssil/quality=3

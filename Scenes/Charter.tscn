@@ -124,9 +124,9 @@ func _generateChart():
 	$Camera2D/SubViewportContainer/SubViewport/Node3D/Chart.indx3 = 0
 	$Camera2D/SubViewportContainer/SubViewport/Node3D/Chart.indx4 = 0
 	
-	for x in sortedChart1:
-		if x[0] < beatPlayingFrom:
-			$Camera2D/SubViewportContainer/SubViewport/Node3D/Chart.indx1 += 1
+	#for x in sortedChart1:
+	#	if x[0] < beatPlayingFrom:
+	#		$Camera2D/SubViewportContainer/SubViewport/Node3D/Chart.indx1 += 1
 	
 	
 
@@ -156,6 +156,7 @@ func _on_play_pressed():
 func _play():
 	$Camera2D/SubViewportContainer/SubViewport/Node3D/AudioStreamPlayer.play()
 	$Camera2D/SubViewportContainer/SubViewport/Node3D/AudioStreamPlayer.seek(songPos)
+	GlobalValues.songInBeats = songPos / (60 / GlobalValues.bpm)
 	paused = false
 	$ColorRect.playing = true
 	_generateChart()
@@ -334,6 +335,9 @@ render_target_update_mode = 4
 
 [node name="Node3D" parent="Camera2D/SubViewportContainer/SubViewport" instance=ExtResource("2_x2x18")]
 process_mode = 1
+
+[node name="AudioStreamPlayer" parent="Camera2D/SubViewportContainer/SubViewport/Node3D" index="9"]
+autoplay = false
 
 [node name="Tracks" type="VBoxContainer" parent="Camera2D"]
 process_mode = 3

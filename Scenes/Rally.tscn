@@ -203,6 +203,7 @@ func _physics_process(delta):
 		GlobalValues.hitBeat = hitBeat
 	
 	if startServing == true:
+		
 		_serve(serveBeat,serveLength)
 # the issue with serving is that the beat isn't being prop resset lmao :(
 func _physicsTick():
@@ -238,7 +239,7 @@ func _goForward():
 			
 			_stopAllSources()
 			$HitTable.play()
-			emit_signal(\"tableHit\")
+			
 			#$AnimationPlayer.play(\"And\")
 			if back == true:
 				emit_signal(\"readyPlay\")

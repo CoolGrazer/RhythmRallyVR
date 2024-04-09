@@ -27,7 +27,6 @@ func _ready():
 func _process(_delta):
 	if playing:
 		
-		
 		song_position = get_playback_position() + AudioServer.get_time_since_last_mix()
 		song_position -= AudioServer.get_output_latency()
 		song_position_in_beats = floorTo(song_position / sec_per_beat,0.5) + beats_before_start
@@ -59,6 +58,7 @@ func closest_beat(nth):
 
 func _restart():
 	last_reported_beat = 0
+	song_position_in_beats = 0
 
 func play_from_beat(_beat, offset):
 	play()

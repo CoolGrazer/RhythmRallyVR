@@ -67,7 +67,7 @@ func _changeBallHeight(height):
 
 
 func _on_audio_stream_player_beat(position):
-	
+	return
 	if position == 2:
 		_serve(2)
 		$Paddler/AnimationPlayer2.play("Ready2")
@@ -186,7 +186,7 @@ func restart():
 	$Path3D/PathFollow3D/CharacterBody3D._restart()
 
 func _serve(length):
-	
+	$Path3D/PathFollow3D/CharacterBody3D.served = false
 	$Path3D/PathFollow3D/CharacterBody3D.startServing = true
 	$Path3D/PathFollow3D/CharacterBody3D.serveBeat = round(GlobalValues.songInBeats)
 	$Path3D/PathFollow3D/CharacterBody3D.serveLength = length

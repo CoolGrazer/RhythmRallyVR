@@ -3,7 +3,7 @@
 [ext_resource type="Texture2D" uid="uid://3olw0gxwhckg" path="res://Sprites/title.png" id="1_s7a3f"]
 [ext_resource type="AudioStream" uid="uid://dq2xhcy0pfm5b" path="res://SFX/click.wav" id="2_02xui"]
 [ext_resource type="AudioStream" uid="uid://dpulwgm3w3p0h" path="res://SFX/woosh.wav" id="3_uqrl8"]
-[ext_resource type="AudioStream" uid="uid://bi5l5yo6tbpy" path="res://SFX/1-03 - Greetings! (1).mp3" id="4_7obf8"]
+[ext_resource type="AudioStream" uid="uid://bi5l5yo6tbpy" path="res://Music/1-03 - Greetings! (1).mp3" id="4_7obf8"]
 [ext_resource type="Script" path="res://Scripts/Conductor.gd" id="5_i8sqs"]
 
 [sub_resource type="GDScript" id="GDScript_6ge2g"]

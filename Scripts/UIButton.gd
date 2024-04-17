@@ -15,7 +15,7 @@ func _process(delta):
 	else:
 		selected = false
 
-func _input(event: InputEvent):
+func _input(event: InputEvent): 
 	if event is InputEventMouseButton and event.is_pressed() and event.button_index == 1:
 		if is_hovered() == false:
 			mouse_filter = Control.MOUSE_FILTER_IGNORE
@@ -27,4 +27,4 @@ func _findSelected():
 	if selected == false:
 		return
 	else:
-		get_parent().get_parent().get_parent().selected = property
+		get_parent().get_parent().get_parent().get_parent().selected = property

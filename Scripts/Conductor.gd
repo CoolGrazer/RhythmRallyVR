@@ -3,12 +3,16 @@ extends AudioStreamPlayer
 @export var bpm : float = 100
 @export var msOffset : float = 0
 
+
+
 # Tracking the beat and song position
 var song_position = 0.0
-var song_position_in_beats = 0
+var song_position_in_beats = -1
 var sec_per_beat = 60.0 / bpm
-var last_reported_beat = 0
+var last_reported_beat = -1
 @export var beats_before_start = 0
+var tempoRatio : float = 0.0
+var tempoChanged : bool = false
 
 # Determining how close to the beat an event is
 var closest = 0
@@ -16,22 +20,27 @@ var time_off_beat = 0.0
 
 signal beat(position)
 
+# figure out tempo changes ( STILL UNFINSIHED)
 
 func _ready():
 	sec_per_beat = 60.0 / bpm
 	GlobalValues.bpm = bpm
 	seek(msOffset / 1000.0)
-	emit_signal("beat",0)
+	#emit_signal("beat",0)
 
 
 func _process(_delta):
 	if playing:
-		
+		sec_per_beat = 60.0 / bpm
+		GlobalValues.bpm = bpm
 		song_position = get_playback_position() + AudioServer.get_time_since_last_mix()
 		song_position -= AudioServer.get_output_latency()
+		print(song_position)
+		
 		song_position_in_beats = floorTo(song_position / sec_per_beat,0.5) + beats_before_start
 		
 		GlobalValues.songInBeats = (song_position / sec_per_beat)
+		
 		
 		
 		_report_beat()
@@ -73,3 +82,8 @@ func floorTo(val,snap):
 	else:
 		return snapped(val,snap)
 
+func tempoChange(val):
+	tempoRatio = val / bpm
+	bpm = val
+	tempoChanged = true
+	

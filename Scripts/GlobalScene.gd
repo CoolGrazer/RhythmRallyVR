@@ -46,7 +46,12 @@ func _ready():
 
 func _physics_process(delta):
 	pass
-	
+
+func _victory():
+	$Path3D/PathFollow3D/CharacterBody3D.served = false
+	$Path3D/PathFollow3D/CharacterBody3D.hide()
+	$Paddler._victory()
+	$Player._victory()
 
 func _changeBallHeight(height):
 	if height == 4:
@@ -59,6 +64,8 @@ func _changeBallHeight(height):
 	
 	if height == 2:
 		tinking = false
+		$Tink.stop()
+		$Tonk.stop()
 	
 	$Path3D.height = height
 	
@@ -67,105 +74,6 @@ func _changeBallHeight(height):
 
 
 func _on_audio_stream_player_beat(position):
-	return
-	if position == 2:
-		_serve(2)
-		$Paddler/AnimationPlayer2.play("Ready2")
-		$Whistle.play()
-	
-	if position == 10:
-		tinking = true
-	if position == 11.5:
-		tinking = false
-	
-	if position == 12:
-		_changeBallHeight(4)
-	
-	
-	if position == 14:
-		$Pivot._goTowards(92,4,-2.4)
-	
-	if position == 20:
-		tinking = true
-		tink = 1
-	
-	if position == 24:
-		_changeBallHeight(2)
-	
-	if position == 36:
-		_changeBallHeight(0)
-		
-	
-	if position == 40:
-		_changeBallHeight(1)
-		$Pivot._goTowards(340,4,-2.4)
-	
-	if position == 44:
-		tinking = true
-	 
-	if position == 48:
-		_changeBallHeight(2)
-	
-	if position == 68:
-		_changeBallHeight(0)
-		$Pivot._goTowards(45,4,-2.4)
-	
-	if position == 70:
-		tinking = true
-	
-	if position == 72:
-		_changeBallHeight(2)
-	
-	if position == 74:
-		_changeBallHeight(0)
-		$Pivot._goTowards(88,4,-2.4)
-	
-	if position == 82:
-		_changeBallHeight(1)
-		
-		
-	
-	if position == 84:
-		tinking = true
-		$Pivot._goTowards(160,6,-2.4)
-	
-	if position == 90:
-		_changeBallHeight(2)
-		
-	
-	if position == 96:
-		_changeBallHeight(0)
-	
-	if position == 128:
-		_changeBallHeight(1)
-		$Pivot._goTowards(92,8,-2.4)
-	
-	if position == 136:
-		_changeBallHeight(0)
-	
-	if position == 144:
-		tinking = true
-	
-	if position == 148:
-		_changeBallHeight(2)
-	
-	if position == 156:
-		_changeBallHeight(0)
-	
-	if position == 160:
-		_changeBallHeight(1)
-	
-	if position == 176:
-		_changeBallHeight(0)
-	
-	if position == 180:
-		tinking = true
-	
-	if position == 184:
-		_changeBallHeight(2)
-	
-	if position == 190:
-		_seriousMode()
 	
 	if tinking == true:
 		if tink == 0:
@@ -174,7 +82,6 @@ func _on_audio_stream_player_beat(position):
 		elif tink == 1:
 			tink = 0
 			$Tonk.play()
-	
 
 
 func restart():
@@ -184,20 +91,27 @@ func restart():
 	$Path3D/PathFollow3D.progress_ratio = 0.0
 	$Path3D/PathFollow3D/CharacterBody3D.hide()
 	$Path3D/PathFollow3D/CharacterBody3D._restart()
+	$Tink.stop()
+	$Tonk.stop()
+	$GongSerious.stop()
+	$Path3D/PathFollow3D/CharacterBody3D/HitOpp.stop()
+	$Path3D/PathFollow3D/CharacterBody3D/HitPlayer.stop()
+	$Path3D/PathFollow3D/CharacterBody3D/HitTable.stop()
+	$Whistle.stop()
 
 func _serve(length):
 	$Path3D/PathFollow3D/CharacterBody3D.served = false
 	$Path3D/PathFollow3D/CharacterBody3D.startServing = true
 	$Path3D/PathFollow3D/CharacterBody3D.serveBeat = round(GlobalValues.songInBeats)
 	$Path3D/PathFollow3D/CharacterBody3D.serveLength = length
+	$Path3D/PathFollow3D.progress_ratio = 0.0
 	$Path3D.height = 4
 	$Path3D.rotation_degrees.y = 0
-	$Whistle.play()
+	#$Whistle.play()
 
 
 func _on_character_body_3d_serve_done():
-	height = serveHeight
-	_changeBallHeight(serveHeight)
+	pass
 
 
 func _on_character_body_3d_opp_hit():
@@ -230,3 +144,35 @@ func _goofyMode():
 
 func _on_chart_serve(length):
 	_serve(length)
+
+
+func _on_chart_regular():
+	_changeBallHeight(0)
+
+
+func _on_chart_slow():
+	_changeBallHeight(1)
+
+
+func _on_chart_superfast():
+	_changeBallHeight(2)
+
+
+func _on_chart_tink_start():
+	tink = 0
+	tinking = true
+	$Tonk.play()
+
+
+func _on_chart_tink_end():
+	tinking = false
+	$Tink.stop()
+	$Tonk.stop()
+
+
+func _on_chart_fast():
+	_changeBallHeight(4)
+
+
+func _on_chart_victory():
+	_victory()

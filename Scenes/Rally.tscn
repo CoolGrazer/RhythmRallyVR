@@ -13,10 +13,12 @@
 [ext_resource type="PackedScene" uid="uid://jeqj0p66btb" path="res://Scenes/Paddler.tscn" id="4_nsqsi"]
 [ext_resource type="Texture2D" uid="uid://cpmqmsp30ppe7" path="res://Models/Rhyhtm_lambert11.png" id="4_y8lf0"]
 [ext_resource type="AudioStream" uid="uid://ca1baokajk2r7" path="res://SFX/gongSerious.ogg" id="5_mrmr3"]
+[ext_resource type="Script" path="res://Scripts/BallPath.gd" id="7_v8hvg"]
 [ext_resource type="Script" path="res://Scripts/Conductor.gd" id="8_6smow"]
 [ext_resource type="Texture2D" uid="uid://1fd150e13ip4" path="res://Models/Rhyhtm_lambert4.png" id="8_h1sl4"]
-[ext_resource type="AudioStream" uid="uid://bt28nxd1uv55d" path="res://Music/The Slaughter Continues - Remastered.mp3" id="10_c7j7p"]
+[ext_resource type="Script" path="res://Scripts/Ball.gd" id="8_vlk5b"]
 [ext_resource type="Texture2D" uid="uid://bsqxvaltvkmcu" path="res://Models/Rhyhtm_lambert13.png" id="11_ea10v"]
+[ext_resource type="AudioStream" uid="uid://bi5l5yo6tbpy" path="res://Music/1-03 - Greetings! (1).mp3" id="16_x55bp"]
 
 [sub_resource type="ProceduralSkyMaterial" id="ProceduralSkyMaterial_qoaev"]
 
@@ -25,13 +27,15 @@ sky_material = SubResource("ProceduralSkyMaterial_qoaev")
 
 [sub_resource type="Environment" id="Environment_613w8"]
 background_mode = 1
-background_color = Color(1, 1, 1, 1)
-background_energy_multiplier = 0.8
+background_color = Color(0.8, 0.8, 0.8, 1)
 sky = SubResource("Sky_06o8s")
 tonemap_exposure = 0.75
 ssao_power = 0.0177623
 glow_bloom = 0.25
 glow_blend_mode = 0
+fog_light_color = Color(0.8, 0.8, 0.8, 1)
+fog_light_energy = 0.8
+volumetric_fog_density = 0.0
 
 [sub_resource type="Curve3D" id="Curve3D_2py8k"]
 bake_interval = 0.02
@@ -40,441 +44,6 @@ _data = {
 "tilts": PackedFloat32Array(0, 0)
 }
 point_count = 2
-
-[sub_resource type="GDScript" id="GDScript_e35jl"]
-resource_name = "BallHeight"
-script/source = "extends Path3D
-
-
-var height : int = 0
-
-
-var data = []
-
-func _ready():
-	saveCurve()
-
-func _physics_process(delta):
-	
-	loadCurve(height)
-	
-
-
-func loadCurve(height):
-	
-	if height == 6:
-		data = [Vector3(0.000056, -1.45286, 5.87943), Vector3(0.000056, -0.000799, 5.00428), Vector3(0, 0.399246, -0.028931), Vector3(-0.000122, 0.185423, 0.632131)]
-		if curve.point_count == 3:
-			curve.remove_point(2)
-		curve.set_point_position(0,data[0])
-		curve.set_point_position(1,data[1])
-		curve.set_point_out(0,data[2])
-		curve.set_point_in(1,data[3])
-		return
-	
-	if height == 4:
-		data = [Vector3(0.000056, -0.572414, 4.74451), Vector3(0.000056, 0.076902, 4.17151), Vector3(0, 1.75121, -0.120804), Vector3(0, 4.60177, 0.276292)]
-		if curve.point_count == 3:
-			curve.remove_point(2)
-		curve.set_point_position(0,data[0])
-		curve.set_point_position(1,data[1])
-		curve.set_point_out(0,data[2])
-		curve.set_point_in(1,data[3])
-		return
-	
-	if height == 5:
-		data = [Vector3(0, 0, 5), Vector3(2.1392, -0.291539, 3.48901), Vector3(1.64, 1.587, -0.855), Vector3(0, 0.288, 0.122)]
-		if curve.point_count == 3:
-			curve.remove_point(2)
-		curve.set_point_position(0,data[0])
-		curve.set_point_position(1,data[1])
-		curve.set_point_out(0,data[2])
-		curve.set_point_in(1,data[3])
-		return
-		
-	if curve.point_count == 2:
-		curve.add_point(Vector3(0,0,-5))
-		
-	
-	if height == 0:
-		data = [Vector3(0.000056, 1.39608, -2.43352), Vector3(0.000056, 0.987539, -2.65724), Vector3(0.000056, 0.729281, 0.620979), Vector3(0.000056, 0.570497, 1.02623)]
-	elif height == 1:
-		data = [Vector3(0, 4.32, -2.823), Vector3(0.000056, 2.52296, -1.7667), Vector3(0, 0, 0), Vector3(0.000056, 2.85315, 1.39473)]
-	elif height == 2:
-		data = [Vector3(0, 0.825, -2.823), Vector3(0.000056, 0.739877, -1.84035), Vector3(0.000056, 0.729281, 0.620979), Vector3(0, 0.448, 0.906)]
-	elif height == 3:
-		data = [Vector3(0.000056, 1.0091, -3.5284), Vector3(0.000056, 2.03342, -2.10995), Vector3(-0.000066, -0.00216, 0.122108), Vector3(0.000056, 2.30121, 2.13744)]
-	
-	curve.set_point_position(0,Vector3(0,0,5))
-	curve.set_point_position(1,Vector3(0,0.1,-0.6))
-	curve.set_point_position(2,Vector3(0,0,-5))
-	curve.set_point_out(0,data[0])
-	curve.set_point_out(1,data[1])
-	curve.set_point_in(1,data[2])
-	curve.set_point_in(2,data[3])
-
-func flip():
-	rotation_degrees.y += 180
-	$PathFollow3D.progress_ratio = 0
-
-
-func saveCurve():
-	
-	data.append(curve.get_point_position(0))
-	data.append(curve.get_point_position(1))
-	data.append(curve.get_point_out(0))
-	data.append(curve.get_point_in(1))
-	
-
-
-func _on_character_body_3d_force_fast_path():
-	height = 3
-
-
-func _on_character_body_3d_force_normal_path():
-	height = 0
-
-
-func _on_character_body_3d_force_barely_path():
-	height = 5
-"
-
-[sub_resource type="GDScript" id="GDScript_q3xrv"]
-script/source = "extends CharacterBody3D
-
-const tableHitTime : float = 0.58
-
-var back : bool = true
-
-var hitBeat : float = 0.0
-
-var beatDur1 : float = 1.0
-var beatDur2 : float = 1.0
-
-var curvePosition : float = 0.0
-
-
-var tableHit : bool = false
-
-var changedHeight : bool = false
-
-var served : bool = false
-
-var startServing : bool = false
-
-var serveBeat : float = 2.0
-var serveLength : float = 2.0
-
-var fast : bool = false
-var beatToFast : int = -1
-var beatToNormal : int = -1
-
-var hasHit : bool = false
-
-var barely : bool = false
-var playerBeat : float = 0.0
-
-signal swingOpp
-signal swingPlay
-signal readyOpp
-signal readyPlay
-
-signal forceFastPath
-signal forceNormalPath
-signal forceBarelyPath
-signal forceServe
-
-signal playHit
-signal oppHit
-
-signal serveDone
-
-# Serve is still bad oof. Otherwise I'm working on barely's and misses rn so that's neato!
-
-func _ready():
-	pass
-
-func _physics_process(delta):
-	
-	
-	if served == true:
-		_physicsTick()
-		GlobalValues.beatDurs = beatDur1 + beatDur2
-		GlobalValues.hitBeat = hitBeat
-	
-	if startServing == true:
-		
-		_serve(serveBeat,serveLength)
-# the issue with serving is that the beat isn't being prop resset lmao :(
-func _physicsTick():
-	var bakedPos
-	
-	if barely == true:
-		_barelyPath()
-		bakedPos = curvePosition
-		get_parent().progress_ratio = bakedPos
-		return
-	
-	if changedHeight == false:
-		if fast == false:
-			_goForward()
-			bakedPos = curvePosition / beatDur1
-		else:
-			_fastRally()
-			bakedPos = curvePosition
-	else:
-		changedHeight = false
-	
-	get_parent().progress_ratio = bakedPos
-	
-
-
-func _goForward():
-	var hitPosition1 = GlobalValues.posFromBeat(hitBeat,beatDur1,false)
-	
-	
-	
-	if hitPosition1 >= beatDur1:
-		if tableHit == false:
-			
-			_stopAllSources()
-			$HitTable.play()
-			
-			#$AnimationPlayer.play(\"And\")
-			if back == true:
-				emit_signal(\"readyPlay\")
-			else:
-				emit_signal(\"readyOpp\")
-			
-			tableHit = true
-		
-		
-		var hitPosition2 = GlobalValues.posFromBeat(hitBeat + beatDur1, beatDur2,false)
-		curvePosition = (hitPosition2 * (1 - tableHitTime)) + (tableHitTime * beatDur1)
-			
-		# Gotta fix up the FAST rally type.
-		
-	else:
-		curvePosition = hitPosition1 * tableHitTime
-		
-		
-		
-	
-	if abs(curvePosition) - abs(beatDur2) == 0:
-		if back == false:
-			_stopAllSources()
-			$HitOpp.play()
-			#$AnimationPlayer.play(\"Tonk\")
-			emit_signal(\"oppHit\")
-			emit_signal(\"swingOpp\")
-			tableHit = false
-			get_parent().get_parent().flip()
-			curvePosition = 0
-			back = not back
-			hitBeat = round(GlobalValues.songInBeats)
-			hasHit = false
-		else:
-			print(round(GlobalValues.songInBeats))
-			_hit()
-		
-		
-
-func _fastRally():
-	
-	var offsetFromStart = GlobalValues.posFromBeat(hitBeat,beatDur1,false)
-	
-	if offsetFromStart >= 1.0:
-		var offsetFromStart2 = GlobalValues.posFromBeat(hitBeat + 1,beatDur2,false)
-		
-		if tableHit == false:
-			emit_signal(\"tableHit\")
-			_stopAllSources()
-			$HitTable.play()
-			
-			#$AnimationPlayer.play(\"And\")
-			emit_signal(\"readyOpp\")
-			
-			tableHit = true
-		
-		
-		curvePosition = (offsetFromStart2 / 4.761904762) + tableHitTime
-		
-	else:
-		curvePosition = offsetFromStart * 0.58
-
-func _barelyPath():
-	var hitPosition = GlobalValues.posFromBeat(hitBeat,1,true)
-	print(hitPosition)
-	curvePosition = hitPosition
-	
-	
-
-func _on_node_3d_ball_height(height):
-	back = true
-	if height == 0:
-		get_parent().get_parent().flip()
-		beatDur1 = 1
-		beatDur2 = 1
-	elif height == 1:
-		get_parent().get_parent().flip()
-		beatDur1 = 2
-		beatDur2 = 2
-	elif height == 2:
-		get_parent().get_parent().flip()
-		beatDur1 = 0.5
-		beatDur2 = 0.5
-	elif height == 3:
-		get_parent().get_parent().flip()
-		beatDur1 = 1
-		beatDur2 = 2
-	elif height == 4:
-		get_parent().get_parent().flip()
-		beatDur1 = 0.5
-		beatDur2 = 0.5
-		beatToFast = round(GlobalValues.songInBeats) + 1
-		
-	tableHit = false
-	emit_signal(\"swingOpp\")
-	emit_signal(\"oppHit\")
-	#$AnimationPlayer.play(\"Tonk\")
-	$HitOpp.play()
-	hitBeat = round(GlobalValues.songInBeats)
-	
-
-
-func _stopAllSources():
-	$HitPlayer.stop()
-	$HitTable.stop()
-	$HitOpp.stop()
-
-# Make the serve look not shit thx
-
-func _serve(starting,beatDur):
-	var hitPosition1 = GlobalValues.posFromBeat(starting,beatDur,true)
-	show()
-	
-	var bakedPos = hitPosition1 / beatDur
-	bakedPos = ease(bakedPos,1.0)
-	get_parent().progress_ratio = bakedPos
-	
-	if get_parent().progress_ratio == 1.0:
-		emit_signal(\"serveDone\")
-		get_parent().get_parent().flip()
-		startServing = false
-		served = true
-		$HitOpp.play()
-		hitBeat = round(GlobalValues.songInBeats)
-		
-
-func _changeToFast():
-	beatDur1 = 1
-	beatDur2 = 2
-	fast = true
-	tableHit = false
-	hitBeat = round(GlobalValues.songInBeats)
-	get_parent().get_parent().flip()
-	$HitPlayer.play()
-	beatToNormal = round(GlobalValues.songInBeats) + 3
-	emit_signal(\"swingPlay\")
-	emit_signal(\"forceFastPath\")
-	back = false
-
-func _on_audio_stream_player_beat(position):
-	if position == beatToFast:
-		_changeToFast()
-	if position == beatToNormal:
-		tableHit = false
-		fast = false
-		beatDur1 = 1.0
-		beatDur2 = 1.0
-		hitBeat = round(GlobalValues.songInBeats)
-		get_parent().get_parent().flip()
-		$HitOpp.play()
-		emit_signal(\"swingOpp\")
-		emit_signal(\"forceNormalPath\")
-		back = true
-
-func _on_vr_test_ball_height(height):
-	back = true
-	if height == 0:
-		get_parent().get_parent().flip()
-		beatDur1 = 1
-		beatDur2 = 1
-	elif height == 1:
-		get_parent().get_parent().flip()
-		beatDur1 = 2
-		beatDur2 = 2
-	elif height == 2:
-		get_parent().get_parent().flip()
-		beatDur1 = 0.5
-		beatDur2 = 0.5
-	elif height == 3:
-		get_parent().get_parent().flip()
-		beatDur1 = 1
-		beatDur2 = 2
-	elif height == 4:
-		get_parent().get_parent().flip()
-		beatDur1 = 0.5
-		beatDur2 = 0.5
-		beatToFast = round(GlobalValues.songInBeats) + 1
-		
-	tableHit = false
-	emit_signal(\"swingOpp\")
-	#$AnimationPlayer.play(\"Tonk\")
-	$HitOpp.play()
-	hitBeat = hitBeat + beatDur1 + beatDur2
-
-
-func _barely():
-	hasHit = true
-	_stopAllSources()
-	emit_signal(\"swingPlay\")
-	emit_signal(\"playHit\")
-	tableHit = false
-	curvePosition = 0
-	back = not back
-	hitBeat = hitBeat + beatDur1 + beatDur2
-	emit_signal(\"forceBarelyPath\")
-	get_parent().get_parent().flip()
-	barely = true
-
-func _miss():
-	pass
-
-func _hit():
-	hasHit = true
-	_stopAllSources()
-	$HitPlayer.play()
-	#$AnimationPlayer.play(\"Tink\")
-	emit_signal(\"swingPlay\")
-	emit_signal(\"playHit\")
-	tableHit = false
-	get_parent().get_parent().flip()
-	curvePosition = 0
-	back = not back
-	hitBeat = hitBeat + beatDur1 + beatDur2
-
-func _restart():
-	back = true
-	hitBeat = 0.0
-	beatDur1 = 1.0
-	beatDur2 = 1.0
-	curvePosition = 0.0
-	tableHit = false
-	changedHeight = false
-	served = false
-	startServing = false
-	serveBeat = -1.0
-	serveLength = 2.0
-	fast = false
-	beatToFast = -1
-	beatToNormal = -1
-
-
-func _on_input_hit():
-	if hasHit == false:
-		_hit()
-"
 
 [sub_resource type="SphereShape3D" id="SphereShape3D_dlq2d"]
 
@@ -487,14 +56,14 @@ emission_energy_multiplier = 16.0
 _data = [Vector2(0, 1), 0.0, 0.0, 0, 0, Vector2(1, 0), 0.0, 0.0, 0, 0]
 point_count = 2
 
-[sub_resource type="CurveTexture" id="CurveTexture_8qsjv"]
+[sub_resource type="CurveTexture" id="CurveTexture_v5nh0"]
 curve = SubResource("Curve_2vnpv")
 
 [sub_resource type="ParticleProcessMaterial" id="ParticleProcessMaterial_juf2n"]
 gravity = Vector3(0, 0, 0)
-alpha_curve = SubResource("CurveTexture_8qsjv")
+alpha_curve = SubResource("CurveTexture_v5nh0")
 
-[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_1nmaf"]
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_g01ej"]
 transparency = 1
 vertex_color_use_as_albedo = true
 albedo_color = Color(1, 1, 0, 1)
@@ -502,7 +71,7 @@ emission_enabled = true
 emission_energy_multiplier = 16.0
 
 [sub_resource type="SphereMesh" id="SphereMesh_nt8l3"]
-material = SubResource("StandardMaterial3D_1nmaf")
+material = SubResource("StandardMaterial3D_g01ej")
 radius = 0.1
 height = 0.2
 radial_segments = 12
@@ -989,7 +558,6 @@ volume_db = 5.0
 
 [node name="GongSerious" type="AudioStreamPlayer" parent="."]
 stream = ExtResource("5_mrmr3")
-volume_db = 10.0
 
 [node name="WorldEnvironment" type="WorldEnvironment" parent="."]
 environment = SubResource("Environment_613w8")
@@ -1001,7 +569,7 @@ shadow_enabled = true
 [node name="Path3D" type="Path3D" parent="."]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.018, 1.45, 0)
 curve = SubResource("Curve3D_2py8k")
-script = SubResource("GDScript_e35jl")
+script = ExtResource("7_v8hvg")
 
 [node name="PathFollow3D" type="PathFollow3D" parent="Path3D"]
 transform = Transform3D(1, 0, 0, 0, 0.999959, 0, 0, 0, 0.999959, 5.56633e-05, -1.45286, 5.87943)
@@ -1010,8 +578,7 @@ loop = false
 tilt_enabled = false
 
 [node name="CharacterBody3D" type="CharacterBody3D" parent="Path3D/PathFollow3D"]
-visible = false
-script = SubResource("GDScript_q3xrv")
+script = ExtResource("8_vlk5b")
 
 [node name="CollisionShape3D" type="CollisionShape3D" parent="Path3D/PathFollow3D/CharacterBody3D"]
 transform = Transform3D(0.2, 0, 0, 0, 0.2, 0, 0, 0, 0.2, 0, 0, 0)
@@ -1074,18 +641,17 @@ script = SubResource("GDScript_tf22s")
 shape = SubResource("ConcavePolygonShape3D_w18ir")
 
 [node name="AudioStreamPlayer" type="AudioStreamPlayer" parent="."]
-stream = ExtResource("10_c7j7p")
-volume_db = -80.0
+stream = ExtResource("16_x55bp")
 autoplay = true
 script = ExtResource("8_6smow")
-bpm = 155.0
+bpm = 110.0
 
 [node name="Pivot" type="Node3D" parent="."]
-transform = Transform3D(-0.939693, 0.0208798, 0.341382, 0, 0.998135, -0.0610485, -0.34202, -0.0573669, -0.937939, 0, 0, 0)
+transform = Transform3D(-0.71934, 0, 0.694658, 0, 1, 0, -0.694659, 0, -0.719339, 0, 0, 0)
 script = SubResource("GDScript_y1dis")
 
 [node name="Camera3D" type="Camera3D" parent="Pivot"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 2.68, 6.44)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 2.56, 7.36)
 current = true
 size = 6.2
 
@@ -1118,14 +684,9 @@ script = SubResource("GDScript_deufs")
 
 [node name="Paddler" parent="." instance=ExtResource("4_nsqsi")]
 transform = Transform3D(-0.4, 0, -3.49691e-08, 0, 0.4, 0, 3.49691e-08, 0, -0.4, 0, -0.174, 5.401)
-visible = false
-swingInt = 4
 
 [node name="Player" parent="." instance=ExtResource("4_nsqsi")]
 transform = Transform3D(0.4, 0, 0, 0, 0.4, 0, 0, 0, 0.4, 0, -0.174, -5.401)
-visible = false
-offset = 2
-swingInt = 4
 
 [node name="Whistle" type="AudioStreamPlayer" parent="."]
 stream = ExtResource("2_t6m7m")
@@ -1135,11 +696,20 @@ stream = ExtResource("2_t6m7m")
 [connection signal="seriousMode" from="." to="Pivot/Camera3D/MeshInstance3D" method="_on_node_3d_serious_mode"]
 [connection signal="seriousMode" from="." to="Paddler" method="_on_node_3d_serious_mode"]
 [connection signal="seriousMode" from="." to="Player" method="_on_node_3d_serious_mode"]
+[connection signal="fast" from="Chart" to="." method="_on_chart_fast"]
+[connection signal="regular" from="Chart" to="." method="_on_chart_regular"]
 [connection signal="serve" from="Chart" to="." method="_on_chart_serve"]
+[connection signal="slow" from="Chart" to="." method="_on_chart_slow"]
+[connection signal="superfast" from="Chart" to="." method="_on_chart_superfast"]
+[connection signal="tinkEnd" from="Chart" to="." method="_on_chart_tink_end"]
+[connection signal="tinkStart" from="Chart" to="." method="_on_chart_tink_start"]
+[connection signal="victory" from="Chart" to="." method="_on_chart_victory"]
 [connection signal="hit" from="Input" to="Path3D/PathFollow3D/CharacterBody3D" method="_on_input_hit"]
 [connection signal="forceBarelyPath" from="Path3D/PathFollow3D/CharacterBody3D" to="Path3D" method="_on_character_body_3d_force_barely_path"]
 [connection signal="forceFastPath" from="Path3D/PathFollow3D/CharacterBody3D" to="Path3D" method="_on_character_body_3d_force_fast_path"]
 [connection signal="forceNormalPath" from="Path3D/PathFollow3D/CharacterBody3D" to="Path3D" method="_on_character_body_3d_force_normal_path"]
+[connection signal="forceSlowPath" from="Path3D/PathFollow3D/CharacterBody3D" to="Path3D" method="_on_character_body_3d_force_slow_path"]
+[connection signal="forceSuperPath" from="Path3D/PathFollow3D/CharacterBody3D" to="Path3D" method="_on_character_body_3d_force_super_path"]
 [connection signal="oppHit" from="Path3D/PathFollow3D/CharacterBody3D" to="." method="_on_character_body_3d_opp_hit"]
 [connection signal="playHit" from="Path3D/PathFollow3D/CharacterBody3D" to="." method="_on_character_body_3d_play_hit"]
 [connection signal="readyOpp" from="Path3D/PathFollow3D/CharacterBody3D" to="Paddler" method="_on_character_body_3d_ready_opp"]

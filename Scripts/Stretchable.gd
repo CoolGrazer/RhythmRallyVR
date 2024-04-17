@@ -27,6 +27,7 @@ var edgeHovered : bool = false
 var edgeSelected : bool = false
 var oldLength : float = length
 
+# emit signal? when selected in order to pull up the property menu.
 
 func _ready():
 	adjText = text + " "
@@ -108,6 +109,7 @@ func _physics_process(delta):
 	
 	if edgeSelected == true:
 		length = oldLength + (snapped((get_global_mouse_position().x - ogMouse.x),54/2) / 54)
+		length = clampf(length,1,5000000)
 	
 	position.x = clamp(position.x,177,10000000)
 	position.y = clamp(position.y,464,584)

@@ -31,7 +31,7 @@ func _physics_process(_delta):
 	if _canSwing() and justReleased == true:
 		swinging = true
 		frameTimer = framesOfSwing
-		$AudioStreamPlayer.play()
+		$Swing.play()
 	
 	
 	held = is_button_pressed("trigger_click")
